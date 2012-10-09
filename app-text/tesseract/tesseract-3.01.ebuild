@@ -73,7 +73,7 @@ src_prepare() {
 	# remove obsolete makefile, install target only in uppercase Makefile
 	rm "${S}/java/makefile" || die "remove obsolete java makefile failed"
 
-	epatch "${FILESDIR}/tesseract-3.01-gcc47.patch"
+	epatch "${FILESDIR}/tesseract-2.04-gcc47.patch"
 	epatch_user
 
 	eautoreconf
