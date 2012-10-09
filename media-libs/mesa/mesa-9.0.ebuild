@@ -142,6 +142,9 @@ QA_WX_LOAD="usr/lib*/opengl/xorg-x11/lib/libGL.so*"
 
 # Think about: ggi, fbcon, no-X configs
 
+# As of mesa-9.0, gcc-4.7.2 build fails with -flto
+filter-flags -flto
+
 pkg_setup() {
 	# workaround toc-issue wrt #386545
 	use ppc64 && append-flags -mminimal-toc
