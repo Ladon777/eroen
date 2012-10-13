@@ -50,7 +50,7 @@ pkg_setup() {
 }
 
 src_prepare() {
-	sed -f - -i df << EOF
+	sed -f - -i df << EOF || die
 s:DF_DIR=.*:DF_DIR="${MY_DATADIR}":
 s:./libs/Dwarf_Fortress:"${GAMES_BINDIR}/Dwarf_Fortress":
 s:^export SDL_DISABLE_LOCK_KEYS=1:#&:
