@@ -29,7 +29,7 @@ DEPEND="libgraphics? ( !dev-libs/libgraphics )
 	app-emulation/emul-linux-x86-xlibs
 	"
 RDEPEND="${DEPEND}
-	!libgraphics? ( dev-libs/libgraphics )
+	!libgraphics? ( ~dev-libs/libgraphics-${PV} )
 	"
 
 S="${WORKDIR}/${MY_PN}_linux"
