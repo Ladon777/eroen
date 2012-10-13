@@ -4,7 +4,7 @@
 
 EAPI=5
 
-inherit games versionator
+inherit games versionator multilib
 
 MY_PN="df"
 MY_PV="$(replace_all_version_separators '_')"
@@ -43,6 +43,11 @@ if use libgraphics; then
 	abslg="$( games_get_libdir )/libgraphics.so"
 	QA_PREBUILT+=" ${abslg#/}"
 fi
+
+pkg_setup() {
+	games_pkg_setup
+	multilib_toolchain_setup x86
+}
 
 src_prepare() {
 	sed -f - -i df << EOF
