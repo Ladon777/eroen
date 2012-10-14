@@ -30,6 +30,7 @@ DEPEND="libgraphics? ( !dev-libs/libgraphics )
 	"
 RDEPEND="${DEPEND}
 	!libgraphics? ( ~dev-libs/libgraphics-${PV} )
+	>=sys-devel/gcc-4.5
 	"
 
 S="${WORKDIR}/${MY_PN}_linux"
