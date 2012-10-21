@@ -85,6 +85,7 @@ src_install() {
 
 	insinto "${MY_DATADIR}"
 	doins -r data || die
+	dosym "${MY_STATEDIR}/gamelog.txt" "${MY_DATADIR}/gamelog.txt" || die
 	dosym "${MY_SYSCONFDIR}/init" "${MY_DATADIR}/data/init" || die
 	dosym "${MY_STATEDIR}/index" "${MY_DATADIR}/data/index" || die
 	dosym "${MY_STATEDIR}/save" "${MY_DATADIR}/data/save" || die
