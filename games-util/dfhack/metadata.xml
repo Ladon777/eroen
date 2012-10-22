@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<longdescription lang="en">
+	</longdescription>
+	<use>
+		<flag name="api">Install development headers. This breaks slotting.</flag>
+		<flag name="egg">Build libegg in stead of the libsdl overriding library for interfacing with dwarffortress. Requires a patched libgraphics.</flag>
+		<flag name="ssense">Build the Stonesense plugin.</flag>
+		<flag name="dfusion">Build the Dfusion plugin. This does not work properly.</flag>
+	</use>
+</pkgmetadata>

@@ -1,0 +1,192 @@
+From de815dc687998c32154c1f099e5316badc5d4fd5 Mon Sep 17 00:00:00 2001
+From: eroen <eroen@occam.eroen.eu>
+Date: Sat, 20 Oct 2012 22:30:46 +0200
+Subject: [PATCH 1/5] compile time configuration of magic cwd
+
+---
+ Block.cpp          |  4 ++--
+ CMakeLists.txt     | 18 ++++++++++++++----
+ Config.cpp         |  2 +-
+ ContentLoader.cpp  |  6 +++---
+ GUI.cpp            |  2 +-
+ Occlusion_Test.cpp |  6 +++---
+ main.cpp           |  6 +++---
+ 7 files changed, 27 insertions(+), 17 deletions(-)
+
+diff --git a/Block.cpp b/Block.cpp
+index 3a5bb7d..c3406eb 100644
+--- a/Block.cpp
++++ b/Block.cpp
+@@ -665,9 +665,9 @@ void createEffectSprites()
+ 	sprite_dust			= CreateSpriteFromSheet( 182, IMGObjectSheet);
+ 	sprite_magma		= CreateSpriteFromSheet( 185, IMGObjectSheet);
+ 	sprite_smoke		= CreateSpriteFromSheet( 186, IMGObjectSheet);
+-	sprite_dragonfire	= load_bitmap_withWarning("stonesense/Effect_flames.png");
++	sprite_dragonfire	= load_bitmap_withWarning( DFHACK_DATA_DESTINATION "/stonesense/Effect_flames.png");
+ 	sprite_fire			= CreateSpriteFromSheet( 188, IMGObjectSheet);
+-	sprite_webing		= load_bitmap_withWarning("stonesense/Effect_web.png");
++	sprite_webing		= load_bitmap_withWarning( DFHACK_DATA_DESTINATION "/stonesense/Effect_web.png");
+ 	sprite_boiling		= CreateSpriteFromSheet( 190, IMGObjectSheet);
+ 	sprite_oceanwave	= CreateSpriteFromSheet( 191, IMGObjectSheet);
+ }
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 1a6dc00..86c2c76 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -3,6 +3,16 @@ SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMake/Modules)
+ 
+ include_directories (${CMAKE_SOURCE_DIR})
+ 
++IF(NOT DEFINED DFHACK_LIBRARY_DESTINATION)
++    SET(DFHACK_LIBRARY_DESTINATION "stonesense/deplibs")
++ENDIF()
++IF(NOT DEFINED DFHACK_DATA_DESTINATION)
++    SET(DFHACK_DATA_DESTINATION ".")
++ENDIF()
++IF(NOT DEFINED DFHACK_USERDOC_DESTINATION)
++    SET(DFHACK_USERDOC_DESTINATION ".")
++ENDIF()
++add_definitions(-DDFHACK_DATA_DESTINATION="${DFHACK_DATA_DESTINATION}")
+ 
+ SET(PROJECT_SRCS
+     Block.cpp
+@@ -57,7 +67,7 @@ IF(UNIX)
+ 				${stonesense_SOURCE_DIR}/allegro-osx/include
+ 			)
+ 			install(DIRECTORY allegro-osx/lib/
+-					DESTINATION "stonesense/deplibs"
++					DESTINATION "${DFHACK_LIBRARY_DESTINATION}"
+ 					PATTERN "CVS" EXCLUDE
+ 					PATTERN ".svn" EXCLUDE)
+ 		ELSE()
+@@ -92,7 +102,7 @@ IF(UNIX)
+ 				${stonesense_SOURCE_DIR}/allegro/include
+ 			)
+ 			install(DIRECTORY allegro/lib/
+-					DESTINATION "stonesense/deplibs"
++					DESTINATION "${DFHACK_LIBRARY_DESTINATION}"
+ 					PATTERN "CVS" EXCLUDE
+ 					PATTERN ".svn" EXCLUDE)
+ 		ELSE()
+@@ -151,8 +161,8 @@ ENDIF(UNIX)
+ DFHACK_PLUGIN(stonesense ${PROJECT_SRCS} LINK_LIBRARIES dfhack-tinyxml ${PROJECT_LIBS})
+ #install resources into DF/stonesense
+ install(DIRECTORY resources/
+-        DESTINATION "stonesense"
++	DESTINATION "${DFHACK_DATA_DESTINATION}/stonesense"
+         PATTERN "CVS" EXCLUDE
+         PATTERN ".svn" EXCLUDE)
+ # install readme
+-install(FILES README.txt DESTINATION stonesense)
++install(FILES README.txt DESTINATION "${DFHACK_USERDOC_DESTINATION}/stonesense")
+diff --git a/Config.cpp b/Config.cpp
+index c5c73b4..8a1d1e3 100644
+--- a/Config.cpp
++++ b/Config.cpp
+@@ -558,7 +558,7 @@ void parseConfigLine( string line ){
+ bool loadConfigFile()
+ {
+     string line;
+-    ALLEGRO_PATH * p =al_create_path("stonesense/init.txt");
++    ALLEGRO_PATH * p =al_create_path( DFHACK_DATA_DESTINATION "/stonesense/init.txt");
+     const char * path = al_path_cstr(p,ALLEGRO_NATIVE_PATH_SEP);
+     ifstream myfile (path);
+     if (myfile.is_open() == false)
+diff --git a/ContentLoader.cpp b/ContentLoader.cpp
+index 1014d1e..7becd44 100644
+--- a/ContentLoader.cpp
++++ b/ContentLoader.cpp
+@@ -208,7 +208,7 @@ bool ContentLoader::Load(){
+ 	contentLoader->obsidian = lookupMaterialIndex(INORGANIC, "OBSIDIAN");
+ 
+ 	loadGraphicsFromDisk(); //these get destroyed when flushImgFiles is called.
+-    ALLEGRO_PATH * p = al_create_path("stonesense/index.txt");
++    ALLEGRO_PATH * p = al_create_path( DFHACK_DATA_DESTINATION "/stonesense/index.txt");
+     bool overallResult = parseContentIndexFile( al_path_cstr(p, ALLEGRO_NATIVE_PATH_SEP) );
+     al_destroy_path(p);
+ 	translationComplete = false;
+@@ -230,7 +230,7 @@ bool ContentLoader::reload_configs()
+ 	flushImgFiles();
+ 
+ 	loadGraphicsFromDisk(); //these get destroyed when flushImgFiles is called.
+-    ALLEGRO_PATH * p = al_create_path("stonesense/index.txt");
++    ALLEGRO_PATH * p = al_create_path( DFHACK_DATA_DESTINATION "/stonesense/index.txt");
+     bool overallResult = parseContentIndexFile( al_path_cstr(p, ALLEGRO_NATIVE_PATH_SEP) );
+     al_destroy_path(p);
+ 
+@@ -846,4 +846,4 @@ ShadeBy getShadeType(const char* Input)
+ 	if( strcmp(Input, "item") == 0)
+ 		return ShadeItem;
+ 	return ShadeNone;
+-}
+\ No newline at end of file
++}
+diff --git a/GUI.cpp b/GUI.cpp
+index da69aae..0469b12 100644
+--- a/GUI.cpp
++++ b/GUI.cpp
+@@ -1053,7 +1053,7 @@ bool load_from_path (ALLEGRO_PATH * p, const char * filename, ALLEGRO_BITMAP *&
+ 
+ void loadGraphicsFromDisk()
+ {
+-    ALLEGRO_PATH * p = al_create_path_for_directory("stonesense");
++    ALLEGRO_PATH * p = al_create_path_for_directory( DFHACK_DATA_DESTINATION "/stonesense");
+     if(!load_from_path(p, "objects.png", IMGObjectSheet)) return;
+     if(!load_from_path(p, "creatures.png", IMGCreatureSheet)) return;
+     if(!load_from_path(p, "ramps.png", IMGRampSheet)) return;
+diff --git a/Occlusion_Test.cpp b/Occlusion_Test.cpp
+index 08e26ee..56fbf13 100644
+--- a/Occlusion_Test.cpp
++++ b/Occlusion_Test.cpp
+@@ -140,8 +140,8 @@ void init_masks()
+ 	//load up some mask files
+ 	int flags = al_get_new_bitmap_flags();
+ 	al_set_new_bitmap_flags(ALLEGRO_MEMORY_BITMAP);
+-	ALLEGRO_BITMAP * wall = load_bitmap_withWarning("stonesense/mask_wall.png");
+-	ALLEGRO_BITMAP * floor = load_bitmap_withWarning("stonesense/mask_floor.png");
++	ALLEGRO_BITMAP * wall = load_bitmap_withWarning( DFHACK_DATA_DESTINATION "/stonesense/mask_wall.png");
++	ALLEGRO_BITMAP * floor = load_bitmap_withWarning( DFHACK_DATA_DESTINATION "/stonesense/mask_floor.png");
+ 	al_set_new_bitmap_flags(flags);
+ 
+ 	//copy the mask to the bitsets. Each half is seperate to simplify things.
+@@ -253,4 +253,4 @@ void occlude_block(Block * b)
+ 	{
+ 		b->visible = 0;
+ 	}
+-}
+\ No newline at end of file
++}
+diff --git a/main.cpp b/main.cpp
+index be421cd..033b757 100644
+--- a/main.cpp
++++ b/main.cpp
+@@ -152,7 +152,7 @@ void correctBlockForSegmetOffset(int32_t& x, int32_t& y, int32_t& z){
+ 
+ bool loadfont(DFHack::color_ostream & output)
+ {
+-    ALLEGRO_PATH * p = al_create_path_for_directory("stonesense");
++    ALLEGRO_PATH * p = al_create_path_for_directory( DFHACK_DATA_DESTINATION "/stonesense");
+     if(!al_join_paths(p, config.font))
+     {
+         al_destroy_path(p);
+@@ -205,7 +205,7 @@ void drawcredits()
+ 	{
+         if(!SplashImage)
+         {
+-            ALLEGRO_PATH * p = al_create_path("stonesense/splash.png");
++            ALLEGRO_PATH * p = al_create_path( DFHACK_DATA_DESTINATION "/stonesense/splash.png");
+             SplashImage = load_bitmap_withWarning(al_path_cstr(p, ALLEGRO_NATIVE_PATH_SEP));
+             al_destroy_path(p);
+         }
+@@ -448,7 +448,7 @@ static void * stonesense_thread(ALLEGRO_THREAD * main_thread, void * parms)
+ 		al_set_new_bitmap_flags(ALLEGRO_MEMORY_BITMAP|ALLEGRO_ALPHA_TEST|ALLEGRO_MIN_LINEAR|ALLEGRO_MIPMAP);
+ 	else al_set_new_bitmap_flags(ALLEGRO_MIN_LINEAR|ALLEGRO_MIPMAP);
+ 
+-    ALLEGRO_PATH * p = al_create_path("stonesense/stonesense.png");
++    ALLEGRO_PATH * p = al_create_path( DFHACK_DATA_DESTINATION "/stonesense/stonesense.png");
+     IMGIcon = load_bitmap_withWarning(al_path_cstr(p, ALLEGRO_NATIVE_PATH_SEP));
+     al_destroy_path(p);
+ 	if(!IMGIcon)
+-- 
+1.7.12.4
+

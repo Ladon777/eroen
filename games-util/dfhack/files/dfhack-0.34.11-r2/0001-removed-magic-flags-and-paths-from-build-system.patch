@@ -1,0 +1,196 @@
+From ed06cbdc0d7180c219864409cfb6f3f6c6fe2523 Mon Sep 17 00:00:00 2001
+From: eroen <eroen@occam.eroen.eu>
+Date: Fri, 19 Oct 2012 23:00:22 +0200
+Subject: [PATCH 1/4] removed magic flags and paths from build system
+
+---
+ CMakeLists.txt                 | 52 +++++++++++++++++++++++++++++++-----------
+ depends/lua/CMakeLists.txt     |  2 +-
+ library/CMakeLists.txt         |  8 +++----
+ plugins/Dfusion/CMakeLists.txt |  2 +-
+ plugins/Plugins.cmake          |  8 +++----
+ plugins/ruby/CMakeLists.txt    |  4 ++--
+ 6 files changed, 51 insertions(+), 25 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 14436dc..a8eb1f4 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -72,30 +72,56 @@ add_definitions(-DDFHACK_VERSION="${DFHACK_VERSION}")
+ # the dfhack libraries will be installed here:
+ IF(UNIX)
+     # put the lib into DF/hack
+-    SET(DFHACK_LIBRARY_DESTINATION hack)
+-    SET(DFHACK_EGGY_DESTINATION libs)
++    if(NOT DEFINED DFHACK_LIBRARY_DESTINATION)
++        SET(DFHACK_LIBRARY_DESTINATION hack)
++    endif()
++    if(NOT DEFINED DFHACK_EGGY_DESTINATION)
++        SET(DFHACK_EGGY_DESTINATION libs)
++    endif()
+ ELSE()
+     # windows is crap, therefore we can't do nice things with it. leave the libs on a nasty pile...
+     SET(DFHACK_LIBRARY_DESTINATION .)
+     SET(DFHACK_EGGY_DESTINATION .)
+ ENDIF()
+ # external tools will be installed here:
+-SET(DFHACK_BINARY_DESTINATION .)
++if(NOT DEFINED DFHACK_BINARY_DESTINATION)
++    SET(DFHACK_BINARY_DESTINATION .)
++endif()
+ # dfhack data goes here:
+-SET(DFHACK_DATA_DESTINATION hack)
++if(NOT DEFINED DFHACK_DATA_DESTINATION)
++    SET(DFHACK_DATA_DESTINATION hack)
++endif()
+ # plugin libs go here:
+-SET(DFHACK_PLUGIN_DESTINATION hack/plugins)
++if(NOT DEFINED DFHACK_PLUGIN_DESTINATION)
++    SET(DFHACK_PLUGIN_DESTINATION "${DFHACK_DATA_DESTINATION}/plugins")
++endif()
+ # dfhack header files go here:
+-SET(DFHACK_INCLUDES_DESTINATION hack/include)
++if(NOT DEFINED DFHACK_INCLUDES_DESTINATION)
++    SET(DFHACK_INCLUDES_DESTINATION "${DFHACK_DATA_DESTINATION}/include")
++endif()
+ # dfhack lua files go here:
+-SET(DFHACK_LUA_DESTINATION hack/lua)
++if(NOT DEFINED DFHACK_LUA_DESTINATION)
++    SET(DFHACK_LUA_DESTINATION "${DFHACK_DATA_DESTINATION}/lua")
++endif()
++if(NOT DEFINED DFHACK_RUBY_DESTINATION)
++    SET(DFHACK_RUBY_DESTINATION "${DFHACK_DATA_DESTINATION}/ruby")
++endif()
++if(NOT DEFINED DFHACK_DFUSION_DESTINATION)
++    SET(DFHACK_DFUSION_DESTINATION "${DFHACK_DATA_DESTINATION}/dfusion")
++endif()
+ # the windows .lib file goes here:
+-SET(DFHACK_DEVLIB_DESTINATION hack)
++if(NOT DEFINED DFHACK_DEVLIB_DESTINATION)
++    SET(DFHACK_DEVLIB_DESTINATION "${DFHACK_DATA_DESTINATION}")
++endif()
+ 
+ # user documentation goes here:
+-SET(DFHACK_USERDOC_DESTINATION hack)
++if(NOT DEFINED DFHACK_USERDOC_DESTINATION)
++    SET(DFHACK_USERDOC_DESTINATION "${DFHACK_DATA_DESTINATION}")
++endif()
+ # developer documentation goes here:
+-SET(DFHACK_DEVDOC_DESTINATION hack)
++if(NOT DEFINED DFHACK_DEVDOC_DESTINATION)
++    SET(DFHACK_DEVDOC_DESTINATION "${DFHACK_DATA_DESTINATION}")
++endif()
+ 
+ ## some options for the user/developer to play with
+ OPTION(BUILD_LIBRARY "Build the library that goes into DF." ON)
+@@ -108,9 +134,9 @@ OPTION(BUILD_PLUGINS "Build the plugins." ON)
+ # enable C++11 features
+ IF(UNIX)
+   add_definitions(-DLINUX_BUILD)
+-  SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-g -Wall -Wno-unused-variable")
+-  SET(CMAKE_CXX_FLAGS "-fvisibility=hidden -m32 -march=i686 -mtune=generic -std=c++0x")
+-  SET(CMAKE_C_FLAGS "-fvisibility=hidden -m32 -march=i686 -mtune=generic")
++  SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -g -Wall -Wno-unused-variable")
++  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -m32 -std=c++0x")
++  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fvisibility=hidden -m32")
+ ELSEIF(MSVC)
+   # for msvc, tell it to always use 8-byte pointers to member functions to avoid confusion
+   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /vmg /vmm")
+diff --git a/depends/lua/CMakeLists.txt b/depends/lua/CMakeLists.txt
+index b77bce6..af05748 100644
+--- a/depends/lua/CMakeLists.txt
++++ b/depends/lua/CMakeLists.txt
+@@ -12,7 +12,7 @@ ENDIF()
+ 
+ IF(UNIX)
+   add_definitions(-DLINUX_BUILD)
+-  SET(CMAKE_C_FLAGS "-m32")
++  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -m32")
+ ENDIF()
+ 
+ SET (HDR_LIBLUA
+diff --git a/library/CMakeLists.txt b/library/CMakeLists.txt
+index 536f4d3..f317ccb 100644
+--- a/library/CMakeLists.txt
++++ b/library/CMakeLists.txt
+@@ -216,7 +216,7 @@ ADD_CUSTOM_TARGET(generate_headers DEPENDS ${dfapi_SOURCE_DIR}/include/df/codege
+ IF(UNIX)
+   # Don't produce debug info for generated stubs
+   SET_SOURCE_FILES_PROPERTIES(DataStatics.cpp DataStaticsCtor.cpp DataStaticsFields.cpp
+-                              PROPERTIES COMPILE_FLAGS "-g0 -O1")
++                              PROPERTIES COMPILE_FLAGS "-g0")
+ ELSE(WIN32)
+   SET_SOURCE_FILES_PROPERTIES(DataStatics.cpp DataStaticsCtor.cpp DataStaticsFields.cpp
+                               PROPERTIES COMPILE_FLAGS "/O1 /bigobj")
+@@ -299,9 +299,9 @@ IF(UNIX)
+     else()
+ 	    # On linux, copy our version of the df launch script which sets LD_PRELOAD
+     	install(PROGRAMS ${dfhack_SOURCE_DIR}/package/linux/dfhack
+-            DESTINATION .)
++            DESTINATION ${DFHACK_BINARY_DESTINATION})
+ 	    install(PROGRAMS ${dfhack_SOURCE_DIR}/package/linux/dfhack-run
+-            DESTINATION .)
++            DESTINATION ${DFHACK_BINARY_DESTINATION})
+     endif()
+ ELSE()
+     if(NOT BUILD_EGGY)
+@@ -327,7 +327,7 @@ install(FILES xml/symbols.xml
+         DESTINATION ${DFHACK_DATA_DESTINATION}) #linux: share/dfhack
+ #install the example autoexec file
+ install(FILES ../dfhack.init-example
+-        DESTINATION ${DFHACK_BINARY_DESTINATION})
++        DESTINATION ${DFHACK_USERDOC_DESTINATION})
+ 
+ install(TARGETS dfhack-run dfhack-client
+         LIBRARY DESTINATION ${DFHACK_LIBRARY_DESTINATION}
+diff --git a/plugins/Dfusion/CMakeLists.txt b/plugins/Dfusion/CMakeLists.txt
+index 6558720..ab3c9ff 100644
+--- a/plugins/Dfusion/CMakeLists.txt
++++ b/plugins/Dfusion/CMakeLists.txt
+@@ -11,4 +11,4 @@ SET_SOURCE_FILES_PROPERTIES( ${DFUSION_HS} PROPERTIES HEADER_FILE_ONLY TRUE )
+ DFHACK_PLUGIN(dfusion  ${DFUSION_CPPS_ALL} ${DFUSION_HS} LINK_LIBRARIES lua dfhack-tinythread)
+ 
+ # installs into DF root
+-install(DIRECTORY luafiles/ DESTINATION dfusion)
+\ No newline at end of file
++install(DIRECTORY luafiles/ DESTINATION "${DFHACK_DFUSION_DESTINATION}")
+diff --git a/plugins/Plugins.cmake b/plugins/Plugins.cmake
+index 0ea37ac..6907003 100644
+--- a/plugins/Plugins.cmake
++++ b/plugins/Plugins.cmake
+@@ -1,8 +1,8 @@
+ IF(UNIX)
+     add_definitions(-DLINUX_BUILD)
+-    SET(CMAKE_CXX_FLAGS_DEBUG "-g -Wall")
+-    SET(CMAKE_CXX_FLAGS "-fvisibility=hidden -m32 -std=c++0x")
+-    SET(CMAKE_C_FLAGS "-fvisibility=hidden -m32")
++    SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -Wall")
++    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -m32 -std=c++0x")
++    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fvisibility=hidden -m32")
+ ENDIF()
+ 
+ include_directories("${dfhack_SOURCE_DIR}/library/include")
+@@ -94,4 +94,4 @@ MACRO(DFHACK_PLUGIN)
+   install(TARGETS ${PLUGIN_NAME}
+           LIBRARY DESTINATION ${DFHACK_PLUGIN_DESTINATION}
+           RUNTIME DESTINATION ${DFHACK_PLUGIN_DESTINATION})
+-ENDMACRO(DFHACK_PLUGIN)
+\ No newline at end of file
++ENDMACRO(DFHACK_PLUGIN)
+diff --git a/plugins/ruby/CMakeLists.txt b/plugins/ruby/CMakeLists.txt
+index 9d821f9..e6d3eff 100644
+--- a/plugins/ruby/CMakeLists.txt
++++ b/plugins/ruby/CMakeLists.txt
+@@ -35,7 +35,7 @@ ADD_DEPENDENCIES(ruby ruby-autogen-rb)
+ INSTALL(FILES ${RUBYLIB} DESTINATION ${DFHACK_LIBRARY_DESTINATION})
+ 
+ INSTALL(DIRECTORY .
+-        DESTINATION hack/ruby
++        DESTINATION ${DFHACK_RUBY_DESTINATION}
+         FILES_MATCHING PATTERN "*.rb")
+ 
+-INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/ruby-autogen.rb DESTINATION hack/ruby)
++INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/ruby-autogen.rb DESTINATION ${DFHACK_RUBY_DESTINATION})
+-- 
+1.7.12.4
+

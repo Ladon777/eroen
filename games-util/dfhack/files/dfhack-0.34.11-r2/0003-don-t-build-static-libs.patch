@@ -1,0 +1,84 @@
+From c9dc55921cce2c9fd6a550401e723c5abe79c575 Mon Sep 17 00:00:00 2001
+From: eroen <eroen@occam.eroen.eu>
+Date: Mon, 22 Oct 2012 08:52:07 +0200
+Subject: [PATCH 3/4] don't build static libs
+
+Linking shared libs against static libs is bad.
+---
+ library/CMakeLists.txt      | 20 +++++++++++++-------
+ plugins/ruby/CMakeLists.txt |  3 ++-
+ 2 files changed, 15 insertions(+), 8 deletions(-)
+
+diff --git a/library/CMakeLists.txt b/library/CMakeLists.txt
+index f317ccb..58e0949 100644
+--- a/library/CMakeLists.txt
++++ b/library/CMakeLists.txt
+@@ -148,6 +148,10 @@ modules/World.cpp
+ modules/Graphic.cpp
+ modules/Windows.cpp
+ )
++FILE(GLOB CLSOCKET_SOURCES "${clsocket_SOURCE_DIR}/src/*.cpp")
++FILE(GLOB MD5_SOURCES "${dfhack-md5_SOURCE_DIR}/*.cpp")
++FILE(GLOB TINYXML_SOURCES "${dfhack-tinyxml_SOURCE_DIR}/*.cpp")
++FILE(GLOB TTHREAD_SOURCES "${dfhack-tinythread_SOURCE_DIR}/*.cpp")
+ 
+ IF(WIN32)
+     SOURCE_GROUP("Modules\\Headers" FILES ${MODULE_HEADERS})
+@@ -233,19 +237,21 @@ IF(UNIX)
+ ENDIF()
+ 
+ IF(UNIX)
+-  SET(PROJECT_LIBS rt dl dfhack-md5 dfhack-tinyxml dfhack-tinythread)
++  SET(PROJECT_LIBS rt dl)
++  SET(PROJECT_DEPEND_SOURCES ${CLSOCKET_SOURCES} ${MD5_SOURCES} ${TINYXML_SOURCES} ${TTHREAD_SOURCES})
+   IF(APPLE)
+-  	SET(PROJECT_LIBS dl dfhack-md5 dfhack-tinyxml dfhack-tinythread)
++  	SET(PROJECT_LIBS dl)
+  ENDIF()
+ ELSE(WIN32)
+   #FIXME: do we really need psapi?
+-  SET(PROJECT_LIBS psapi dfhack-tinyxml dfhack-tinythread)
++  SET(PROJECT_LIBS psapi)
++  SET(PROJECT_DEPEND_SOURCES ${CLSOCKET_SOURCES} ${TINYXML_SOURCES} ${TTHREAD_SOURCES})
+ ENDIF()
+ 
+-ADD_LIBRARY(dfhack SHARED ${PROJECT_SOURCES})
++ADD_LIBRARY(dfhack SHARED ${PROJECT_SOURCES} ${PROJECT_DEPEND_SOURCES})
+ ADD_DEPENDENCIES(dfhack generate_headers)
+ 
+-ADD_LIBRARY(dfhack-client SHARED RemoteClient.cpp ColorText.cpp MiscUtils.cpp ${PROJECT_PROTO_SRCS})
++ADD_LIBRARY(dfhack-client SHARED RemoteClient.cpp ColorText.cpp MiscUtils.cpp ${PROJECT_PROTO_SRCS} ${CLSOCKET_SOURCES})
+ ADD_DEPENDENCIES(dfhack-client dfhack)
+ 
+ ADD_EXECUTABLE(dfhack-run dfhack-run.cpp)
+@@ -280,10 +286,10 @@ IF(APPLE)
+ 	SET_TARGET_PROPERTIES(dfhack PROPERTIES SOVERSION 1.0.0)
+ ENDIF()
+ 
+-TARGET_LINK_LIBRARIES(dfhack protobuf-lite clsocket lua ${PROJECT_LIBS})
++TARGET_LINK_LIBRARIES(dfhack protobuf-lite lua ${PROJECT_LIBS})
+ SET_TARGET_PROPERTIES(dfhack PROPERTIES LINK_INTERFACE_LIBRARIES "")
+ 
+-TARGET_LINK_LIBRARIES(dfhack-client protobuf-lite clsocket)
++TARGET_LINK_LIBRARIES(dfhack-client protobuf-lite)
+ TARGET_LINK_LIBRARIES(dfhack-run dfhack-client)
+ 
+ if(APPLE)
+diff --git a/plugins/ruby/CMakeLists.txt b/plugins/ruby/CMakeLists.txt
+index e6d3eff..e14ce37 100644
+--- a/plugins/ruby/CMakeLists.txt
++++ b/plugins/ruby/CMakeLists.txt
+@@ -28,8 +28,9 @@ ADD_CUSTOM_COMMAND(
+ ADD_CUSTOM_TARGET(ruby-autogen-rb DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/ruby-autogen.rb)
+ 
+ INCLUDE_DIRECTORIES("${dfhack_SOURCE_DIR}/depends/tthread")
++FILE(GLOB TTHREAD_SOURCES "${dfhack-tinythread_SOURCE_DIR}/*.cpp")
+ 
+-DFHACK_PLUGIN(ruby ruby.cpp LINK_LIBRARIES dfhack-tinythread)
++DFHACK_PLUGIN(ruby ruby.cpp ${TTHREAD_SOURCES})
+ ADD_DEPENDENCIES(ruby ruby-autogen-rb)
+ 
+ INSTALL(FILES ${RUBYLIB} DESTINATION ${DFHACK_LIBRARY_DESTINATION})
+-- 
+1.7.12.4
+
