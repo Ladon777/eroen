@@ -20,7 +20,7 @@ tetris = False
 env = Environment(ENV = {'PATH' : os.environ.get('PATH', '/usr/bin:/bin')})
 
 # Libraries and linking
-env['LIBS']=["SDL_image","z","SDL_ttf","sndfile"]
+env['LIBS']=["SDL_image","z","SDL_ttf","sndfile","egg"]
 #env['LINKFLAGS']=['-Wl,-rpath=\$$ORIGIN/libs']
 
 # Generic unix, including Linux

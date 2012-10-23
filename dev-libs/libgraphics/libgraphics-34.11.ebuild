@@ -17,7 +17,7 @@ SRC_URI="http://www.bay12games.com/dwarves/${DF_P}_linux.tar.bz2"
 LICENSE="DwarfFortress as-is LGPL-2.1 BSD fmod MIT"
 SLOT="0"
 KEYWORDS="~amd64"
-IUSE=""
+IUSE="egg"
 
 DEPEND_SCONSCRIPT="virtual/pkgconfig
 	media-libs/sdl-image
@@ -41,6 +41,7 @@ DEPEND_INCLUDE="media-libs/fmod
 	"
 
 COMMON_DEPEND="!games-simulation/dwarffortress[libgraphics]
+	egg? ( games-util/dfhack[egg] )
 	app-emulation/emul-linux-x86-baselibs
 	app-emulation/emul-linux-x86-gtklibs
 	app-emulation/emul-linux-x86-opengl
@@ -65,13 +66,18 @@ pkg_setup() {
 }
 
 src_prepare() {
+	if use egg; then
+		epatch "${FILESDIR}/0001-Add-something-eggy.patch"
+		cp "${FILESDIR}/SConscript-egg" "g_src/SConscript" || die
+	else
+		cp "${FILESDIR}/SConscript" "g_src/SConscript" || die
+	fi
 	cp "${FILESDIR}/SConstruct" "SConstruct" || die
-	cp "${FILESDIR}/SConscript" "g_src/SConscript" || die
 	rm "libs/libgraphics.so" || die
 }
 
 src_compile() {
-	escons || die
+	LIBPATH="$(games_get_libdir)" escons || die
 }
 
 src_install() {
