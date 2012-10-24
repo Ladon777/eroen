@@ -49,12 +49,18 @@ RDEPEND="${COMMON_DEPEND}
 QA_PREBUILT+="${GAMES_DATADIR#/}/${P}/lib32/libruby.so"
 # The allegro libs are also prebuilt, but don't break things.
 
-src_prepare() {
+pkg_setup() {
 	multilib_toolchain_setup x86
+	export dfhack_datadir="${GAMES_DATADIR}/${P}"
+	export dfhack_docdir="/usr/share/doc/${P}"
+	if use egg; then
+		export dfhack_libdir="$(games_get_libdir)"
+	else
+		export dfhack_libdir="$(games_get_libdir)/${P}"
+	fi
+}
 
-	local datadir="${GAMES_DATADIR}/${P}"
-	local dfhack_libdir="${datadir}/lib32"
-
+src_prepare() {
 	local EPATCH_FORCE="yes"
 	local EPATCH_SUFFIX="patch"
 	if [[ ! "${PV}" == "9999" ]]; then
@@ -64,25 +70,25 @@ src_prepare() {
 	EPATCH_SOURCE="${FILESDIR}/clsocket" epatch
 	if use ssense; then
 		cd "${S}/plugins/stonesense" || die
-		EPATCH_SOURCE="${FILESDIR}/ssense" epatch
+		EPATCH_SOURCE="${FILESDIR}/stonesense" epatch
 	fi
 	cd "${S}" || die
 
 	# Fix up the startup scripts
 	sed -f - -i "package/linux/dfhack" "package/linux/dfhack-run" <<- EOF || die
-		s%"\./stonesense/deplibs"%"${datadir}/stonesense/deplibs"%
+		s%"\./stonesense/deplibs"%"${dfhack_datadir}/stonesense/deplibs"%
 		s%"\./hack"%"${dfhack_libdir}"%
 		s%\./hack/libdfhack.so%"${dfhack_libdir}/libdfhack.so"%
 		s%\./libs/Dwarf_Fortress%"df-34.11"%
 		s%hack/dfhack-run%"${dfhack_libdir}/dfhack-run"%
 		EOF
 
-	sed -i "s:\./hack/ruby/:${GAMES_DATADIR}/${P}/ruby/:" \
+	sed -i "s:\./hack/ruby/:${dfhack_datadir}/ruby/:" \
 		"./plugins/ruby/ruby.rb" || die
 	if use dfusion; then
 	sed -f - -i plugins/Dfusion/luafiles/{init.lua,friendship/{init.lua,plugin.lua,install.lua},triggers/{plugin.lua,functions_menu.lua},friendship_civ/init.lua,common.lua,embark/{init.lua,plugin.lua},migrants/{init.lua,plugin.lua},xml_struct.lua,xml_types.lua} <<- EOF || die
-		s:("dfusion/:("${datadir}/dfusion/:
-		s:('dfusion/:('${datadir}/dfusion/:
+		s:("dfusion/:("${dfhack_datadir}/dfusion/:
+		s:('dfusion/:('${dfhack_datadir}/dfusion/:
 		EOF
 		sed -i "s:libs/Dwarf_Fortress:Dwarf_Fortress:" \
 			"plugins/Dfusion/luafiles/common.lua" || die
@@ -96,16 +102,15 @@ src_prepare() {
 }
 
 src_configure() {
-	local MY_DOCDIR="/usr/share/doc/${P}"
 	mycmakeargs=(
 		"-DCMAKE_INSTALL_PREFIX=${GAMES_DATADIR}"
 		"-DDFHACK_BINARY_DESTINATION=${GAMES_BINDIR}"
 		# We install interesting libs, let's not infect the rest of the system.
-		"-DDFHACK_LIBRARY_DESTINATION=${GAMES_DATADIR}/${P}/lib32"
+		"-DDFHACK_LIBRARY_DESTINATION=${dfhack_libdir}"
 		"-DDFHACK_EGGY_DESTINATION=$(games_get_libdir)"
-		"-DDFHACK_DATA_DESTINATION=${GAMES_DATADIR}/${P}"
-		"-DDFHACK_USERDOC_DESTINATION=${MY_DOCDIR}"
-		"-DDFHACK_DEVDOC_DESTINATION=${MY_DOCDIR}/dev"
+		"-DDFHACK_DATA_DESTINATION=${dfhack_datadir}"
+		"-DDFHACK_USERDOC_DESTINATION=${dfhack_docdir}"
+		"-DDFHACK_DEVDOC_DESTINATION=${dfhack_docdir}/dev"
 		"-DDFHACK_STATEDIR=${GAMES_STATEDIR}/${P}"
 		"-DBUILD_LIBRARY=ON"
 		# Breaks slotting
@@ -145,10 +150,10 @@ src_install() {
 	dodir "${GAMES_STATEDIR}/${P}"
 	if use ssense; then
 		dodir "${GAMES_SYSCONFDIR}/${P}/stonesense"
-		mv "${D}/${GAMES_DATADIR#/}/${P}/stonesense/init.txt" \
+		mv "${D}/${dfhack_datadir#/}/stonesense/init.txt" \
 			"${D}/${GAMES_SYSCONFDIR#/}/${P}/stonesense/init.txt" || die
 		dosym "${GAMES_SYSCONFDIR}/${P}/stonesense/init.txt" \
-			"${GAMES_DATADIR}/${P}/stonesense/init.txt"
+			"${dfhack_datadir}/stonesense/init.txt"
 		elog
 		elog "The Stonesense configuration file can be found at"
 		elog "${GAMES_SYSCONFDIR}/${P}/stonesense/init.txt"
@@ -166,7 +171,7 @@ pkg_postinst() {
 	elog "results."
 	elog
 	elog "DFHack installs custom raw files for Dwarf Fortress in"
-	elog "${GAMES_DATADIR}/${P}/raw"
+	elog "${dfhack_datadir}/raw"
 	elog "To use them, copy them into your raw folder and apply the diffs."
 	elog
 	elog "To start DFHack, please run dfhack-${PV}"
