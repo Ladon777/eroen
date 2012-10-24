@@ -1,7 +1,7 @@
-From edd2fcd994d88ee2f473aa7ff3f0421a47214f27 Mon Sep 17 00:00:00 2001
+From de537311f86f4a15a3cfe4b99786d8c53801c7ba Mon Sep 17 00:00:00 2001
 From: eroen <eroen@occam.eroen.eu>
 Date: Sat, 20 Oct 2012 23:38:28 +0200
-Subject: [PATCH 2/5] screenshots in home dir
+Subject: [PATCH 3/4] screenshots in home dir
 
 ---
  GUI.cpp | 25 ++++++++++++++++---------

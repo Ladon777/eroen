@@ -6,10 +6,12 @@ EAPI=5
 
 inherit games versionator git-2 multilib cmake-utils
 
-if [[ ! ${PV} == "9999" ]]; then
+if [[ ${PV} == "9999" ]]; then
+	MY_PV="0.34.11-r2"
+else
 	MY_PV="$(replace_version_separator 3 '-r')"
-	MY_P="${PN}-${MY_PV}"
 fi
+MY_P="${PN}-${MY_PV}"
 
 DESCRIPTION="Memory hacking library for Dwarf Fortress and a set of tools that
 use it"
@@ -19,6 +21,7 @@ EGIT_REPO_URI="git://github.com/peterix/dfhack.git"
 if [[ ! ${PV} == "9999" ]]; then
 	EGIT_COMMIT="${MY_PV}"
 fi
+EGIT_REPO_URI="/home/eroen/dfhack-repo/dfhack"
 
 CMAKE_REMOVE_MODULES_LIST="FindCurses FindDoxygen CMakeVS10FindMake"
 
@@ -46,8 +49,7 @@ RDEPEND="${COMMON_DEPEND}
 		app-emulation/emul-linux-x86-xlibs
 		)
 	"
-QA_PREBUILT+="${GAMES_DATADIR#/}/${P}/lib32/libruby.so"
-# The allegro libs are also prebuilt, but don't break things.
+	#games-simulation/dwarffortress[egg=]
 
 src_prepare() {
 	multilib_toolchain_setup x86
@@ -55,18 +57,18 @@ src_prepare() {
 	local datadir="${GAMES_DATADIR}/${P}"
 	local dfhack_libdir="${datadir}/lib32"
 
-	local EPATCH_FORCE="yes"
-	local EPATCH_SUFFIX="patch"
 	if [[ ! "${PV}" == "9999" ]]; then
-		EPATCH_SOURCE="${FILESDIR}/dfhack-${MY_PV}" epatch
+		#epatch "${FILESDIR}/dfhack-${MY_PV}/*.patch"
+		epatch "${FILESDIR}/dfhack-${MY_PV}"
 	fi
-	cd "${S}/depends/clsocket" || die
-	EPATCH_SOURCE="${FILESDIR}/clsocket" epatch
+	cd "${S}/depends/clsocket"
+	epatch "${FILESDIR}/clsocket/0001-build-library-with-pic.patch"
+	cd "${S}"
 	if use ssense; then
-		cd "${S}/plugins/stonesense" || die
-		EPATCH_SOURCE="${FILESDIR}/ssense" epatch
+		cd "${S}/plugins/stonesense"
+		epatch "${FILESDIR}/ssense/*.patch"
+		cd "${S}"
 	fi
-	cd "${S}" || die
 
 	# Fix up the startup scripts
 	sed -f - -i "package/linux/dfhack" "package/linux/dfhack-run" <<- EOF || die
@@ -84,8 +86,7 @@ src_prepare() {
 		s:("dfusion/:("${datadir}/dfusion/:
 		s:('dfusion/:('${datadir}/dfusion/:
 		EOF
-		sed -i "s:libs/Dwarf_Fortress:Dwarf_Fortress:" \
-			"plugins/Dfusion/luafiles/common.lua" || die
+		sed -i "s:libs/Dwarf_Fortress:Dwarf_Fortress:" plugins/Dfusion/luafiles/common.lua
 	fi
 
 	if use egg; then
@@ -93,22 +94,47 @@ src_prepare() {
 		s/SDL_Event\* event/SDL::Event\* event/
 		EOF
 	fi
+
+	##Issues:
+	# - /plugins/df2mc/source/df2minecraft.cpp # Also abandoned
+	# - custom raws (with diffs). Make a message.
+	# - Due to dwarffortress' special needs wrt. working directory,
+	# specifying relative file paths to dfhack plugins will give sub-optimal
+	# results. Message.
+	# - dfusion is strange. It's always been that, though.
+	# - prebuilt ruby
+	# - prebuilt allegro for stonesense.
+	# - ssense fails when reloaded, does not in old setup. Well, sometimes it
+	# does. I don't know anymore. I'll ignore it for now.
+	# - stonesense conf file: /usr/share/games/dfhack-9999/stonesense/init.txt
+	# Set in ./Config.cpp, installed together with the rest of the directory.
+	# - egg
+	# - output files
+	# - - Make symlinks to (unversioned) /var
+	#
+	#Ssense functions that fopen filenames:
+	#-DumpMaterialNamesToDisk - No users
+	#-DumpItemNamesToDisk - 1 user, called on start
+	#-DumpPrefessionNamesToDisk - No users
 }
 
 src_configure() {
-	local MY_DOCDIR="/usr/share/doc/${P}"
+	MY_DOCDIR="/usr/share/doc/${P}"
 	mycmakeargs=(
 		"-DCMAKE_INSTALL_PREFIX=${GAMES_DATADIR}"
 		"-DDFHACK_BINARY_DESTINATION=${GAMES_BINDIR}"
+		#"-DDFHACK_LIBRARY_DESTINATION=$(games_get_libdir)"
 		# We install interesting libs, let's not infect the rest of the system.
 		"-DDFHACK_LIBRARY_DESTINATION=${GAMES_DATADIR}/${P}/lib32"
 		"-DDFHACK_EGGY_DESTINATION=$(games_get_libdir)"
 		"-DDFHACK_DATA_DESTINATION=${GAMES_DATADIR}/${P}"
+		"-DDFHACK_PLUGIN_DESTINATION=${GAMES_DATADIR}/${P}/plugins"
+		"-DDFHACK_LUA_DESTINATION=${GAMES_DATADIR}/${P}/lua"
+		"-DDFHACK_INCLUDES_DESTINATION=/usr/games/include" # Will break slotting
+		"-DDFHACK_DEVLIB_DESTINATION=${GAMES_DATADIR}/${P}/devlib"
 		"-DDFHACK_USERDOC_DESTINATION=${MY_DOCDIR}"
 		"-DDFHACK_DEVDOC_DESTINATION=${MY_DOCDIR}/dev"
-		"-DDFHACK_STATEDIR=${GAMES_STATEDIR}/${P}"
 		"-DBUILD_LIBRARY=ON"
-		# Breaks slotting
 		"$(cmake-utils_use egg BUILD_EGGY)"
 		"-DBUILD_PLUGINS=ON"
 		"-DBUILD_RUBY=ON"
@@ -122,52 +148,22 @@ src_configure() {
 		"-DCONSOLE_NO_CATCH=OFF"
 		)
 	if use minimal; then
-		mycmakeargs+=( "-DBUILD_DEV_PLUGINS=OFF"
+		mycmakeargs+=(
+			"-DBUILD_DEV_PLUGINS=OFF"
 			"-DBUILD_SUPPORTED=OFF"
 			"-DBUILD_DWARFEXPORT=OFF"
-			"-DBUILD_MAPEXPORT=OFF" )
+			"-DBUILD_MAPEXPORT=OFF"
+			)
 	else
-		mycmakeargs+=( "-DBUILD_DEV_PLUGINS=ON"
+		mycmakeargs+=(
+			"-DBUILD_DEV_PLUGINS=ON"
 			"-DBUILD_SUPPORTED=ON"
 			"-DBUILD_DWARFEXPORT=ON"
-			"-DBUILD_MAPEXPORT=ON" )
+			"-DBUILD_MAPEXPORT=ON"
+			)
 	fi
 
 	cmake-utils_src_configure
 }
 
-src_install() {
-	cmake-utils_src_install
-	mv "${D}/${GAMES_BINDIR}/dfhack" \
-		"${D}/${GAMES_BINDIR}/dfhack-${PV}" || die
-	mv "${D}/${GAMES_BINDIR}/dfhack-run" \
-		"${D}/${GAMES_BINDIR}/dfhack-run-${PV}" || die
-	dodir "${GAMES_STATEDIR}/${P}"
-	if use ssense; then
-		dodir "${GAMES_SYSCONFDIR}/${P}/stonesense"
-		mv "${D}/${GAMES_DATADIR#/}/${P}/stonesense/init.txt" \
-			"${D}/${GAMES_SYSCONFDIR#/}/${P}/stonesense/init.txt" || die
-		dosym "${GAMES_SYSCONFDIR}/${P}/stonesense/init.txt" \
-			"${GAMES_DATADIR}/${P}/stonesense/init.txt"
-		elog
-		elog "The Stonesense configuration file can be found at"
-		elog "${GAMES_SYSCONFDIR}/${P}/stonesense/init.txt"
-	fi
-
-	prepgamesdirs
-	fperms g+w "${GAMES_STATEDIR}/${P}" || die
-}
-
-pkg_postinst() {
-	games_pkg_postinst
-	elog
-	elog "Due to Dwarf Fortress' special needs regarding working directory,"
-	elog "specifying relative paths to DFHack plugins can give unintended"
-	elog "results."
-	elog
-	elog "DFHack installs custom raw files for Dwarf Fortress in"
-	elog "${GAMES_DATADIR}/${P}/raw"
-	elog "To use them, copy them into your raw folder and apply the diffs."
-	elog
-	elog "To start DFHack, please run dfhack-${PV}"
-}
+QA_PREBUILT+="${GAMES_DATADIR#/}/${P}/lib32/libruby.so"

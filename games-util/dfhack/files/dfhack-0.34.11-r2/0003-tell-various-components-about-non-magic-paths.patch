@@ -1,7 +1,7 @@
-From d7b79f3ec2903ab2d35072c0e802522e9c36be39 Mon Sep 17 00:00:00 2001
+From 7a6cfa6f51de199095d741ab51f08704cab7a2c0 Mon Sep 17 00:00:00 2001
 From: eroen <eroen@occam.eroen.eu>
 Date: Sat, 20 Oct 2012 00:37:44 +0200
-Subject: [PATCH 2/4] tell various components about non-magic paths
+Subject: [PATCH 3/4] tell various components about non-magic paths
 
 ---
  CMakeLists.txt                | 5 +++++
@@ -13,7 +13,7 @@ Subject: [PATCH 2/4] tell various components about non-magic paths
  6 files changed, 13 insertions(+), 11 deletions(-)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index a8eb1f4..3f15fb1 100644
+index 7dbe31c..a2bdc11 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -83,6 +83,7 @@ ELSE()

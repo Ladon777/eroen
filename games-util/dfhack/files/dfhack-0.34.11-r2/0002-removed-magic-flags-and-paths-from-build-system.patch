@@ -1,7 +1,7 @@
-From ed06cbdc0d7180c219864409cfb6f3f6c6fe2523 Mon Sep 17 00:00:00 2001
+From c0466435a4f2c10dba9f56abf0ae12c5c446fbaa Mon Sep 17 00:00:00 2001
 From: eroen <eroen@occam.eroen.eu>
 Date: Fri, 19 Oct 2012 23:00:22 +0200
-Subject: [PATCH 1/4] removed magic flags and paths from build system
+Subject: [PATCH 2/4] removed magic flags and paths from build system
 
 ---
  CMakeLists.txt                 | 52 +++++++++++++++++++++++++++++++-----------
@@ -13,7 +13,7 @@ Subject: [PATCH 1/4] removed magic flags and paths from build system
  6 files changed, 51 insertions(+), 25 deletions(-)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 14436dc..a8eb1f4 100644
+index 31f63cd..7dbe31c 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -72,30 +72,56 @@ add_definitions(-DDFHACK_VERSION="${DFHACK_VERSION}")

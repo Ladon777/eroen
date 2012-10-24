@@ -1,7 +1,7 @@
-From de815dc687998c32154c1f099e5316badc5d4fd5 Mon Sep 17 00:00:00 2001
+From 976cdee61acc578498c06e5fdbf6fb6e5f1aa57e Mon Sep 17 00:00:00 2001
 From: eroen <eroen@occam.eroen.eu>
 Date: Sat, 20 Oct 2012 22:30:46 +0200
-Subject: [PATCH 1/5] compile time configuration of magic cwd
+Subject: [PATCH 2/4] compile time configuration of magic cwd
 
 ---
  Block.cpp          |  4 ++--
@@ -157,10 +157,10 @@ index 08e26ee..56fbf13 100644
 \ No newline at end of file
 +}
 diff --git a/main.cpp b/main.cpp
-index be421cd..033b757 100644
+index 4808b89..77917e0 100644
 --- a/main.cpp
 +++ b/main.cpp
-@@ -152,7 +152,7 @@ void correctBlockForSegmetOffset(int32_t& x, int32_t& y, int32_t& z){
+@@ -154,7 +154,7 @@ void correctBlockForSegmetOffset(int32_t& x, int32_t& y, int32_t& z){
  
  bool loadfont(DFHack::color_ostream & output)
  {
@@ -169,7 +169,7 @@ index be421cd..033b757 100644
      if(!al_join_paths(p, config.font))
      {
          al_destroy_path(p);
-@@ -205,7 +205,7 @@ void drawcredits()
+@@ -207,7 +207,7 @@ void drawcredits()
  	{
          if(!SplashImage)
          {
@@ -178,7 +178,7 @@ index be421cd..033b757 100644
              SplashImage = load_bitmap_withWarning(al_path_cstr(p, ALLEGRO_NATIVE_PATH_SEP));
              al_destroy_path(p);
          }
-@@ -448,7 +448,7 @@ static void * stonesense_thread(ALLEGRO_THREAD * main_thread, void * parms)
+@@ -450,7 +450,7 @@ static void * stonesense_thread(ALLEGRO_THREAD * main_thread, void * parms)
  		al_set_new_bitmap_flags(ALLEGRO_MEMORY_BITMAP|ALLEGRO_ALPHA_TEST|ALLEGRO_MIN_LINEAR|ALLEGRO_MIPMAP);
  	else al_set_new_bitmap_flags(ALLEGRO_MIN_LINEAR|ALLEGRO_MIPMAP);
  

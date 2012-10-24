@@ -1,7 +1,7 @@
-From d56a796c5e61af4434a8a0deca68763e6059fca1 Mon Sep 17 00:00:00 2001
+From 7df1773ce3cfc77a83b24ca134bff4ae147c8ff9 Mon Sep 17 00:00:00 2001
 From: eroen <eroen@occam.eroen.eu>
 Date: Sun, 21 Oct 2012 05:29:56 +0200
-Subject: [PATCH 4/5] create various output files in $HOME, not cwd.
+Subject: [PATCH 4/4] create various output files in $HOME, not cwd.
 
 This is necessary, since Dwarf Fortress demands to control the cwd.
 ---

@@ -1,4 +1,4 @@
-From d4f7109bd387d7bc63519776cab9b41d2e910cd8 Mon Sep 17 00:00:00 2001
+From 2b15e3426332bc595e9c55a91240e40716920fc8 Mon Sep 17 00:00:00 2001
 From: eroen <eroen@occam.eroen.eu>
 Date: Mon, 22 Oct 2012 10:23:43 +0200
 Subject: [PATCH 4/4] compile-time configurable statedir
@@ -12,7 +12,7 @@ Subject: [PATCH 4/4] compile-time configurable statedir
  5 files changed, 11 insertions(+), 5 deletions(-)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 3f15fb1..5aca195 100644
+index a2bdc11..bafd662 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -128,6 +128,12 @@ if(NOT DEFINED DFHACK_DEVDOC_DESTINATION)
