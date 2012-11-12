@@ -6,6 +6,9 @@ EAPI=4
 
 XORG_DOC=doc
 inherit xorg-2 multilib versionator flag-o-matic
+
+filter-flags "-flto"
+
 EGIT_REPO_URI="git://anongit.freedesktop.org/git/xorg/xserver"
 
 DESCRIPTION="X.Org X servers"
