@@ -11,6 +11,8 @@ GCONF_DEBUG=no
 
 inherit autotools eutils flag-o-matic gnome2 python
 
+filter-flags "-flto"
+
 MY_P="${P/_/}"
 S="${WORKDIR}/${MY_P}"
 SRC_URI="mirror://sourceforge/${PN}/${MY_P}.tar.bz2
