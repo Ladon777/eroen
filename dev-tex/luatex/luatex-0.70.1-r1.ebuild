@@ -4,7 +4,9 @@
 
 EAPI=4
 
-inherit libtool eutils texlive-common
+inherit libtool eutils texlive-common flag-o-matic
+
+filter-flags "-flto"
 
 DESCRIPTION="An extended version of pdfTeX using Lua as an embedded scripting language."
 HOMEPAGE="http://www.luatex.org/"
