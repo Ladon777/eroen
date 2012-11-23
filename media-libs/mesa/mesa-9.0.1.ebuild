@@ -13,6 +13,8 @@ fi
 
 inherit base autotools multilib flag-o-matic toolchain-funcs ${GIT_ECLASS}
 
+filter-flags "-flto"
+
 OPENGL_DIR="xorg-x11"
 
 MY_PN="${PN/m/M}"
