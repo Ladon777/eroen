@@ -4,7 +4,9 @@
 
 EAPI=4
 
-inherit qt4-build
+inherit qt4-build flag-o-matic
+
+filter-flags "-fgraphite-identity"
 
 DESCRIPTION="The Qt toolkit is a comprehensive C++ application development framework"
 SLOT="4"
