@@ -4,7 +4,9 @@
 
 EAPI="5"
 WANT_AUTOCONF="2.1"
-inherit autotools eutils toolchain-funcs multilib python versionator pax-utils
+inherit autotools eutils toolchain-funcs multilib python versionator pax-utils flag-o-matic
+
+filter-flags "-flto"
 
 MY_PN="js"
 TARBALL_PV="$(replace_all_version_separators '' $(get_version_component_range 1-3))"
