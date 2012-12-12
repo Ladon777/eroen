@@ -146,6 +146,7 @@ src_prepare() {
 	epatch "${FILESDIR}"/${PN}-1.1.15-winegcc.patch #260726
 	epatch "${FILESDIR}"/${PN}-1.4_rc2-multilib-portage.patch #395615
 	epatch "${FILESDIR}"/${PN}-1.5.17-osmesa-check.patch #429386
+	epatch "${FILESDIR}"/${PN}-1.5.19-KUSER_SHARED_DATA_18.patch
 	epatch "../${PULSE_PATCHES}"/*.patch #421365
 	epatch_user #282735
 	if [[ "$(md5sum server/protocol.def)" != "${md5}" ]]; then
