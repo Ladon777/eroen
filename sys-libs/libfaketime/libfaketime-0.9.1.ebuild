@@ -18,6 +18,8 @@ IUSE=""
 src_prepare() {
 	epatch "${FILESDIR}"/${P}-makefile.patch
 	epatch "${FILESDIR}"/${PN}-0.9-as-needed.patch
+	epatch "${FILESDIR}"/${P}-us-zero.patch
+	epatch "${FILESDIR}"/${P}-us-zero-stat.patch
 	tc-export CC
 }
 
