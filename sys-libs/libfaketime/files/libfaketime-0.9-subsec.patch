@@ -1,0 +1,18 @@
+--- libfaketime-0.9/src/faketime.c.orig	2012-09-09 18:50:03.898457955 +0200
++++ libfaketime-0.9/src/faketime.c	2012-09-09 18:43:08.691466391 +0200
+@@ -887,6 +887,7 @@
+     time_t temp_tt = tv->tv_sec;
+ 
+     tv->tv_sec = fake_time(&temp_tt);
++    tv->tv_usec = 0u;
+ 
+     return 0;
+ }
+@@ -898,6 +899,7 @@
+     /* Fake only if the call is realtime clock related */
+     if (clk_id == CLOCK_REALTIME) {
+         tp->tv_sec = fake_time(&temp_tt);
++        tp->tv_nsec = 0l;
+     }
+ 
+     return 0;
