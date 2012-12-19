@@ -6,6 +6,8 @@ EAPI=4
 
 inherit eutils flag-o-matic user versionator toolchain-funcs udev
 
+filter-flags "-flto"
+
 DESCRIPTION="A networked sound server with an advanced plugin system"
 HOMEPAGE="http://www.pulseaudio.org/"
 
