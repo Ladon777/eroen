@@ -31,8 +31,8 @@ COMMON_DEPEND="
 	virtual/opengl
 	"
 DEPEND="${COMMON_DEPEND}
-	sys-devel/automake
-	sys-devel/autoconf
+	>=sys-devel/automake-1.6.1
+	>=sys-devel/autoconf-2.54
 	doxygen? ( app-doc/doxygen )
 	"
 RDEPEND="${COMMON_DEPEND}
