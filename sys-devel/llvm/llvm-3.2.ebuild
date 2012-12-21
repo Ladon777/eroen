@@ -6,6 +6,8 @@ EAPI=5
 PYTHON_DEPEND="2"
 inherit eutils flag-o-matic multilib toolchain-funcs python pax-utils
 
+filter-flags "-flto"
+
 DESCRIPTION="Low Level Virtual Machine"
 HOMEPAGE="http://llvm.org/"
 SRC_URI="http://llvm.org/releases/${PV}/${P}.src.tar.gz"
