@@ -10,6 +10,8 @@ OPENGL_REQUIRED="optional"
 KDE_HANDBOOK="optional"
 inherit kde4-base fdo-mime multilib toolchain-funcs flag-o-matic
 
+filter-flags -flto
+
 # The "master" branch is out of date, so use KDE/4.9 per upstream's
 # recommendation.
 EGIT_BRANCH="KDE/4.9"
