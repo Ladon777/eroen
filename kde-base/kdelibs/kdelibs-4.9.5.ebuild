@@ -1,6 +1,6 @@
-# Copyright 1999-2012 Gentoo Foundation
+# Copyright 1999-2013 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/cvsroot/gentoo-x86/kde-base/kdelibs/kdelibs-4.9.4-r1.ebuild,v 1.1 2012/12/08 00:37:15 creffett Exp $
+# $Header: /var/cvsroot/gentoo-x86/kde-base/kdelibs/kdelibs-4.9.5.ebuild,v 1.1 2013/01/05 20:18:51 creffett Exp $
 
 EAPI=4
 
@@ -9,8 +9,6 @@ DECLARATIVE_REQUIRED="always"
 OPENGL_REQUIRED="optional"
 KDE_HANDBOOK="optional"
 inherit kde4-base fdo-mime multilib toolchain-funcs flag-o-matic
-
-filter-flags "-flto"
 
 # The "master" branch is out of date, so use KDE/4.9 per upstream's
 # recommendation.
@@ -90,7 +88,7 @@ COMMONDEPEND="
 	)
 	spell? ( app-text/enchant )
 	ssl? ( dev-libs/openssl )
-	udev? ( sys-fs/udev )
+	udev? ( virtual/udev )
 	upnp? ( media-libs/herqq )
 	zeroconf? ( net-dns/avahi[mdnsresponder-compat] )
 "
@@ -144,7 +142,6 @@ PATCHES=(
 	"${FILESDIR}/${PN}-4.6.3-no_suid_kdeinit.patch"
 	"${FILESDIR}/${PN}-4.8.1-norpath.patch"
 	"${FILESDIR}/${PN}-4.9.3-werror.patch"
-	"${FILESDIR}/${PN}-4.9.4-zipfiles.patch"
 )
 
 pkg_pretend() {
