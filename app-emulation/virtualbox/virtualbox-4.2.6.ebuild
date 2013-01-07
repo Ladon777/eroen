@@ -6,6 +6,8 @@ EAPI=4
 
 inherit eutils fdo-mime flag-o-matic linux-info multilib pax-utils python qt4-r2 toolchain-funcs java-pkg-opt-2 udev
 
+filter-flags -flto
+
 if [[ ${PV} == "9999" ]] ; then
 	# XXX: should finish merging the -9999 ebuild into this one ...
 	ESVN_REPO_URI="http://www.virtualbox.org/svn/vbox/trunk"
