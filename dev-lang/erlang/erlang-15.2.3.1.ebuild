@@ -5,7 +5,9 @@
 EAPI=3
 WX_GTK_VER="2.8"
 
-inherit elisp-common eutils java-pkg-opt-2 multilib versionator wxwidgets
+inherit elisp-common eutils java-pkg-opt-2 multilib versionator wxwidgets flag-o-matic
+
+filter-flags -flto
 
 # NOTE: If you need symlinks for binaries please tell maintainers or
 # open up a bug to let it be created.
