@@ -24,12 +24,12 @@ KEYWORDS="~amd64 ~arm ~ppc64 ~x86"
 
 LICENSE="LGPL-3"
 SLOT="0"
-IUSE="examples"
+IUSE="examples +man"
 
 RDEPEND="sys-libs/libcap"
 
 DEPEND="${RDEPEND}
-	app-text/docbook-sgml-utils
+	man? ( app-text/docbook-sgml-utils )
 	>=sys-kernel/linux-headers-3.2"
 
 RDEPEND="${RDEPEND}
@@ -100,7 +100,7 @@ src_configure() {
 		--docdir=/usr/share/doc/${PF} \
 		--with-config-path=/etc/lxc	\
 		--with-rootfs-path=/usr/lib/lxc/rootfs \
-		--enable-doc \
+		$(use_enable man doc) \
 		--disable-apparmor \
 		$(use_enable examples)
 }
