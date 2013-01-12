@@ -1,4 +1,4 @@
-# Copyright 1999-2012 Gentoo Foundation
+# Copyright 1999-2013 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: /var/cvsroot/gentoo-x86/app-emulation/lxc/lxc-0.8.0-r1.ebuild,v 1.1 2012/11/14 02:15:10 flameeyes Exp $
 
@@ -24,12 +24,12 @@ KEYWORDS="~amd64 ~ppc64 ~x86"
 
 LICENSE="LGPL-3"
 SLOT="0"
-IUSE="examples"
+IUSE="examples +man"
 
 RDEPEND="sys-libs/libcap"
 
 DEPEND="${RDEPEND}
-	app-text/docbook-sgml-utils
+	man? ( app-text/docbook-sgml-utils )
 	>=sys-kernel/linux-headers-3.2"
 
 RDEPEND="${RDEPEND}
@@ -99,7 +99,7 @@ src_configure() {
 		--docdir=/usr/share/doc/${PF} \
 		--with-config-path=/etc/lxc	\
 		--with-rootfs-path=/usr/lib/lxc/rootfs \
-		--enable-doc \
+		$(use_enable doc man) \
 		--disable-apparmor \
 		$(use_enable examples)
 }
