@@ -9,7 +9,9 @@
 
 EAPI="4"
 
-inherit autotools java-pkg-2 java-vm-2 pax-utils prefix versionator virtualx
+inherit autotools java-pkg-2 java-vm-2 pax-utils prefix versionator virtualx flag-o-matic
+
+filter-flags -fgraphite-identity
 
 ICEDTEA_VER=$(get_version_component_range 2-)
 ICEDTEA_BRANCH=$(get_version_component_range 2-3)
