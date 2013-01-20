@@ -35,7 +35,7 @@ SRC_URI="${SRC_URI}
 
 LICENSE="LGPL-2.1"
 SLOT="0"
-IUSE="alsa capi cups custom-cflags elibc_glibc fontconfig +gecko gnutls gphoto2 gsm gstreamer jpeg lcms ldap +mono mp3 ncurses nls odbc openal opencl +opengl osmesa +oss +perl png +prelink samba scanner selinux ssl test +threads +truetype udisks v4l +win32 +win64 +X xcomposite xinerama xml"
+IUSE="alsa capi cups custom-cflags elibc_glibc fontconfig +gecko gnutls gphoto2 gsm gstreamer jpeg lcms ldap +mono mp3 ncurses nls odbc openal opencl +opengl osmesa +oss +perl png +prelink samba scanner selinux ssl swtor test +threads +truetype udisks v4l +win32 +win64 +X xcomposite xinerama xml"
 [[ ${PV} == "9999" ]] || IUSE="${IUSE} pulseaudio"
 REQUIRED_USE="elibc_glibc? ( threads )
 	mono? ( || ( win32 !win64 ) )
@@ -155,6 +155,7 @@ src_prepare() {
 	epatch "${FILESDIR}"/${PN}-1.1.15-winegcc.patch #260726
 	epatch "${FILESDIR}"/${PN}-1.4_rc2-multilib-portage.patch #395615
 	epatch "${FILESDIR}"/${PN}-1.5.17-osmesa-check.patch #429386
+	use swtor && epatch "${FILESDIR}"/${PN}-1.5.19-KUSER_SHARED_DATA_18.patch
 	[[ ${PV} == "9999" ]] || epatch "../${PULSE_PATCHES}"/*.patch #421365
 	epatch_user #282735
 	if [[ "$(md5sum server/protocol.def)" != "${md5}" ]]; then
