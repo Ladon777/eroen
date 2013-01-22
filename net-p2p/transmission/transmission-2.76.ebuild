@@ -11,7 +11,7 @@ SRC_URI="http://download.transmissionbt.com/${PN}/files/${P}.tar.xz"
 
 LICENSE="GPL-2 MIT"
 SLOT=0
-IUSE="ayatana gtk lightweight qt4 xfs"
+IUSE="ayatana bindtointerface gtk lightweight qt4 xfs"
 KEYWORDS="~amd64 ~arm ~ppc ~ppc64 ~x86 ~x86-fbsd ~amd64-linux"
 
 RDEPEND="
@@ -55,6 +55,11 @@ src_prepare() {
 
 	# http://trac.transmissionbt.com/ticket/4324
 	sed -i -e 's|noinst\(_PROGRAMS = $(TESTS)\)|check\1|' lib${PN}/Makefile.am || die
+
+	use bindtointerface && (
+		epatch "${FILESDIR}/${P}"-bind-to-interface.patch
+		epatch "${FILESDIR}/${P}"-build-failure.patch
+	)
 
 	eautoreconf
 }
