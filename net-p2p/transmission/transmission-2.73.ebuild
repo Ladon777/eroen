@@ -18,7 +18,7 @@ HOMEPAGE="http://www.transmissionbt.com/"
 
 LICENSE="GPL-2 MIT"
 SLOT=0
-IUSE="ayatana gtk lightweight qt4 xfs"
+IUSE="ayatana bindtointerface gtk lightweight qt4 xfs"
 
 RDEPEND="
 	>=dev-libs/libevent-2.0.10
@@ -74,6 +74,9 @@ src_prepare() {
 
 	# http://trac.transmissionbt.com/ticket/4324
 	sed -i -e 's|noinst\(_PROGRAMS = $(TESTS)\)|check\1|' lib${PN}/Makefile.am || die
+
+	use bindtointerface && epatch "${FILESDIR}"/transmission-2.73-bind-to-interface.patch
+	use bindtointerface && epatch "${FILESDIR}"/transmission-2.73-build-failure.patch
 
 	eautoreconf
 
