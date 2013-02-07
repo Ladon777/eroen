@@ -18,10 +18,12 @@ KEYWORDS="~amd64 ~arm ~ppc ~x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~x86-linux"
 LICENSE="LGPL-2.1"
 IUSE="3dnow acl alsa altivec +bzip2 debug doc fam jpeg2k kerberos lzma
 mmx nls openexr +policykit semantic-desktop spell sse sse2 ssl +udev
-udisks2 +upower upnp zeroconf"
+udisks udisks2 +upower upnp zeroconf"
 
 REQUIRED_USE="
 	upower? ( udev )
+	udisks? ( udev )
+	udisks2? ( udisks )
 "
 
 # needs the kate regression testsuite from svn
@@ -101,8 +103,10 @@ RDEPEND="${COMMONDEPEND}
 		x11-apps/iceauth
 		x11-apps/rgb
 		>=x11-misc/xdg-utils-1.0.2-r3
-		udisks2? ( sys-fs/udisks:2 )
-		!udisks2? ( sys-fs/udisks:0 )
+		udisks? ( 
+			!udisks2? ( sys-fs/udisks:0 )
+			udisks2? ( sys-fs/udisks:2 )
+		)
 		upower? ( sys-power/upower )
 	)
 	udev? ( app-misc/media-player-info )
@@ -139,6 +143,12 @@ PATCHES=(
 	"${FILESDIR}/${PN}-4.8.1-norpath.patch"
 	"${FILESDIR}/${PN}-4.9.3-werror.patch"
 )
+if ! use udisks; then
+	PATCHES+=(
+		"${FILESDIR}/${PN}-4.10.0-udisks2_opticaldisc_spinup.patch"
+		"${FILESDIR}/${PN}-4.10.0-no_udisks1.patch"
+	)
+fi
 
 pkg_pretend() {
 	if [[ ${MERGE_TYPE} != binary ]]; then
