@@ -1,0 +1,233 @@
+From 5feec1b83ff50f261b221d6d38b124be04dd6faf Mon Sep 17 00:00:00 2001
+From: Michael Spencer <bigcheesegs@gmail.com>
+Date: Wed, 13 Feb 2013 16:45:14 -0800
+Subject: [PATCH 05/13] [ELF][Writer] Add dynamic table entries and interp
+ section.
+
+---
+ include/lld/ReaderWriter/ELFTargetInfo.h |  4 ++
+ lib/ReaderWriter/ELF/DefaultLayout.h     |  4 ++
+ lib/ReaderWriter/ELF/SectionChunks.h     | 31 +++++++++++++-
+ lib/ReaderWriter/ELF/Writer.cpp          | 71 +++++++++++++++++++++++++++++++-
+ 4 files changed, 107 insertions(+), 3 deletions(-)
+
+diff --git a/include/lld/ReaderWriter/ELFTargetInfo.h b/include/lld/ReaderWriter/ELFTargetInfo.h
+index b1753b2..c2715fe 100644
+--- a/include/lld/ReaderWriter/ELFTargetInfo.h
++++ b/include/lld/ReaderWriter/ELFTargetInfo.h
+@@ -49,6 +49,10 @@ public:
+     return false;
+   }
+ 
++  virtual StringRef getInterpreter() const {
++    return "/lib/ld64.so.1";
++  }
++
+   /// \brief Does the output have dynamic sections.
+   bool isDynamic() const {
+     return _options._outputKind == OutputKind::DynamicExecutable ||
+diff --git a/lib/ReaderWriter/ELF/DefaultLayout.h b/lib/ReaderWriter/ELF/DefaultLayout.h
+index c186b5b..60526bd 100644
+--- a/lib/ReaderWriter/ELF/DefaultLayout.h
++++ b/lib/ReaderWriter/ELF/DefaultLayout.h
+@@ -239,6 +239,10 @@ public:
+     return _programHeader;
+   }
+ 
++  bool hasRelocationTable() const {
++    return !!_relocationTable;
++  }
++
+   RelocationTable<ELFT> *getRelocationTable() {
+     // Only create the relocation table if it is needed.
+     if (!_relocationTable) {
+diff --git a/lib/ReaderWriter/ELF/SectionChunks.h b/lib/ReaderWriter/ELF/SectionChunks.h
+index 085d843..dc2bc2e 100644
+--- a/lib/ReaderWriter/ELF/SectionChunks.h
++++ b/lib/ReaderWriter/ELF/SectionChunks.h
+@@ -754,10 +754,12 @@ public:
+ 
+   range<typename EntriesT::iterator> entries() { return _entries; }
+ 
+-  void addEntry(Elf_Dyn e) {
+-    _entries.insert(e);
++  /// \returns the index of the entry. 
++  std::size_t addEntry(Elf_Dyn e) {
++    _entries.push_back(e);
+     this->_fsize = (_entries.size() * sizeof(Elf_Dyn)) + sizeof(Elf_Dyn);
+     this->_msize = this->_fsize;
++    return _entries.size() - 1;
+   }
+ 
+   void write(ELFWriter *writer, llvm::FileOutputBuffer &buffer) {
+@@ -774,6 +776,31 @@ public:
+ private:
+   EntriesT _entries;
+ };
++
++template <class ELFT> class InterpSection : public Section<ELFT> {
++public:
++  InterpSection(const ELFTargetInfo &ti, StringRef str, int32_t order,
++                StringRef interp)
++      : Section<ELFT>(ti, str),
++        _interp(interp){
++    this->setOrder(order);
++    this->_align2 = 1;
++    // + 1 for null term.
++    this->_fsize = interp.size() + 1;
++    this->_msize = this->_fsize;
++    this->_type = SHT_PROGBITS;
++    this->_flags = SHF_ALLOC;
++  }
++
++  void write(ELFWriter *writer, llvm::FileOutputBuffer &buffer) {
++    uint8_t *chunkBuffer = buffer.getBufferStart();
++    uint8_t *dest = chunkBuffer + this->fileOffset();
++    std::memcpy(dest, _interp.data(), _interp.size());
++  }
++
++private:
++  StringRef _interp;
++};
+ } // end namespace elf
+ } // end namespace lld
+ 
+diff --git a/lib/ReaderWriter/ELF/Writer.cpp b/lib/ReaderWriter/ELF/Writer.cpp
+index 58604f2..f4d5667 100644
+--- a/lib/ReaderWriter/ELF/Writer.cpp
++++ b/lib/ReaderWriter/ELF/Writer.cpp
+@@ -15,6 +15,8 @@
+ 
+ #include "lld/ReaderWriter/ELFTargetInfo.h"
+ 
++#include "llvm/ADT/StringSet.h"
++
+ using namespace llvm;
+ using namespace llvm::object;
+ namespace lld {
+@@ -30,6 +32,7 @@ class ExecutableWriter : public ELFWriter {
+ public:
+   typedef Elf_Shdr_Impl<ELFT> Elf_Shdr;
+   typedef Elf_Sym_Impl<ELFT> Elf_Sym;
++  typedef Elf_Dyn_Impl<ELFT> Elf_Dyn;
+ 
+   ExecutableWriter(const ELFTargetInfo &ti);
+ 
+@@ -52,6 +55,44 @@ private:
+ 
+   void createDefaultSections();
+ 
++  void createDefaultDynamicEntries() {
++    Elf_Dyn dyn;
++    dyn.d_un.d_val = 0;
++
++    dyn.d_tag = DT_HASH;
++    _dt_hash = _dynamicTable->addEntry(dyn);
++    dyn.d_tag = DT_STRTAB;
++    _dt_strtab = _dynamicTable->addEntry(dyn);
++    dyn.d_tag = DT_SYMTAB;
++    _dt_symtab = _dynamicTable->addEntry(dyn);
++    dyn.d_tag = DT_STRSZ;
++    _dt_strsz = _dynamicTable->addEntry(dyn);
++    dyn.d_tag = DT_SYMENT;
++    _dt_syment = _dynamicTable->addEntry(dyn);
++    if (_layout->hasRelocationTable()) {
++      dyn.d_tag = DT_RELA;
++      _dt_rela = _dynamicTable->addEntry(dyn);
++      dyn.d_tag = DT_RELASZ;
++      _dt_relasz = _dynamicTable->addEntry(dyn);
++      dyn.d_tag = DT_RELAENT;
++      _dt_relaent = _dynamicTable->addEntry(dyn);
++    }
++  }
++
++  void updateDynamicTable() {
++    auto tbl = _dynamicTable->entries();
++    tbl[_dt_strtab].d_un.d_val = _dynamicStringTable->virtualAddr();
++    tbl[_dt_symtab].d_un.d_val = _dynamicSymbolTable->virtualAddr();
++    tbl[_dt_strsz].d_un.d_val = _dynamicStringTable->memSize();
++    tbl[_dt_syment].d_un.d_val = _dynamicSymbolTable->getEntSize();
++    if (_layout->hasRelocationTable()) {
++      auto relaTbl = _layout->getRelocationTable();
++      tbl[_dt_rela].d_un.d_val = relaTbl->virtualAddr();
++      tbl[_dt_relasz].d_un.d_val = relaTbl->memSize();
++      tbl[_dt_relaent].d_un.d_val = relaTbl->getEntSize();
++    }
++  }
++
+   llvm::BumpPtrAllocator _alloc;
+ 
+   const ELFTargetInfo &_targetInfo;
+@@ -71,6 +112,16 @@ private:
+   LLD_UNIQUE_BUMP_PTR(DynamicTable<ELFT>) _dynamicTable;
+   LLD_UNIQUE_BUMP_PTR(SymbolTable<ELFT>) _dynamicSymbolTable;
+   LLD_UNIQUE_BUMP_PTR(StringTable<ELFT>) _dynamicStringTable;
++  LLD_UNIQUE_BUMP_PTR(InterpSection<ELFT>) _interpSection;
++  llvm::StringSet<> _soNeeded;
++  std::size_t _dt_hash;
++  std::size_t _dt_strtab;
++  std::size_t _dt_symtab;
++  std::size_t _dt_rela;
++  std::size_t _dt_relasz;
++  std::size_t _dt_relaent;
++  std::size_t _dt_strsz;
++  std::size_t _dt_syment;
+   /// @}
+   CRuntimeFile<ELFT> _runtimeFile;
+ };
+@@ -109,6 +160,13 @@ template<class ELFT>
+ void ExecutableWriter<ELFT>::buildDynamicSymbolTable(const File &file) {
+   for (const auto sla : file.sharedLibrary()) {
+     _dynamicSymbolTable->addSymbol(sla, ELF::SHN_UNDEF);
++    _soNeeded.insert(sla->loadName());
++  }
++  for (const auto &loadName : _soNeeded) {
++    Elf_Dyn dyn;
++    dyn.d_tag = DT_NEEDED;
++    dyn.d_un.d_val = _dynamicStringTable->addString(loadName.getKey());
++    _dynamicTable->addEntry(dyn);
+   }
+ }
+ 
+@@ -236,8 +294,10 @@ ExecutableWriter<ELFT>::writeFile(const File &file, StringRef path) {
+   // section string table
+   createDefaultSections();
+ 
+-  if (_targetInfo.isDynamic())
++  if (_targetInfo.isDynamic()) {
++    createDefaultDynamicEntries();
+     buildDynamicSymbolTable(file);
++  }
+ 
+   // Set the Layout
+   _layout->assignSectionsToSegments();
+@@ -263,6 +323,10 @@ ExecutableWriter<ELFT>::writeFile(const File &file, StringRef path) {
+   // for sections with no segments
+   assignSectionsWithNoSegments();
+ 
++  if (_targetInfo.isDynamic()) {
++    updateDynamicTable();
++  }
++
+   uint64_t totalSize = _shdrtab->fileOffset() + _shdrtab->fileSize();
+ 
+   OwningPtr<FileOutputBuffer> buffer;
+@@ -339,10 +403,15 @@ void ExecutableWriter<ELFT>::createDefaultSections() {
+         _targetInfo, ".dynstr", DefaultLayout<ELFT>::ORDER_DYNAMIC_STRINGS, true));
+     _dynamicSymbolTable.reset(new (_alloc) SymbolTable<ELFT>(
+         _targetInfo, ".dynsym", DefaultLayout<ELFT>::ORDER_DYNAMIC_SYMBOLS, true));
++    _interpSection.reset(new (_alloc) InterpSection<ELFT>(
++        _targetInfo, ".interp", DefaultLayout<ELFT>::ORDER_INTERP,
++        _targetInfo.getInterpreter()));
+     _layout->addSection(_dynamicTable.get());
+     _layout->addSection(_dynamicStringTable.get());
+     _layout->addSection(_dynamicSymbolTable.get());
++    _layout->addSection(_interpSection.get());
+     _dynamicSymbolTable->setStringSection(_dynamicStringTable.get());
++
+   }
+ 
+   // give a chance for the target to add sections
+-- 
+1.8.1.2
+

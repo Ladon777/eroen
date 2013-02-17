@@ -1,0 +1,373 @@
+From a977b7fb0c21e7722a636379f300a6ab8bc5a5fc Mon Sep 17 00:00:00 2001
+From: Michael Spencer <bigcheesegs@gmail.com>
+Date: Fri, 15 Feb 2013 17:23:17 -0800
+Subject: [PATCH 12/13] [ELF][Writer] Dynamic function binding works.
+
+---
+ include/lld/ReaderWriter/ELFTargetInfo.h           |  7 +++-
+ lib/ReaderWriter/ELF/DefaultLayout.h               | 44 +++++++++++++++-------
+ lib/ReaderWriter/ELF/SectionChunks.h               | 21 +++++++++--
+ lib/ReaderWriter/ELF/Writer.cpp                    | 35 ++++++++++++++---
+ .../ELF/X86_64/X86_64TargetHandler.cpp             | 18 ++++++++-
+ lib/ReaderWriter/ELF/X86_64/X86_64TargetInfo.cpp   |  9 ++++-
+ lib/ReaderWriter/ELF/X86_64/X86_64TargetInfo.h     | 19 +++++++++-
+ 7 files changed, 126 insertions(+), 27 deletions(-)
+
+diff --git a/include/lld/ReaderWriter/ELFTargetInfo.h b/include/lld/ReaderWriter/ELFTargetInfo.h
+index 9362aac..46d13ed 100644
+--- a/include/lld/ReaderWriter/ELFTargetInfo.h
++++ b/include/lld/ReaderWriter/ELFTargetInfo.h
+@@ -44,11 +44,16 @@ public:
+   virtual StringRef getEntry() const;
+   virtual uint64_t getBaseAddress() const { return _options._baseAddress; }
+ 
+-  virtual bool isRuntimeRelocation(const DefinedAtom &,
++  virtual bool isDynamicRelocation(const DefinedAtom &,
+                                    const Reference &) const {
+     return false;
+   }
+ 
++  virtual bool isPLTRelocation(const DefinedAtom &,
++                               const Reference &) const {
++    return false;
++  }
++
+   virtual StringRef getInterpreter() const {
+     return "/lib64/ld-linux-x86-64.so.2";
+   }
+diff --git a/lib/ReaderWriter/ELF/DefaultLayout.h b/lib/ReaderWriter/ELF/DefaultLayout.h
+index 86f56fc..a863d9b 100644
+--- a/lib/ReaderWriter/ELF/DefaultLayout.h
++++ b/lib/ReaderWriter/ELF/DefaultLayout.h
+@@ -145,9 +145,7 @@ public:
+ 
+   typedef typename std::vector<AtomLayout *>::iterator AbsoluteAtomIterT;
+ 
+-  DefaultLayout(const ELFTargetInfo &ti)
+-      : _relocationTable(nullptr), _targetInfo(ti) {
+-  }
++  DefaultLayout(const ELFTargetInfo &ti) : _targetInfo(ti) {}
+ 
+   /// \brief Return the section order for a input section
+   virtual SectionOrder getSectionOrder(StringRef name, int32_t contentType,
+@@ -239,18 +237,33 @@ public:
+     return _programHeader;
+   }
+ 
+-  bool hasRelocationTable() const {
+-    return !!_relocationTable;
++  bool hasDynamicRelocationTable() const {
++    return !!_dynamicRelocationTable;
++  }
++
++  bool hasPLTRelocationTable() const {
++    return !!_pltRelocationTable;
++  }
++
++  /// \brief Get or create the dynamic relocation table. All relocations in this
++  /// table are processed at startup.
++  RelocationTable<ELFT> *getDynamicRelocationTable() {
++    if (!_dynamicRelocationTable) {
++      _dynamicRelocationTable.reset(new (_allocator)
++          RelocationTable<ELFT>(_targetInfo, ".rela.dyn", ORDER_REL));
++      addSection(_dynamicRelocationTable.get());
++    }
++    return _dynamicRelocationTable.get();
+   }
+ 
+-  RelocationTable<ELFT> *getRelocationTable() {
+-    // Only create the relocation table if it is needed.
+-    if (!_relocationTable) {
+-      _relocationTable.reset(new (_allocator)
++  /// \brief Get or create the PLT relocation table. Referenced by DT_JMPREL.
++  RelocationTable<ELFT> *getPLTRelocationTable() {
++    if (!_pltRelocationTable) {
++      _pltRelocationTable.reset(new (_allocator)
+           RelocationTable<ELFT>(_targetInfo, ".rela.plt", ORDER_REL));
+-      addSection(_relocationTable.get());
++      addSection(_pltRelocationTable.get());
+     }
+-    return _relocationTable.get();
++    return _pltRelocationTable.get();
+   }
+ 
+   uint64_t getTLSSize() const {
+@@ -277,7 +290,8 @@ private:
+   std::vector<MergedSections<ELFT> *> _mergedSections;
+   Header<ELFT> *_header;
+   ProgramHeader<ELFT> *_programHeader;
+-  LLD_UNIQUE_BUMP_PTR(RelocationTable<ELFT>) _relocationTable;
++  LLD_UNIQUE_BUMP_PTR(RelocationTable<ELFT>) _dynamicRelocationTable;
++  LLD_UNIQUE_BUMP_PTR(RelocationTable<ELFT>) _pltRelocationTable;
+   std::vector<AtomLayout *> _absoluteAtoms;
+   const ELFTargetInfo &_targetInfo;
+ };
+@@ -469,8 +483,10 @@ ErrorOr<const AtomLayout &> DefaultLayout<ELFT>::addAtom(const Atom *atom) {
+         getSection(sectionName, contentType, permissions);
+     // Add runtime relocations to the .rela section.
+     for (const auto &reloc : *definedAtom)
+-      if (_targetInfo.isRuntimeRelocation(*definedAtom, *reloc))
+-        getRelocationTable()->addRelocation(*definedAtom, *reloc);
++      if (_targetInfo.isDynamicRelocation(*definedAtom, *reloc))
++        getDynamicRelocationTable()->addRelocation(*definedAtom, *reloc);
++      else if (_targetInfo.isPLTRelocation(*definedAtom, *reloc))
++        getPLTRelocationTable()->addRelocation(*definedAtom, *reloc);
+     return section->appendAtom(atom);
+   } else if (const AbsoluteAtom *absoluteAtom = dyn_cast<AbsoluteAtom>(atom)) {
+     // Absolute atoms are not part of any section, they are global for the whole
+diff --git a/lib/ReaderWriter/ELF/SectionChunks.h b/lib/ReaderWriter/ELF/SectionChunks.h
+index 65afc05..d12a86a 100644
+--- a/lib/ReaderWriter/ELF/SectionChunks.h
++++ b/lib/ReaderWriter/ELF/SectionChunks.h
+@@ -571,7 +571,7 @@ public:
+ 
+   /// \brief Get the symbol table index for an Atom. If it's not in the symbol
+   /// table, return STN_UNDEF.
+-  uint32_t getSymbolTableIndex(const Atom *a) {
++  uint32_t getSymbolTableIndex(const Atom *a) const {
+     auto se = std::find_if(_symbolTable.begin(), _symbolTable.end(),
+                            [=](const SymbolEntry &se) {
+       return se._atom == a;
+@@ -730,10 +730,25 @@ public:
+     this->_flags = SHF_ALLOC;
+   }
+ 
+-  void addRelocation(const DefinedAtom &da, const Reference &r) {
++  /// \returns the index of the relocation added.
++  uint32_t addRelocation(const DefinedAtom &da, const Reference &r) {
+     _relocs.emplace_back(da, r);
+     this->_fsize = _relocs.size() * sizeof(Elf_Rela);
+     this->_msize = this->_fsize;
++    return _relocs.size() - 1;
++  }
++
++  bool getRelocationIndex(const Reference &r, uint32_t &res) {
++    auto rel = std::find_if(_relocs.begin(), _relocs.end(),
++                            [&](const std::pair<const DefinedAtom &, const Reference &> &p) {
++      if (&p.second == &r)
++        return true;
++      return false;
++    });
++    if (rel == _relocs.end())
++      return false;
++    res = std::distance(_relocs.begin(), rel);
++    return true;
+   }
+ 
+   void setSymbolTable(const SymbolTable<ELFT> *symbolTable) {
+@@ -749,7 +764,7 @@ public:
+     uint8_t *dest = chunkBuffer + this->fileOffset();
+     for (const auto &rel : _relocs) {
+       Elf_Rela *r = reinterpret_cast<Elf_Rela *>(dest);
+-      r->setSymbolAndType(writer->getDynSymbolIndex(rel.second.target()), rel.second.kind());
++      r->setSymbolAndType(_symbolTable->getSymbolTableIndex(rel.second.target()), rel.second.kind());
+       r->r_offset =
+           writer->addressOfAtom(&rel.first) + rel.second.offsetInAtom();
+       r->r_addend =
+diff --git a/lib/ReaderWriter/ELF/Writer.cpp b/lib/ReaderWriter/ELF/Writer.cpp
+index 83a0c86..4bc1545 100644
+--- a/lib/ReaderWriter/ELF/Writer.cpp
++++ b/lib/ReaderWriter/ELF/Writer.cpp
+@@ -73,7 +73,7 @@ private:
+     _dt_strsz = _dynamicTable->addEntry(dyn);
+     dyn.d_tag = DT_SYMENT;
+     _dt_syment = _dynamicTable->addEntry(dyn);
+-    if (_layout->hasRelocationTable()) {
++    if (_layout->hasDynamicRelocationTable()) {
+       dyn.d_tag = DT_RELA;
+       _dt_rela = _dynamicTable->addEntry(dyn);
+       dyn.d_tag = DT_RELASZ;
+@@ -81,6 +81,18 @@ private:
+       dyn.d_tag = DT_RELAENT;
+       _dt_relaent = _dynamicTable->addEntry(dyn);
+     }
++    if (_layout->hasPLTRelocationTable()) {
++      dyn.d_tag = DT_PLTRELSZ;
++      _dt_pltrelsz = _dynamicTable->addEntry(dyn);
++      dyn.d_tag = DT_PLTGOT;
++      _dt_pltgot = _dynamicTable->addEntry(dyn);
++      dyn.d_tag = DT_PLTREL;
++      dyn.d_un.d_val = DT_RELA;
++      _dt_pltrel = _dynamicTable->addEntry(dyn);
++      dyn.d_un.d_val = 0;
++      dyn.d_tag = DT_JMPREL;
++      _dt_jmprel = _dynamicTable->addEntry(dyn);
++    }
+     dyn.d_tag = DT_RUNPATH;
+     dyn.d_un.d_val = _dynamicStringTable->addString(".");
+     _dynamicTable->addEntry(dyn);
+@@ -93,12 +105,19 @@ private:
+     tbl[_dt_symtab].d_un.d_val = _dynamicSymbolTable->virtualAddr();
+     tbl[_dt_strsz].d_un.d_val = _dynamicStringTable->memSize();
+     tbl[_dt_syment].d_un.d_val = _dynamicSymbolTable->getEntSize();
+-    if (_layout->hasRelocationTable()) {
+-      auto relaTbl = _layout->getRelocationTable();
++    if (_layout->hasDynamicRelocationTable()) {
++      auto relaTbl = _layout->getDynamicRelocationTable();
+       tbl[_dt_rela].d_un.d_val = relaTbl->virtualAddr();
+       tbl[_dt_relasz].d_un.d_val = relaTbl->memSize();
+       tbl[_dt_relaent].d_un.d_val = relaTbl->getEntSize();
+     }
++    if (_layout->hasPLTRelocationTable()) {
++      auto relaTbl = _layout->getPLTRelocationTable();
++      tbl[_dt_jmprel].d_un.d_val = relaTbl->virtualAddr();
++      tbl[_dt_pltrelsz].d_un.d_val = relaTbl->memSize();
++      auto gotplt = _layout->findOutputSection(".got.plt");
++      tbl[_dt_pltgot].d_un.d_val = gotplt->virtualAddr();
++    }
+   }
+ 
+   llvm::BumpPtrAllocator _alloc;
+@@ -131,6 +150,10 @@ private:
+   std::size_t _dt_relaent;
+   std::size_t _dt_strsz;
+   std::size_t _dt_syment;
++  std::size_t _dt_pltrelsz;
++  std::size_t _dt_pltgot;
++  std::size_t _dt_pltrel;
++  std::size_t _dt_jmprel;
+   /// @}
+   CRuntimeFile<ELFT> _runtimeFile;
+ };
+@@ -423,8 +446,10 @@ void ExecutableWriter<ELFT>::createDefaultSections() {
+     _layout->addSection(_interpSection.get());
+     _layout->addSection(_hashTable.get());
+     _dynamicSymbolTable->setStringSection(_dynamicStringTable.get());
+-    if (_layout->hasRelocationTable())
+-      _layout->getRelocationTable()->setSymbolTable(_dynamicSymbolTable.get());
++    if (_layout->hasDynamicRelocationTable())
++      _layout->getDynamicRelocationTable()->setSymbolTable(_dynamicSymbolTable.get());
++    if (_layout->hasPLTRelocationTable())
++      _layout->getPLTRelocationTable()->setSymbolTable(_dynamicSymbolTable.get());
+   }
+ 
+   // give a chance for the target to add sections
+diff --git a/lib/ReaderWriter/ELF/X86_64/X86_64TargetHandler.cpp b/lib/ReaderWriter/ELF/X86_64/X86_64TargetHandler.cpp
+index 48da692..91d8b06 100644
+--- a/lib/ReaderWriter/ELF/X86_64/X86_64TargetHandler.cpp
++++ b/lib/ReaderWriter/ELF/X86_64/X86_64TargetHandler.cpp
+@@ -88,7 +88,8 @@ ErrorOr<void> X86_64TargetRelocationHandler::applyRelocation(
+       *reinterpret_cast<llvm::support::little64_t *>(location) = result;
+     }
+     break;
+-  case R_X86_64_TLSLD:
++  }
++  case R_X86_64_TLSLD: {
+     // Rewrite to move %fs:0 into %rax. Technically we should verify that the
+     // next relocation is a PC32 to __tls_get_addr...
+     static uint8_t instr[] = { 0x66, 0x66, 0x66, 0x64, 0x48, 0x8b, 0x04, 0x25,
+@@ -96,9 +97,24 @@ ErrorOr<void> X86_64TargetRelocationHandler::applyRelocation(
+     std::memcpy(location - 3, instr, sizeof(instr));
+     break;
+   }
++  case  LLD_R_X86_64_GOTRELINDEX: {
++    const DefinedAtom *target = cast<const DefinedAtom>(ref.target());
++    for (const Reference *r : *target) {
++      if (r->kind() == R_X86_64_JUMP_SLOT) {
++        uint32_t index;
++        if (!_targetInfo.getTargetHandler<X86_64ELFType>().targetLayout().getPLTRelocationTable()->getRelocationIndex(*r, index))
++          llvm_unreachable("Relocation doesn't exist");
++        reloc32(location, 0, index, 0);
++        break;
++      }
++    }
++    break;
++  }
+   // Runtime only relocations. Ignore here.
+   case R_X86_64_RELATIVE:
+   case R_X86_64_IRELATIVE:
++  case llvm::ELF::R_X86_64_JUMP_SLOT:
++  case llvm::ELF::R_X86_64_GLOB_DAT:
+     break;
+ 
+   case lld::Reference::kindLayoutAfter:
+diff --git a/lib/ReaderWriter/ELF/X86_64/X86_64TargetInfo.cpp b/lib/ReaderWriter/ELF/X86_64/X86_64TargetInfo.cpp
+index bf57449..15e0eee 100644
+--- a/lib/ReaderWriter/ELF/X86_64/X86_64TargetInfo.cpp
++++ b/lib/ReaderWriter/ELF/X86_64/X86_64TargetInfo.cpp
+@@ -19,6 +19,7 @@
+ #include "llvm/ADT/StringSwitch.h"
+ 
+ using namespace lld;
++using namespace lld::elf;
+ 
+ namespace {
+ using namespace llvm::ELF;
+@@ -357,10 +358,11 @@ public:
+     if (plt != _pltMap.end())
+       return plt->second;
+     auto ga = new (_file._alloc) GOTAtom(_file, ".got.plt");
+-    ga->addReference(R_X86_64_RELATIVE, 0, a, 0);
++    ga->addReference(R_X86_64_JUMP_SLOT, 0, a, 0);
+     auto pa = new (_file._alloc) PLTAtom(_file, ".plt");
+     pa->addReference(R_X86_64_PC32, 2, ga, -4);
+-    pa->addReference(R_X86_64_PC32, 12, getPLT0(), -4); 
++    pa->addReference(LLD_R_X86_64_GOTRELINDEX, 7, ga, 0);
++    pa->addReference(R_X86_64_PC32, 12, getPLT0(), -4);
+     // Set the starting address of the got entry to the second instruction in
+     // the plt entry.
+     ga->addReference(R_X86_64_64, 0, pa, 6);
+@@ -439,6 +441,7 @@ ErrorOr<int32_t> elf::X86_64TargetInfo::relocKindFromString(
+     LLD_CASE(R_X86_64_TLSDESC_CALL)
+     LLD_CASE(R_X86_64_TLSDESC)
+     LLD_CASE(R_X86_64_IRELATIVE)
++    .Case("LLD_R_X86_64_GOTRELINDEX", LLD_R_X86_64_GOTRELINDEX)
+     .Default(-1);
+ 
+   if (ret == -1)
+@@ -491,6 +494,8 @@ ErrorOr<std::string> elf::X86_64TargetInfo::stringFromRelocKind(
+   LLD_CASE(R_X86_64_TLSDESC_CALL)
+   LLD_CASE(R_X86_64_TLSDESC)
+   LLD_CASE(R_X86_64_IRELATIVE)
++  case LLD_R_X86_64_GOTRELINDEX:
++    return std::string("LLD_R_X86_64_GOTRELINDEX");
+   }
+ 
+   return make_error_code(yaml_reader_error::illegal_value);
+diff --git a/lib/ReaderWriter/ELF/X86_64/X86_64TargetInfo.h b/lib/ReaderWriter/ELF/X86_64/X86_64TargetInfo.h
+index 1db39aa..d1fdd34 100644
+--- a/lib/ReaderWriter/ELF/X86_64/X86_64TargetInfo.h
++++ b/lib/ReaderWriter/ELF/X86_64/X86_64TargetInfo.h
+@@ -20,6 +20,12 @@
+ 
+ namespace lld {
+ namespace elf {
++/// \brief x86-64 internal references.
++enum {
++  /// \brief The 32 bit index of the relocation in the got this reference refers
++  /// to.
++  LLD_R_X86_64_GOTRELINDEX = 1024,
++};
+ 
+ class X86_64TargetInfo LLVM_FINAL : public ELFTargetInfo {
+ public:
+@@ -38,7 +44,7 @@ public:
+     return _options._baseAddress;
+   }
+ 
+-  virtual bool isRuntimeRelocation(const DefinedAtom &,
++  virtual bool isDynamicRelocation(const DefinedAtom &,
+                                    const Reference &r) const {
+     switch (r.kind()){
+     case llvm::ELF::R_X86_64_RELATIVE:
+@@ -49,6 +55,17 @@ public:
+     }
+   }
+ 
++  virtual bool isPLTRelocation(const DefinedAtom &,
++                               const Reference &r) const {
++    switch (r.kind()){
++    case llvm::ELF::R_X86_64_JUMP_SLOT:
++    case llvm::ELF::R_X86_64_GLOB_DAT:
++      return true;
++    default:
++      return false;
++    }
++  }
++
+   virtual ErrorOr<int32_t> relocKindFromString(StringRef str) const;
+   virtual ErrorOr<std::string> stringFromRelocKind(int32_t kind) const;
+ 
+-- 
+1.8.1.2
+

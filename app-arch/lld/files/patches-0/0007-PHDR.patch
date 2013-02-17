@@ -1,0 +1,58 @@
+From a2ee934dfbcbc76bbea681854022d15c5899917a Mon Sep 17 00:00:00 2001
+From: Michael Spencer <bigcheesegs@gmail.com>
+Date: Wed, 13 Feb 2013 18:53:31 -0800
+Subject: [PATCH 07/13] PHDR.
+
+---
+ lib/ReaderWriter/ELF/DefaultLayout.h |  2 ++
+ lib/ReaderWriter/ELF/HeaderChunks.h  | 21 +++++++++++++++++++++
+ 2 files changed, 23 insertions(+)
+
+diff --git a/lib/ReaderWriter/ELF/DefaultLayout.h b/lib/ReaderWriter/ELF/DefaultLayout.h
+index 60526bd..86f56fc 100644
+--- a/lib/ReaderWriter/ELF/DefaultLayout.h
++++ b/lib/ReaderWriter/ELF/DefaultLayout.h
+@@ -592,6 +592,8 @@ DefaultLayout<ELFT>::assignVirtualAddress() {
+     for (auto si : _segments) {
+       newSegmentHeaderAdded = _programHeader->addSegment(si);
+     }
++    if (_programHeader->addPHDR())
++      newSegmentHeaderAdded = true;
+     if (!newSegmentHeaderAdded)
+       break;
+     uint64_t fileoffset = 0;
+diff --git a/lib/ReaderWriter/ELF/HeaderChunks.h b/lib/ReaderWriter/ELF/HeaderChunks.h
+index 49fec92..5130f5f 100644
+--- a/lib/ReaderWriter/ELF/HeaderChunks.h
++++ b/lib/ReaderWriter/ELF/HeaderChunks.h
+@@ -117,6 +117,27 @@ public:
+ 
+   bool addSegment(Segment<ELFT> *segment);
+ 
++  bool addPHDR() {
++    bool allocatedNew = false;
++    auto phdr = allocateProgramHeader();
++    if (phdr.second)
++      allocatedNew = true;
++
++    this->_fsize = fileSize();
++    this->_msize = this->_fsize;
++
++    phdr.first->p_type = llvm::ELF::PT_PHDR;
++    phdr.first->p_offset = this->fileOffset();
++    phdr.first->p_vaddr = this->virtualAddr();
++    phdr.first->p_paddr = this->virtualAddr();
++    phdr.first->p_filesz = this->fileSize();
++    phdr.first->p_memsz = this->memSize();
++    phdr.first->p_flags = llvm::ELF::PF_R;
++    phdr.first->p_align = 8;
++
++    return allocatedNew;
++  }
++
+   void resetProgramHeaders() {
+     _phi = _ph.begin();
+   }
+-- 
+1.8.1.2
+

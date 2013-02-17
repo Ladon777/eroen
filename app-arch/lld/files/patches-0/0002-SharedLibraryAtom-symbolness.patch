@@ -1,0 +1,27 @@
+From a59ad615abd97376779958da473f3c65308f7d82 Mon Sep 17 00:00:00 2001
+From: "Michael J. Spencer" <bigcheesegs@gmail.com>
+Date: Tue, 12 Feb 2013 00:24:05 -0800
+Subject: [PATCH 02/13] SharedLibraryAtom symbolness.
+
+---
+ lib/ReaderWriter/ELF/SectionChunks.h | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/lib/ReaderWriter/ELF/SectionChunks.h b/lib/ReaderWriter/ELF/SectionChunks.h
+index a809875..553972e 100644
+--- a/lib/ReaderWriter/ELF/SectionChunks.h
++++ b/lib/ReaderWriter/ELF/SectionChunks.h
+@@ -638,6 +638,10 @@ void SymbolTable<ELFT>::addSymbol(const Atom *atom, int32_t sectionIndex,
+       break;
+     }
+     symbol->st_value = addr;
++  } else if (isa<const SharedLibraryAtom>(atom)) {
++    type = llvm::ELF::STT_FUNC;
++    symbol->st_shndx = llvm::ELF::SHN_UNDEF;
++    binding = llvm::ELF::STB_GLOBAL;
+   } else {
+    symbol->st_value = 0;
+    type = llvm::ELF::STT_NOTYPE;
+-- 
+1.8.1.2
+

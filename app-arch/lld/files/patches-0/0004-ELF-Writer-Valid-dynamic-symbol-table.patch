@@ -1,0 +1,269 @@
+From 6b26db639a0ca57856a50addbc90ab1dd71a2371 Mon Sep 17 00:00:00 2001
+From: Michael Spencer <bigcheesegs@gmail.com>
+Date: Wed, 13 Feb 2013 15:18:57 -0800
+Subject: [PATCH 04/13] [ELF][Writer] Valid dynamic symbol table.
+
+---
+ include/lld/Core/STDExtras.h         |  9 +++++++--
+ lib/ReaderWriter/ELF/DefaultLayout.h |  2 +-
+ lib/ReaderWriter/ELF/DynamicFile.h   |  8 ++++----
+ lib/ReaderWriter/ELF/HeaderChunks.h  |  1 +
+ lib/ReaderWriter/ELF/SectionChunks.h | 29 ++++++++++++++++++++++-------
+ lib/ReaderWriter/ELF/Writer.cpp      | 28 ++++++++++++++--------------
+ 6 files changed, 49 insertions(+), 28 deletions(-)
+
+diff --git a/include/lld/Core/STDExtras.h b/include/lld/Core/STDExtras.h
+index 6c82342..a22e117 100644
+--- a/include/lld/Core/STDExtras.h
++++ b/include/lld/Core/STDExtras.h
+@@ -21,8 +21,13 @@ struct destruct_delete {
+   }
+ };
+ 
+-template <class T>
+-using unique_bump_ptr = std::unique_ptr<T, destruct_delete<T>>;
++// Sadly VS 2012 doesn't support template aliases.
++// template <class T>
++// using unique_bump_ptr = std::unique_ptr<T, destruct_delete<T>>;
++
++#define LLD_UNIQUE_BUMP_PTR(...) \
++  std::unique_ptr<__VA_ARGS__, destruct_delete<__VA_ARGS__>>
++
+ } // end namespace lld
+ 
+ #endif
+diff --git a/lib/ReaderWriter/ELF/DefaultLayout.h b/lib/ReaderWriter/ELF/DefaultLayout.h
+index 34ce44f..c186b5b 100644
+--- a/lib/ReaderWriter/ELF/DefaultLayout.h
++++ b/lib/ReaderWriter/ELF/DefaultLayout.h
+@@ -273,7 +273,7 @@ private:
+   std::vector<MergedSections<ELFT> *> _mergedSections;
+   Header<ELFT> *_header;
+   ProgramHeader<ELFT> *_programHeader;
+-  unique_bump_ptr<RelocationTable<ELFT>> _relocationTable;
++  LLD_UNIQUE_BUMP_PTR(RelocationTable<ELFT>) _relocationTable;
+   std::vector<AtomLayout *> _absoluteAtoms;
+   const ELFTargetInfo &_targetInfo;
+ };
+diff --git a/lib/ReaderWriter/ELF/DynamicFile.h b/lib/ReaderWriter/ELF/DynamicFile.h
+index c513b4e..8255c81 100644
+--- a/lib/ReaderWriter/ELF/DynamicFile.h
++++ b/lib/ReaderWriter/ELF/DynamicFile.h
+@@ -109,6 +109,7 @@ private:
+   DynamicFile(const ELFTargetInfo &ti, StringRef name)
+       : SharedLibraryFile(name), _targetInfo(ti) {}
+ 
++  mutable llvm::BumpPtrAllocator _alloc;
+   const ELFTargetInfo &_targetInfo;
+   std::unique_ptr<llvm::object::ELFObjectFile<ELFT>> _objFile;
+   atom_collection_vector<DefinedAtom> _definedAtoms;
+@@ -119,13 +120,12 @@ private:
+   StringRef _soname;
+ 
+   struct SymAtomPair {
+-    const typename llvm::object::ELFObjectFile<ELFT>::Elf_Sym *_symbol =
+-        nullptr;
+-    const SharedLibraryAtom *_atom = nullptr;
++    SymAtomPair() : _symbol(nullptr), _atom(nullptr) {}
++    const typename llvm::object::ELFObjectFile<ELFT>::Elf_Sym *_symbol;
++    const SharedLibraryAtom *_atom;
+   };
+ 
+   mutable std::unordered_map<StringRef, SymAtomPair> _nameToSym;
+-  mutable llvm::BumpPtrAllocator _alloc;
+ };
+ } // end namespace elf
+ } // end namespace lld
+diff --git a/lib/ReaderWriter/ELF/HeaderChunks.h b/lib/ReaderWriter/ELF/HeaderChunks.h
+index 27edd48..86f21e2 100644
+--- a/lib/ReaderWriter/ELF/HeaderChunks.h
++++ b/lib/ReaderWriter/ELF/HeaderChunks.h
+@@ -301,6 +301,7 @@ SectionHeader<ELFT>::appendSection(MergedSections<ELFT> *section) {
+ template<class ELFT>
+ void 
+ SectionHeader<ELFT>::updateSection(Section<ELFT> *section) {
++  assert(section->ordinal() < _sectionInfo.size() && "Invalid ordinal!");
+   Elf_Shdr *shdr = _sectionInfo[section->ordinal()];
+   shdr->sh_type = section->getType();
+   shdr->sh_flags = section->getFlags();
+diff --git a/lib/ReaderWriter/ELF/SectionChunks.h b/lib/ReaderWriter/ELF/SectionChunks.h
+index 553972e..085d843 100644
+--- a/lib/ReaderWriter/ELF/SectionChunks.h
++++ b/lib/ReaderWriter/ELF/SectionChunks.h
+@@ -459,6 +459,7 @@ MergedSections<ELFT>::appendSection(Chunk<ELFT> *c) {
+   if (c->align2() > _align2)
+     _align2 = c->align2();
+   if (const auto section = dyn_cast<Section<ELFT>>(c)) {
++    assert(!_link && "Section already has a link!");
+     _link = section->getLink();
+     _shInfo = section->getInfo();
+     _entSize = section->getEntSize();
+@@ -474,7 +475,8 @@ MergedSections<ELFT>::appendSection(Chunk<ELFT> *c) {
+ template<class ELFT>
+ class StringTable : public Section<ELFT> {
+ public:
+-  StringTable(const ELFTargetInfo &, const char *str, int32_t order);
++  StringTable(const ELFTargetInfo &, const char *str, int32_t order,
++              bool dynamic = false);
+ 
+   uint64_t addString(StringRef symname);
+ 
+@@ -501,7 +503,7 @@ private:
+ 
+ template <class ELFT>
+ StringTable<ELFT>::StringTable(const ELFTargetInfo &ti, const char *str,
+-                               int32_t order)
++                               int32_t order, bool dynamic)
+     : Section<ELFT>(ti, str) {
+   // the string table has a NULL entry for which
+   // add an empty string
+@@ -510,6 +512,10 @@ StringTable<ELFT>::StringTable(const ELFTargetInfo &ti, const char *str,
+   this->_align2 = 1;
+   this->setOrder(order);
+   this->_type = SHT_STRTAB;
++  if (dynamic) {
++    this->_flags = SHF_ALLOC;
++    this->_msize = this->_fsize;
++  }
+ }
+ 
+ template <class ELFT> uint64_t StringTable<ELFT>::addString(StringRef symname) {
+@@ -521,6 +527,8 @@ template <class ELFT> uint64_t StringTable<ELFT>::addString(StringRef symname) {
+     _strings.push_back(symname);
+     uint64_t offset = this->_fsize;
+     this->_fsize += symname.size() + 1;
++    if (this->_flags & SHF_ALLOC)
++      this->_msize = this->_fsize;
+     _stringMap[symname] = offset;
+     return offset;
+   }
+@@ -557,15 +565,15 @@ public:
+   void setStringSection(StringTable<ELFT> *s) { _stringSection = s; }
+ 
+ private:
++  llvm::BumpPtrAllocator _symbolAllocate;
+   StringTable<ELFT> *_stringSection;
+   std::vector<Elf_Sym*> _symbolTable;
+-  llvm::BumpPtrAllocator _symbolAllocate;
+ };
+ 
+ /// ELF Symbol Table 
+ template <class ELFT>
+ SymbolTable<ELFT>::SymbolTable(const ELFTargetInfo &ti, const char *str,
+-                                     int32_t order, bool dynamic)
++                               int32_t order, bool dynamic)
+     : Section<ELFT>(ti, str) {
+   this->setOrder(order);
+   Elf_Sym *symbol = new (_symbolAllocate.Allocate<Elf_Sym>()) Elf_Sym;
+@@ -574,7 +582,11 @@ SymbolTable<ELFT>::SymbolTable(const ELFTargetInfo &ti, const char *str,
+   this->_entSize = sizeof(Elf_Sym);
+   this->_fsize = sizeof(Elf_Sym);
+   this->_align2 = sizeof(void *);
+-  this->_type = SHT_SYMTAB;
++  this->_type = dynamic ? SHT_DYNSYM : SHT_SYMTAB;
++  if (dynamic) {
++    this->_flags = SHF_ALLOC;
++    this->_msize = this->_fsize;
++  }
+ }
+ 
+ template <class ELFT>
+@@ -650,6 +662,8 @@ void SymbolTable<ELFT>::addSymbol(const Atom *atom, int32_t sectionIndex,
+   symbol->setBindingAndType(binding, type);
+   _symbolTable.push_back(symbol);
+   this->_fsize += sizeof(Elf_Sym);
++  if (this->_flags & SHF_ALLOC)
++    this->_msize = this->_fsize;
+ }
+ 
+ template <class ELFT> void SymbolTable<ELFT>::finalize() {
+@@ -727,14 +741,15 @@ template <class ELFT> class DynamicTable : public Section<ELFT> {
+ 
+ public:
+   DynamicTable(const ELFTargetInfo &ti, StringRef str, int32_t order)
+-      : Section<ELFT>(ti, str, llvm::ELF::SHT_DYNAMIC, DefinedAtom::permR__,
+-                      order, Section<ELFT>::K_Default) {
++      : Section<ELFT>(ti, str) {
+     this->setOrder(order);
+     this->_entSize = sizeof(Elf_Dyn);
+     this->_align2 = llvm::alignOf<Elf_Dyn>();
+     // Reserve space for the DT_NULL entry.
+     this->_fsize = sizeof(Elf_Dyn);
+     this->_msize = sizeof(Elf_Dyn);
++    this->_type = SHT_DYNAMIC;
++    this->_flags = SHF_ALLOC;
+   }
+ 
+   range<typename EntriesT::iterator> entries() { return _entries; }
+diff --git a/lib/ReaderWriter/ELF/Writer.cpp b/lib/ReaderWriter/ELF/Writer.cpp
+index 69c1d9b..58604f2 100644
+--- a/lib/ReaderWriter/ELF/Writer.cpp
++++ b/lib/ReaderWriter/ELF/Writer.cpp
+@@ -60,17 +60,17 @@ private:
+   typedef llvm::DenseMap<const Atom *, uint64_t> AtomToAddress;
+   AtomToAddress _atomToAddressMap;
+   TargetLayout<ELFT> *_layout;
+-  unique_bump_ptr<Header<ELFT>> _Header;
+-  unique_bump_ptr<ProgramHeader<ELFT>> _programHeader;
+-  unique_bump_ptr<SymbolTable<ELFT>> _symtab;
+-  unique_bump_ptr<StringTable<ELFT>> _strtab;
+-  unique_bump_ptr<StringTable<ELFT>> _shstrtab;
+-  unique_bump_ptr<SectionHeader<ELFT>> _shdrtab;
++  LLD_UNIQUE_BUMP_PTR(Header<ELFT>) _Header;
++  LLD_UNIQUE_BUMP_PTR(ProgramHeader<ELFT>) _programHeader;
++  LLD_UNIQUE_BUMP_PTR(SymbolTable<ELFT>) _symtab;
++  LLD_UNIQUE_BUMP_PTR(StringTable<ELFT>) _strtab;
++  LLD_UNIQUE_BUMP_PTR(StringTable<ELFT>) _shstrtab;
++  LLD_UNIQUE_BUMP_PTR(SectionHeader<ELFT>) _shdrtab;
+   /// \name Dynamic sections.
+   /// @{
+-  unique_bump_ptr<DynamicTable<ELFT>> _dynamicTable;
+-  unique_bump_ptr<SymbolTable<ELFT>> _dynamicSymbolTable;
+-  unique_bump_ptr<StringTable<ELFT>> _dynamicStringTable;
++  LLD_UNIQUE_BUMP_PTR(DynamicTable<ELFT>) _dynamicTable;
++  LLD_UNIQUE_BUMP_PTR(SymbolTable<ELFT>) _dynamicSymbolTable;
++  LLD_UNIQUE_BUMP_PTR(StringTable<ELFT>) _dynamicStringTable;
+   /// @}
+   CRuntimeFile<ELFT> _runtimeFile;
+ };
+@@ -146,8 +146,7 @@ void ExecutableWriter<ELFT>::assignSectionsWithNoSegments() {
+   _layout->assignOffsetsForMiscSections();
+   for (auto sec : _layout->sections())
+     if (auto section = dyn_cast<Section<ELFT>>(sec))
+-      if (!DefaultLayout<ELFT>::hasOutputSegment(section))
+-        _shdrtab->updateSection(section);
++      _shdrtab->updateSection(section);
+ }
+ 
+ /// \brief Add absolute symbols by default. These are linker added
+@@ -237,6 +236,9 @@ ExecutableWriter<ELFT>::writeFile(const File &file, StringRef path) {
+   // section string table
+   createDefaultSections();
+ 
++  if (_targetInfo.isDynamic())
++    buildDynamicSymbolTable(file);
++
+   // Set the Layout
+   _layout->assignSectionsToSegments();
+   _layout->assignFileOffsets();
+@@ -250,8 +252,6 @@ ExecutableWriter<ELFT>::writeFile(const File &file, StringRef path) {
+ 
+   // Create symbol table and section string table
+   buildStaticSymbolTable(file);
+-  if (_targetInfo.isDynamic())
+-    buildDynamicSymbolTable(file);
+ 
+   // Finalize the layout by calling the finalize() functions
+   _layout->finalize();
+@@ -336,7 +336,7 @@ void ExecutableWriter<ELFT>::createDefaultSections() {
+     _dynamicTable.reset(new (_alloc) DynamicTable<ELFT>(
+         _targetInfo, ".dynamic", DefaultLayout<ELFT>::ORDER_DYNAMIC));
+     _dynamicStringTable.reset(new (_alloc) StringTable<ELFT>(
+-        _targetInfo, ".dynstr", DefaultLayout<ELFT>::ORDER_DYNAMIC_STRINGS));
++        _targetInfo, ".dynstr", DefaultLayout<ELFT>::ORDER_DYNAMIC_STRINGS, true));
+     _dynamicSymbolTable.reset(new (_alloc) SymbolTable<ELFT>(
+         _targetInfo, ".dynsym", DefaultLayout<ELFT>::ORDER_DYNAMIC_SYMBOLS, true));
+     _layout->addSection(_dynamicTable.get());
+-- 
+1.8.1.2
+

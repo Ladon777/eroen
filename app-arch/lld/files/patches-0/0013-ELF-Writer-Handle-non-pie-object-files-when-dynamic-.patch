@@ -1,0 +1,105 @@
+From d54c783c66dc03defdd0265204beed9fdcca8be0 Mon Sep 17 00:00:00 2001
+From: Michael Spencer <bigcheesegs@gmail.com>
+Date: Fri, 15 Feb 2013 17:54:57 -0800
+Subject: [PATCH 13/13] [ELF][Writer] Handle non-pie object files when dynamic
+ linking.
+
+---
+ .../ELF/X86_64/X86_64TargetHandler.cpp             |  4 ++--
+ lib/ReaderWriter/ELF/X86_64/X86_64TargetInfo.cpp   | 25 ++++++++++++++++------
+ 2 files changed, 20 insertions(+), 9 deletions(-)
+
+diff --git a/lib/ReaderWriter/ELF/X86_64/X86_64TargetHandler.cpp b/lib/ReaderWriter/ELF/X86_64/X86_64TargetHandler.cpp
+index 91d8b06..dff81f9 100644
+--- a/lib/ReaderWriter/ELF/X86_64/X86_64TargetHandler.cpp
++++ b/lib/ReaderWriter/ELF/X86_64/X86_64TargetHandler.cpp
+@@ -113,8 +113,8 @@ ErrorOr<void> X86_64TargetRelocationHandler::applyRelocation(
+   // Runtime only relocations. Ignore here.
+   case R_X86_64_RELATIVE:
+   case R_X86_64_IRELATIVE:
+-  case llvm::ELF::R_X86_64_JUMP_SLOT:
+-  case llvm::ELF::R_X86_64_GLOB_DAT:
++  case R_X86_64_JUMP_SLOT:
++  case R_X86_64_GLOB_DAT:
+     break;
+ 
+   case lld::Reference::kindLayoutAfter:
+diff --git a/lib/ReaderWriter/ELF/X86_64/X86_64TargetInfo.cpp b/lib/ReaderWriter/ELF/X86_64/X86_64TargetInfo.cpp
+index 15e0eee..1a93c86 100644
+--- a/lib/ReaderWriter/ELF/X86_64/X86_64TargetInfo.cpp
++++ b/lib/ReaderWriter/ELF/X86_64/X86_64TargetInfo.cpp
+@@ -142,16 +142,15 @@ public:
+ template <class Derived> class GOTPLTPass : public Pass {
+   /// \brief Handle a specific reference.
+   void handleReference(const DefinedAtom &atom, const Reference &ref) {
+-    const DefinedAtom *da = dyn_cast_or_null<const DefinedAtom>(ref.target());
+     switch (ref.kind()) {
+     case R_X86_64_PLT32:
+       static_cast<Derived *>(this)->handlePLT32(ref);
+       break;
+     case R_X86_64_PC32:
+-      static_cast<Derived *>(this)->handleIFUNC(ref, da);
++      static_cast<Derived *>(this)->handlePC32(ref);
+       break;
+     case R_X86_64_GOTTPOFF: // GOT Thread Pointer Offset
+-      static_cast<Derived *>(this)->handleGOTTPOFF(ref, da);
++      static_cast<Derived *>(this)->handleGOTTPOFF(ref);
+       break;
+     case R_X86_64_GOTPCREL:
+       static_cast<Derived *>(this)->handleGOTPCREL(ref);
+@@ -186,7 +185,8 @@ protected:
+   ///
+   /// This create a PLT and GOT entry for the IFUNC if one does not exist. The
+   /// GOT entry and a IRELATIVE relocation to the original target resolver.
+-  ErrorOr<void> handleIFUNC(const Reference &ref, const DefinedAtom *target) {
++  ErrorOr<void> handleIFUNC(const Reference &ref) {
++    auto target = dyn_cast_or_null<const DefinedAtom>(ref.target());
+     if (target && target->contentType() == DefinedAtom::typeResolver)
+       const_cast<Reference &>(ref).setTarget(getIFUNCPLTEntry(target));
+     return error_code::success();
+@@ -210,7 +210,8 @@ protected:
+ 
+   /// \brief Create a TPOFF64 GOT entry and change the relocation to a PC32 to
+   /// the GOT.
+-  void handleGOTTPOFF(const Reference &ref, const DefinedAtom *target) {
++  void handleGOTTPOFF(const Reference &ref) {
++    auto target = dyn_cast_or_null<const DefinedAtom>(ref.target());
+     const_cast<Reference &>(ref).setTarget(getGOTTPOFF(target));
+     const_cast<Reference &>(ref).setKind(R_X86_64_PC32);
+   }
+@@ -327,9 +328,13 @@ public:
+     // Handle IFUNC.
+     if (const DefinedAtom *da = dyn_cast_or_null<const DefinedAtom>(ref.target()))
+       if (da->contentType() == DefinedAtom::typeResolver)
+-        return handleIFUNC(ref, da);
++        return handleIFUNC(ref);
+     return error_code::success();
+   }
++
++  ErrorOr<void> handlePC32(const Reference &ref) {
++    return handleIFUNC(ref);
++  }
+ };
+ 
+ class DynamicGOTPLTPass LLVM_FINAL : public GOTPLTPass<DynamicGOTPLTPass> {
+@@ -383,10 +388,16 @@ public:
+     // Handle IFUNC.
+     if (const DefinedAtom *da = dyn_cast_or_null<const DefinedAtom>(ref.target()))
+       if (da->contentType() == DefinedAtom::typeResolver)
+-        return handleIFUNC(ref, da);
++        return handleIFUNC(ref);
+     const_cast<Reference &>(ref).setTarget(getPLTEntry(ref.target()));
+     return error_code::success();
+   }
++
++  ErrorOr<void> handlePC32(const Reference &ref) {
++    if (ref.target() && isa<SharedLibraryAtom>(ref.target()))
++      return handlePLT32(ref);
++    return handleIFUNC(ref);
++  }
+ };
+ } // end anon namespace
+ 
+-- 
+1.8.1.2
+

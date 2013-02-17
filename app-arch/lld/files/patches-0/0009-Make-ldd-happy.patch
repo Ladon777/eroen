@@ -1,0 +1,109 @@
+From ba4ffc3a337bc0e0f32c5edd0bde3942afe7aebe Mon Sep 17 00:00:00 2001
+From: Michael Spencer <bigcheesegs@gmail.com>
+Date: Thu, 14 Feb 2013 14:00:04 -0800
+Subject: [PATCH 09/13] Make ldd happy.
+
+---
+ lib/ReaderWriter/ELF/HeaderChunks.h  |  3 ++-
+ lib/ReaderWriter/ELF/SectionChunks.h | 36 ++++++++++++++++++++++++++++++++++++
+ lib/ReaderWriter/ELF/Writer.cpp      |  5 +++++
+ 3 files changed, 43 insertions(+), 1 deletion(-)
+
+diff --git a/lib/ReaderWriter/ELF/HeaderChunks.h b/lib/ReaderWriter/ELF/HeaderChunks.h
+index 0d57172..b8a539c 100644
+--- a/lib/ReaderWriter/ELF/HeaderChunks.h
++++ b/lib/ReaderWriter/ELF/HeaderChunks.h
+@@ -204,7 +204,8 @@ bool ProgramHeader<ELFT>::addSegment(Segment<ELFT> *segment) {
+   for (auto slice : segment->slices()) {
+     // If we have a TLS segment, emit a LOAD first.
+     if (segment->segmentType() == llvm::ELF::PT_TLS ||
+-        segment->segmentType() == llvm::ELF::PT_DYNAMIC) {
++        segment->segmentType() == llvm::ELF::PT_DYNAMIC ||
++        segment->segmentType() == llvm::ELF::PT_INTERP) {
+       auto phdr = allocateProgramHeader();
+       if (phdr.second)
+         allocatedNew = true;
+diff --git a/lib/ReaderWriter/ELF/SectionChunks.h b/lib/ReaderWriter/ELF/SectionChunks.h
+index dc2bc2e..47545fc 100644
+--- a/lib/ReaderWriter/ELF/SectionChunks.h
++++ b/lib/ReaderWriter/ELF/SectionChunks.h
+@@ -801,6 +801,42 @@ public:
+ private:
+   StringRef _interp;
+ };
++
++template <class ELFT> class HashSection : public Section<ELFT> {
++  struct SymbolTableEntry {
++    StringRef _name;
++    uint32_t _index;
++  };
++
++public:
++  HashSection(const ELFTargetInfo &ti, StringRef name, int32_t order)
++      : Section<ELFT>(ti, name) {
++    this->setOrder(order);
++    this->_align2 = 4; // Alignment of Elf32_Word.
++    this->_type = SHT_HASH;
++    this->_flags = SHF_ALLOC;
++    // The size of nbucket and nchain.
++    this->_fsize = 8;
++    this->_msize = this->_fsize;
++  }
++
++  void addSymbol(StringRef name, uint32_t index) {
++    SymbolTableEntry ste;
++    ste._name = name;
++    ste._index = index;
++    _entries.push_back(ste);
++  }
++
++  virtual void write(ELFWriter *writer, llvm::FileOutputBuffer &buffer) {
++    uint8_t *chunkBuffer = buffer.getBufferStart();
++    uint8_t *dest = chunkBuffer + this->fileOffset();
++    // Just emit an empty hash table.
++    std::memset(dest, 0, this->_fsize);
++  }
++
++private:
++  std::vector<SymbolTableEntry> _entries;
++};
+ } // end namespace elf
+ } // end namespace lld
+ 
+diff --git a/lib/ReaderWriter/ELF/Writer.cpp b/lib/ReaderWriter/ELF/Writer.cpp
+index f4d5667..587ff12 100644
+--- a/lib/ReaderWriter/ELF/Writer.cpp
++++ b/lib/ReaderWriter/ELF/Writer.cpp
+@@ -81,6 +81,7 @@ private:
+ 
+   void updateDynamicTable() {
+     auto tbl = _dynamicTable->entries();
++    tbl[_dt_hash].d_un.d_val = _hashTable->virtualAddr();
+     tbl[_dt_strtab].d_un.d_val = _dynamicStringTable->virtualAddr();
+     tbl[_dt_symtab].d_un.d_val = _dynamicSymbolTable->virtualAddr();
+     tbl[_dt_strsz].d_un.d_val = _dynamicStringTable->memSize();
+@@ -113,6 +114,7 @@ private:
+   LLD_UNIQUE_BUMP_PTR(SymbolTable<ELFT>) _dynamicSymbolTable;
+   LLD_UNIQUE_BUMP_PTR(StringTable<ELFT>) _dynamicStringTable;
+   LLD_UNIQUE_BUMP_PTR(InterpSection<ELFT>) _interpSection;
++  LLD_UNIQUE_BUMP_PTR(HashSection<ELFT>) _hashTable;
+   llvm::StringSet<> _soNeeded;
+   std::size_t _dt_hash;
+   std::size_t _dt_strtab;
+@@ -406,10 +408,13 @@ void ExecutableWriter<ELFT>::createDefaultSections() {
+     _interpSection.reset(new (_alloc) InterpSection<ELFT>(
+         _targetInfo, ".interp", DefaultLayout<ELFT>::ORDER_INTERP,
+         _targetInfo.getInterpreter()));
++    _hashTable.reset(new (_alloc) HashSection<ELFT>(
++        _targetInfo, ".hash", DefaultLayout<ELFT>::ORDER_HASH));
+     _layout->addSection(_dynamicTable.get());
+     _layout->addSection(_dynamicStringTable.get());
+     _layout->addSection(_dynamicSymbolTable.get());
+     _layout->addSection(_interpSection.get());
++    _layout->addSection(_hashTable.get());
+     _dynamicSymbolTable->setStringSection(_dynamicStringTable.get());
+ 
+   }
+-- 
+1.8.1.2
+
