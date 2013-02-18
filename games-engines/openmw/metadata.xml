@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<longdescription lang="en">
+		OpenMW is an attempt to reimplement the popular role playing game Morrowind. It aims to be a fully playable, open source implementation of the game. You must own Morrowind to use OpenMW.
+	</longdescription>
+</pkgmetadata>
+
