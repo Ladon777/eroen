@@ -5,7 +5,7 @@
 EAPI=5 # -hdepend nerfed by eclasses
 
 inherit eutils games cmake-utils
-[ ${PV} -ge 9998 ] && inherit git-2
+[ ${PV:0:3} == 999 ] && inherit git-2
 
 DESCRIPTION="Unofficial open source engine reimplementation of the game Morrowind"
 HOMEPAGE="https://openmw.org/"
@@ -14,9 +14,10 @@ SLOT="0"
 KEYWORDS="~amd64"
 IUSE=""
 
-if [ ${PV} -ge 9998 ]; then
+if [ ${PV:0:3} == 999 ]; then
+	S="${WORKDIR}"/${PN}
 	EGIT_REPO_URI="git://github.com/zinnschlag/openmw.git"
-	[ ${PV} -eq 9999 ] && EGIT_BRANCH="next"
+	[ ${PV} == 9999 ] && EGIT_BRANCH="next"
 else
 	SRC_URI="https://openmw.googlecode.com/files/${PN}_${PV}.orig.tar.bz2"
 fi
