@@ -7,11 +7,11 @@ inherit emul-linux-x86
 
 LICENSE="BSD FDL-1.2 GPL-2 LGPL-2.1 LGPL-2 MIT gsm public-domain"
 KEYWORDS="-* ~amd64"
-IUSE="alsa"
+IUSE="alsa fftw-filter"
 
 RDEPEND="~app-emulation/emul-linux-x86-baselibs-${PV}
 	~app-emulation/emul-linux-x86-medialibs-${PV}
-	!>=sci-libs/fftw-3.3.3-r1[abi_x86_32]"
+	!fftw-filter? ( !>=sci-libs/fftw-3.3.3-r1[abi_x86_32] )"
 
 src_prepare() {
 	_ALLOWED="${S}/etc/env.d"
@@ -22,5 +22,10 @@ src_prepare() {
 
 	if use alsa; then
 		mv -f "${S}"/usr/bin/aoss{,32} || die
+	fi
+
+	if use fftw-filter; then
+		rm "${S}"/usr/lib32/pkgconfig/fftw3{,f,l}.pc || die "rm 1"
+		rm "${S}"/usr/lib32/libfftw3{,f,l}.so{,.3} || die "rm 2"
 	fi
 }
