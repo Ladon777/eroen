@@ -29,9 +29,9 @@ LIBDEPEND="dev-games/ogre[boost,cg,freeimage,ois,opengl,threads,zip]
 	media-libs/openal
 	sci-physics/bullet
 	virtual/ffmpeg
-	x11-libs/qt-core
-	x11-libs/qt-gui
-	x11-libs/qt-xmlpatterns"
+	dev-qt/qtcore
+	dev-qt/qtgui
+	dev-qt/qtxmlpatterns"
 DEPEND="${LIBDEPEND}"
 [[ ${EAPI} == *-hdepend ]] || DEPEND+=" ${HDEPEND}"
 RDEPEND="${LIBDEPEND}"
