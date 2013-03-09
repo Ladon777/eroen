@@ -61,6 +61,9 @@ pkg_setup() {
 }
 
 src_prepare() {
+	# Not sure why git-2 eclass doesn't fix this.
+	git submodule update
+
 	local EPATCH_FORCE="yes"
 	local EPATCH_SUFFIX="patch"
 	if [[ ! "${PV}" == "9999" ]]; then
@@ -105,7 +108,7 @@ src_configure() {
 	mycmakeargs=(
 		"-DCMAKE_INSTALL_PREFIX=${GAMES_DATADIR}"
 		"-DDFHACK_BINARY_DESTINATION=${GAMES_BINDIR}"
-		# We install interesting libs, let's not infect the rest of the system.
+		# We install interesting libs, let\'s not infect the rest of the system.
 		"-DDFHACK_LIBRARY_DESTINATION=${dfhack_libdir}"
 		"-DDFHACK_EGGY_DESTINATION=$(games_get_libdir)"
 		"-DDFHACK_DATA_DESTINATION=${dfhack_datadir}"
@@ -161,6 +164,8 @@ src_install() {
 
 	prepgamesdirs
 	fperms g+w "${GAMES_STATEDIR}/${P}" || die
+	# portage user needs to be able to link:
+	( use egg && fperms o+rx "$(games_get_libdir)"/libegg.so ) || die
 }
 
 pkg_postinst() {
