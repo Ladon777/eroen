@@ -1,5 +1,5 @@
-# Copyright 1999-2012 Gentoo Foundation
-# Distributed under the terms of the GNU General Public License v2
+# By eroen, 2013
+# Distributed under the terms of the ISC licence
 # $Header: $
 
 EAPI=5
@@ -21,14 +21,11 @@ SLOT="0"
 KEYWORDS="~amd64"
 IUSE=""
 
-COMMON_DEPEND="x11-libs/qt-core
-	x11-libs/qt-gui
-	x11-libs/qt-script
-	sys-devel/gcc
-	sys-libs/glibc
+COMMON_DEPEND="dev-qt/qtcore
+	dev-qt/qtgui
+	dev-qt/qtscript
 	"
 DEPEND="${COMMON_DEPEND}
-	dev-vcs/mercurial
 	"
 RDEPEND="${COMMON_DEPEND}
 	"
