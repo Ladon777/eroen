@@ -36,7 +36,7 @@ SRC_URI="${SRC_URI}
 
 LICENSE="LGPL-2.1"
 SLOT="0"
-IUSE="+abi_x86_32 +abi_x86_64 alsa capi cups custom-cflags elibc_glibc fontconfig +gecko gphoto2 gsm gstreamer jpeg lcms ldap +mono mp3 ncurses nls odbc openal opencl +opengl osmesa +oss +perl png +prelink samba scanner selinux ssl test +threads +truetype udisks v4l +X xcomposite xinerama xml"
+IUSE="+abi_x86_32 +abi_x86_64 alsa capi cups custom-cflags elibc_glibc fontconfig +gecko gphoto2 gsm gstreamer jpeg lcms ldap +mono mp3 ncurses nls odbc openal opencl +opengl osmesa +oss pathofexile +perl png +prelink samba scanner selinux ssl test +threads +truetype udisks v4l +X xcomposite xinerama xml"
 [[ ${PV} == "9999" ]] || IUSE="${IUSE} pulseaudio"
 REQUIRED_USE="|| ( abi_x86_32 abi_x86_64 )
 	test? ( abi_x86_32 )
@@ -167,6 +167,9 @@ src_prepare() {
 	[[ ${PV} == "9999" ]] || PATCHES+=(
 		"../${PULSE_PATCHES}"/*.patch #421365
 	)
+
+	# http://bugs.winehq.org/show_bug.cgi?id=33146
+	use pathofexile && epatch "${FILESDIR}"/${PN}-1.5.28-pathofexile.patch
 
 	autotools-utils_src_prepare
 
