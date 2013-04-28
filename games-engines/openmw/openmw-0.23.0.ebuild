@@ -17,9 +17,8 @@ IUSE=""
 if [ ${PV:0:3} == 999 ]; then
 	S="${WORKDIR}"/${PN}
 	EGIT_REPO_URI="git://github.com/zinnschlag/openmw.git"
-	[ ${PV} == 9999 ] && EGIT_BRANCH="next"
 else
-	SRC_URI="https://openmw.googlecode.com/files/${P}.zip"
+	SRC_URI="https://openmw.googlecode.com/files/${P}.tar.gz"
 	S="${WORKDIR}"/${PN}-${P}
 fi
 
