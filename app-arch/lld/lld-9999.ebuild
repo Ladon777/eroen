@@ -39,12 +39,8 @@ src_unpack() {
 
 src_prepare() {
 	cd "${S}"/tools/lld
-	# Patches from https://github.com/Bigcheese/lold (dynamic branch)
-		EPATCH_FORCE=yes \
-		EPATCH_SUFFIX=patch \
-	epatch "${FILESDIR}"/patches-0/
-	default
 	epatch_user
+	default
 }
 
 src_configure() {
