@@ -4,7 +4,7 @@
 
 EAPI=5
 
-inherit eutils flag-o-matic cmake-utils subversion
+inherit eutils flag-o-matic multilib cmake-utils subversion
 
 DESCRIPTION="The LLVM Linker"
 HOMEPAGE="http://lld.llvm.org/"
@@ -48,8 +48,10 @@ src_configure() {
 	append-ldflags -L/usr/lib64/llvm
 	# Shared libraries needs a release, so we can have corresponding libs
 	# installed.
+	local myLIBDIR="$(get_libdir)"
 	mycmakeargs=(
 		-DBUILD_SHARED_LIBS=OFF
+		-DLLVM_LIBDIR_SUFFIX=${myLIBDIR#lib}
 		-DLLVM_BUILD_RUNTIME=OFF
 		-DLLVM_INCLUDE_RUNTIME=OFF
 		-DLLVM_ENABLE_ASSERTIONS=ON
@@ -78,4 +80,12 @@ src_test() {
 src_install() {
 	cd "${BUILD_DIR}"/tools/lld
 	emake DESTDIR="${D}" install
+
+	dosym /usr/bin/lld /usr/lib/${P}/bin/ld || die
+}
+
+pkg_postinst() {
+	elog "To use lld with your compiler of choice, add something like "
+	elog "    -B/usr/lib/lld-9999/bin"
+	elog "to your LDFLAGS."
 }
