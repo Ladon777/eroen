@@ -5,7 +5,7 @@
 EAPI=5
 
 AUTOTOOLS_AUTORECONF="1"
-inherit autotools-utils
+inherit eutils autotools-utils
 
 if [[ ${PV} = *9999* ]]; then
 	inherit git-2
@@ -26,3 +26,8 @@ IUSE=""
 
 DEPEND=""
 RDEPEND="${DEPEND}"
+
+src_prepare() {
+	epatch "${FILESDIR}"/${P}-werror.patch
+	autotools-utils_src_prepare
+}

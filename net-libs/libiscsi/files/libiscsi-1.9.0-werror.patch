@@ -1,0 +1,12 @@
+diff -ur a-libiscsi-1.9.0/configure.ac libiscsi-1.9.0/configure.ac
+--- a-libiscsi-1.9.0/configure.ac	2013-02-24 18:09:02.000000000 +0100
++++ libiscsi-1.9.0/configure.ac	2013-05-23 18:07:45.946318096 +0200
+@@ -12,7 +12,7 @@
+                [expr "$host_os" : linux > /dev/null 2>&1])
+ 
+ if test "$ac_cv_prog_gcc" = yes; then
+-   WARN_CFLAGS="-Wall -W -Wshadow -Wstrict-prototypes -Wpointer-arith -Wcast-align -Wwrite-strings -Werror -Wno-strict-aliasing"
++   WARN_CFLAGS="-Wall -W -Wshadow -Wstrict-prototypes -Wpointer-arith -Wcast-align -Wwrite-strings -Wno-strict-aliasing"
+ fi
+ AC_SUBST(WARN_CFLAGS)
+ 
