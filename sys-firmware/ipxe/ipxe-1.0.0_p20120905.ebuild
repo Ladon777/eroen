@@ -37,6 +37,7 @@ src_configure() {
 }
 
 src_compile() {
+	export NO_WERROR=1
 	if use qemu; then
 		emake bin/808610de.rom # pxe-e1000.rom
 		emake bin/80861209.rom # pxe-eepro100.rom
