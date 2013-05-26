@@ -1,0 +1,3 @@
+# This series applies on GIT commit 5fac75845c573e7e6224330f31ce9f949ae6ca02
+01-libc-fixes-avcodec-avformat.patch
+02-libc-fixes-don-t-rely-on-tr1.patch
