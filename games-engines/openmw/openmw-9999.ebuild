@@ -2,7 +2,7 @@
 # Distributed under the terms of the ISC license
 # $Header: $
 
-EAPI=5 # -hdepend nerfed by eclasses
+EAPI=5
 
 inherit eutils games cmake-utils
 [ ${PV:0:3} == 999 ] && inherit git-2
@@ -39,8 +39,6 @@ DEPEND="${LIBDEPEND}
 RDEPEND="${LIBDEPEND}"
 
 src_prepare() {
-	epatch "${FILESDIR}"/${PN}-0.24.0/01-libc-fixes-avcodec-avformat.patch
-	epatch "${FILESDIR}"/${PN}-0.24.0/02-libc-fixes-don-t-rely-on-tr1.patch
 	epatch_user
 }
 
@@ -60,6 +58,6 @@ src_install() {
 	sed -e "s:resources=resources:resources=${GAMES_DATADIR}/${PN}/resources:" \
 		-i "${D}/${GAMES_SYSCONFDIR}"/${PN}/openmw.cfg || die "sed failed"
 	prepgamesdirs
-	mv -t "${D}"/etc "${D}/${GAMES_SYSCONFDIR}"/${PN} || die "mv failed"
-	rmdir "${D}/${GAMES_SYSCONFDIR}" || die "rmdir failed"
+	mv -t "${D}"/etc "${D}/${GAMES_SYSCONFDIR}"/${PN} || die "mv conf from gamedir failed"
+	rmdir "${D}/${GAMES_SYSCONFDIR}" || die "rmdir games confdir failed"
 }
