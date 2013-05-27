@@ -42,6 +42,8 @@ DEPEND="${LIBDEPEND}
 RDEPEND="${LIBDEPEND}"
 
 src_prepare() {
+	epatch "${FILESDIR}"/${PN}-0.24.0-0001-libc-fixes-avcodec-avformat-workaround.patch
+	epatch "${FILESDIR}"/${PN}-0.24.0-0002-libc-fixes-don-t-rely-on-tr1.patch
 	epatch_user
 }
 
