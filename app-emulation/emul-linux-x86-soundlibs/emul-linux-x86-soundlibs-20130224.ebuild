@@ -7,7 +7,7 @@ inherit emul-linux-x86
 
 LICENSE="BSD FDL-1.2 GPL-2 LGPL-2.1 LGPL-2 MIT gsm public-domain"
 KEYWORDS="-* amd64"
-IUSE="alsa filter-alsa-lib filter-audiofile filter-fftw filter-flac filter-libogg filter-webrtc-audio-processing"
+IUSE="alsa filter-alsa-lib filter-audiofile filter-fftw filter-flac filter-libogg filter-libvorbis filter-webrtc-audio-processing"
 
 RDEPEND="~app-emulation/emul-linux-x86-baselibs-${PV}
 	~app-emulation/emul-linux-x86-medialibs-${PV}
@@ -48,6 +48,14 @@ src_prepare() {
 	if use filter-libogg; then
 		rm usr/lib32/libogg.so{,.0,.0.8.0} || die
 		rm usr/lib32/pkgconfig/ogg.pc || die
+	fi
+
+	# media-libs/libvorbis-1.3.3-r1
+	if use filter-libvorbis; then
+		rm usr/lib32/libvorbis.so{,.0,.0.4.6} || die
+		rm usr/lib32/libvorbisenc.so{,.2,.2.0.9} || die
+		rm usr/lib32/libvorbisfile.so{,.3,.3.3.5} || die
+		rm usr/lib32/pkgconfig/vorbis{,enc,file}.pc || die
 	fi
 
 	# 'media-libs/webrtc-audio-processing-0.1-r1
