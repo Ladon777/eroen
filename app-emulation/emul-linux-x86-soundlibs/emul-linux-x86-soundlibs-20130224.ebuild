@@ -7,7 +7,7 @@ inherit emul-linux-x86
 
 LICENSE="BSD FDL-1.2 GPL-2 LGPL-2.1 LGPL-2 MIT gsm public-domain"
 KEYWORDS="-* amd64"
-IUSE="alsa filter-fftw filter-webrtc-audio-processing"
+IUSE="alsa filter-alsa-lib filter-fftw filter-webrtc-audio-processing"
 
 RDEPEND="~app-emulation/emul-linux-x86-baselibs-${PV}
 	~app-emulation/emul-linux-x86-medialibs-${PV}
@@ -18,6 +18,13 @@ src_prepare() {
 	_ALLOWED="${S}/etc/env.d"
 	use alsa && _ALLOWED="${_ALLOWED}|${S}/usr/bin/aoss"
 	ALLOWED="(${_ALLOWED})"
+
+	# media-libs/alsa-lib-1.0.27.1
+	if use filter-alsa-lib; then
+		rm usr/lib32/alsa-lib/smixer/smixer-{ac97,hda,sbase}.so || die
+		rm usr/lib32/libasound.so{,.2,.2.0.0} || die
+		rm usr/lib32/pkgconfig/alsa.pc || die
+	fi
 
 	if use filter-fftw; then
 		rm "${S}"/usr/lib32/pkgconfig/fftw3{,f,l}.pc || die "rm 1"
