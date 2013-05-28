@@ -7,7 +7,7 @@ inherit emul-linux-x86
 
 LICENSE="BSD FDL-1.2 GPL-2 LGPL-2.1 LGPL-2 MIT gsm public-domain"
 KEYWORDS="-* amd64"
-IUSE="alsa filter-alsa-lib filter-audiofile filter-fftw filter-flac filter-webrtc-audio-processing"
+IUSE="alsa filter-alsa-lib filter-audiofile filter-fftw filter-flac filter-libogg filter-webrtc-audio-processing"
 
 RDEPEND="~app-emulation/emul-linux-x86-baselibs-${PV}
 	~app-emulation/emul-linux-x86-medialibs-${PV}
@@ -42,6 +42,12 @@ src_prepare() {
 		rm usr/lib32/libFLAC++.so{,.6,.6.2.0} || die
 		rm usr/lib32/libFLAC.so{,.8,.8.2.0} || die
 		rm usr/lib32/pkgconfig/flac{,++}.pc || die
+	fi
+
+	# media-libs/libogg-1.3.0-r1
+	if use filter-libogg; then
+		rm usr/lib32/libogg.so{,.0,.0.8.0} || die
+		rm usr/lib32/pkgconfig/ogg.pc || die
 	fi
 
 	# 'media-libs/webrtc-audio-processing-0.1-r1
