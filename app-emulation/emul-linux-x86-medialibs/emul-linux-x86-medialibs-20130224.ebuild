@@ -7,6 +7,7 @@ inherit emul-linux-x86
 
 LICENSE="APL-1.0 GPL-2 BSD BSD-2 public-domain LGPL-2 MPL-1.1 LGPL-2.1 MPEG-4"
 KEYWORDS="-* amd64"
+IUSE="filter-libv4l"
 
 DEPEND=""
 RDEPEND="~app-emulation/emul-linux-x86-baselibs-${PV}
@@ -14,11 +15,22 @@ RDEPEND="~app-emulation/emul-linux-x86-baselibs-${PV}
 	~app-emulation/emul-linux-x86-db-${PV}
 	!<=app-emulation/emul-linux-x86-sdl-20081109
 	!<=app-emulation/emul-linux-x86-soundlibs-20110101
-	!>=media-libs/libv4l-0.8.9-r1[abi_x86_32]"
+	!filter-libv4l? ( !>=media-libs/libv4l-0.8.9-r1[abi_x86_32] )"
 PDEPEND="~app-emulation/emul-linux-x86-soundlibs-${PV}"
 
 src_prepare() {
 	# Include all libv4l libs, bug #348277
 	ALLOWED="${S}/usr/lib32/libv4l/"
+
+	# media-libs/libv4l-0.9.5-r1
+	if use filter-libv4l; then
+		rm usr/lib32/libv4l/ov51{1,8}-decomp || die
+		rm usr/lib32/libv4l/v4l1compat.so || die
+		rm usr/lib32/libv4l/v4l2convert.so || die
+		rm usr/lib32/libv4l{1,2}.so{,.0} || die
+		rm usr/lib32/libv4lconvert.so{,.0} || die
+		rm usr/lib32/pkgconfig/libv4l{1,2,convert}.pc || die
+	fi
+
 	emul-linux-x86_src_prepare
 }
