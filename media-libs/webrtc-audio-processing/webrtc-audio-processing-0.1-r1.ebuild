@@ -16,6 +16,8 @@ SLOT="0"
 KEYWORDS="~amd64 ~x86 ~amd64-linux"
 IUSE="static-libs"
 
-RDEPEND="abi_x86_32? ( !<=app-emulation/emul-linux-x86-soundlibs-20130224 )"
+RDEPEND="abi_x86_32? ( || (
+			app-emulation/emul-linux-x86-soundlibs[filter-${PN}]
+			!<=app-emulation/emul-linux-x86-soundlibs-20130224 ) )"
 
 DOCS=( AUTHORS NEWS README )
