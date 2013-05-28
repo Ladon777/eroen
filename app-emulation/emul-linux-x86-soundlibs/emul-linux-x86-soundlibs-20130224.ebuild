@@ -7,7 +7,7 @@ inherit emul-linux-x86
 
 LICENSE="BSD FDL-1.2 GPL-2 LGPL-2.1 LGPL-2 MIT gsm public-domain"
 KEYWORDS="-* amd64"
-IUSE="alsa filter-alsa-lib filter-audiofile filter-fftw filter-flac filter-libogg filter-libvorbis filter-webrtc-audio-processing"
+IUSE="alsa filter-alsa-lib filter-audiofile filter-fftw filter-flac filter-libogg filter-libsndfile filter-libvorbis filter-webrtc-audio-processing"
 
 RDEPEND="~app-emulation/emul-linux-x86-baselibs-${PV}
 	~app-emulation/emul-linux-x86-medialibs-${PV}
@@ -48,6 +48,12 @@ src_prepare() {
 	if use filter-libogg; then
 		rm usr/lib32/libogg.so{,.0,.0.8.0} || die
 		rm usr/lib32/pkgconfig/ogg.pc || die
+	fi
+
+	# media-libs/libsndfile-1.0.25-r1
+	if use filter-libsndfile; then
+		rm usr/lib32/libsndfile.so{,.1,.1.0.25} || die
+		rm usr/lib32/pkgconfig/sndfile.pc || die
 	fi
 
 	# media-libs/libvorbis-1.3.3-r1

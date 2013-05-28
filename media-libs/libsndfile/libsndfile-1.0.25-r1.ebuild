@@ -35,7 +35,9 @@ RDEPEND="
 			app-emulation/emul-linux-x86-baselibs[development]
 		) )
 	)
-	abi_x86_32? ( !<=app-emulation/emul-linux-x86-soundlibs-20130224 )"
+	abi_x86_32? ( || (
+			app-emulation/emul-linux-x86-soundlibs[filter-${PN}]
+			!<=app-emulation/emul-linux-x86-soundlibs-20130224 ) )"
 DEPEND="${RDEPEND}
 	virtual/pkgconfig
 	test? ( ${PYTHON_DEPS} )"
