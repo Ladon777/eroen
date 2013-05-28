@@ -23,7 +23,9 @@ REQUIRED_USE="amd64? ( abi_x86_32? ( !mpi !quad ) )"
 
 RDEPEND="
 	mpi? ( virtual/mpi )
-	abi_x86_32? ( !<=app-emulation/emul-linux-x86-soundlibs-20130224 )"
+	abi_x86_32? ( || ( 
+			app-emulation/emul-linux-x86-soundlibs[filter-${PN}]
+			!<=app-emulation/emul-linux-x86-soundlibs-20130224 ) )"
 DEPEND="${RDEPEND}
 	test? ( dev-lang/perl )"
 
