@@ -17,7 +17,7 @@ KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~amd6
 IUSE="static-libs"
 
 RDEPEND="
-	abi_x86_32? ( !<=app-emulation/emul-linux-x86-soundlibs-20121202 )"
+	abi_x86_32? ( !<=app-emulation/emul-linux-x86-soundlibs-20130224 )"
 
 AUTOTOOLS_PRUNE_LIBTOOL_FILES=all
 DOCS=( AUTHORS CHANGES )
