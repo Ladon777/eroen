@@ -14,7 +14,7 @@ if [[ ${PV} != 999? ]]; then
 	EGIT_COMMIT=v${PV}
 fi
 
-LICENSE="GPL-2+"
+LICENSE="LGPL-2+ MIT"
 SLOT="0"
 KEYWORDS=""
 IUSE=""
@@ -35,8 +35,8 @@ pkg_pretend() {
 
 src_prepare() {
 	sed -i '/PREFIX/s:/usr/local:/usr:' Makefile
-	sed -i 's/-O3//g' Makefile
-	sed -i '/LDFLAGS/s/-s//' Makefile
+	sed -i 's/-O3//g' Makefile util/test/Makefile
+	sed -i '/LDFLAGS/s/-s//' Makefile util/test/Makefile
 }
 
 src_install() {
