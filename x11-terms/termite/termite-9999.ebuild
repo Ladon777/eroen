@@ -4,7 +4,7 @@
 
 EAPI=5
 
-inherit eutils toolchain-funcs git-2
+inherit eutils toolchain-funcs versionator git-2
 
 DESCRIPTION="A keyboard-centric VTE-based terminal"
 HOMEPAGE="https://github.com/thestinger/termite"
@@ -25,9 +25,7 @@ RDEPEND="${LIBDEPEND}"
 [[ ${EAPI} == *-hdepend ]] || DEPEND+=" ${HDEPEND}"
 
 pkg_pretend() {
-	if [[ $(gcc-major-version) -lt 4 ]] \
-		|| ( [[ $(gcc-major-version) -eq 4 ]] \
-		&& [[ $(gcc-minor-version) -lt 7 ]] ); then
+	if ! version_is_at_least 4.7 $(gcc-version); then
 		eerror "${PN} uses -std=c++11 and requires a version"
 		eerror "of gcc newer than 4.7.0"
 	fi
