@@ -4,7 +4,7 @@
 
 EAPI=5
 
-inherit eutils git-2
+inherit eutils toolchain-funcs git-2
 
 DESCRIPTION="A keyboard-centric VTE-based terminal"
 HOMEPAGE="https://github.com/thestinger/termite"
@@ -18,12 +18,32 @@ KEYWORDS=""
 IUSE=""
 
 HDEPEND=""
-LIBDEPEND=">=x11-libs/vte-0.34[termite-patch]"
+LIBDEPEND=">=x11-libs/gtk+-3.0
+	>=x11-libs/vte-0.34[termite-patch]"
 DEPEND="${LIBDEPEND}"
 RDEPEND="${LIBDEPEND}"
 [[ ${EAPI} == *-hdepend ]] || DEPEND+=" ${HDEPEND}"
 
+pkg_pretend() {
+	if [[ $(gcc-major-version) -lt 4 ]] \
+		|| ( [[ $(gcc-major-version) -eq 4 ]] \
+		&& [[ $(gcc-minor-version) -lt 7 ]] ); then
+		eerror "${PN} uses -std=c++11 and requires a version"
+		eerror "of gcc newer than 4.7.0"
+	fi
+}
+
 src_prepare() {
 	sed -i 's/-O3//g' Makefile
 	sed -i '/LDFLAGS/s/-s//' Makefile
+}
+
+src_install() {
+	default
+	dodoc config
+}
+
+pkg_postinst() {
+	elog "Termite looks for a config file ~/.config/termite/config"
+	elog "An example config can be found in ${ROOT}usr/share/doc/${PF}/"
 }
