@@ -25,4 +25,5 @@ RDEPEND="${LIBDEPEND}"
 
 src_prepare() {
 	sed -i 's/-O3//g' Makefile
+	sed -i '/LDFLAGS/s/-s//' Makefile
 }
