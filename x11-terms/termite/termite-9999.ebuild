@@ -32,6 +32,7 @@ pkg_pretend() {
 }
 
 src_prepare() {
+	sed -i '/PREFIX/s:/usr/local:/usr:' Makefile
 	sed -i 's/-O3//g' Makefile
 	sed -i '/LDFLAGS/s/-s//' Makefile
 }
@@ -42,6 +43,7 @@ src_install() {
 }
 
 pkg_postinst() {
+	elog
 	elog "Termite looks for a config file ~/.config/termite/config"
 	elog "An example config can be found in ${ROOT}usr/share/doc/${PF}/"
 }
