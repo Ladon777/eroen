@@ -18,7 +18,9 @@ KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~amd6
 IUSE="3dnow altivec +cxx debug ogg sse static-libs"
 
 RDEPEND="ogg? ( >=media-libs/libogg-1.1.3[${MULTILIB_USEDEP}] )
-	abi_x86_32? ( !<=app-emulation/emul-linux-x86-soundlibs-20130224 )"
+	abi_x86_32? ( || (
+			app-emulation/emul-linux-x86-soundlibs[filter-${PN}]
+			!<=app-emulation/emul-linux-x86-soundlibs-20130224 ) )"
 DEPEND="${RDEPEND}
 	app-arch/xz-utils
 	abi_x86_32? ( dev-lang/nasm )
