@@ -19,7 +19,7 @@ SLOT="0"
 KEYWORDS="~amd64"
 IUSE=""
 
-HDEPEND=""
+HDEPEND="sys-devel/automake:1.11"
 LIBDEPEND="dev-lang/lua
 	x11-libs/cairo"
 DEPEND="${LIBDEPEND}"
