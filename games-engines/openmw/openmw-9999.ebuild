@@ -4,7 +4,7 @@
 
 EAPI=5
 
-inherit eutils versionator games cmake-utils
+inherit eutils flag-o-matic versionator games cmake-utils
 [[ $(get_version_component_range $(get_version_component_count)) == *999? ]] && inherit git-2
 
 DESCRIPTION="Unofficial open source engine reimplementation of the game Morrowind"
@@ -12,7 +12,7 @@ HOMEPAGE="https://openmw.org/"
 LICENSE="GPL-3 BitstreamVera DaedricFont OFL-1.1"
 SLOT="0"
 KEYWORDS=""
-IUSE="test"
+IUSE="test +tr1"
 
 if [[ $(get_version_component_range $(get_version_component_count)) == *999? ]]; then
 	S="${WORKDIR}"/${PN}
@@ -36,10 +36,17 @@ LIBDEPEND="dev-games/ogre[boost,cg,freeimage,ois,opengl,threads,zip]
 	dev-qt/qtgui
 	dev-qt/qtxmlpatterns"
 DEPEND="${LIBDEPEND}
-	test? ( dev-cpp/gmock
-	    dev-cpp/gtest )"
+	test? ( dev-cpp/gmock[tr1=]
+	    dev-cpp/gtest[tr1=] )"
 [[ ${EAPI} == *-hdepend ]] || DEPEND+=" ${HDEPEND}"
 RDEPEND="${LIBDEPEND}"
+
+pkg_setup() {
+	if use test && ! use tr1; then
+		append-cflags -DGTEST_USE_OWN_TR1_TUPLE=1	
+		append-cxxflags -DGTEST_USE_OWN_TR1_TUPLE=1	
+	fi
+}
 
 src_prepare() {
 	epatch_user
