@@ -63,6 +63,12 @@ src_configure() {
 	cmake-utils_src_configure
 }
 
+src_test() {
+	pushd "${BUILD_DIR}" > /dev/null
+	./openmw_test_suite || die
+	popd > /dev/null
+}
+
 src_install() {
 	cmake-utils_src_install
 	sed -e "s:resources=resources:resources=${GAMES_DATADIR}/${PN}/resources:" \

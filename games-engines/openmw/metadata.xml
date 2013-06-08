@@ -5,7 +5,7 @@
 		OpenMW is an attempt to reimplement the popular role playing game Morrowind. It aims to be a fully playable, open source implementation of the game. You must own Morrowind to use OpenMW.
 	</longdescription>
 	<use>
-		<flag name=tr1>Use TR1 libraries</flag>
+		<flag name="tr1">Use TR1 libraries</flag>
 	</use>
 </pkgmetadata>
 
