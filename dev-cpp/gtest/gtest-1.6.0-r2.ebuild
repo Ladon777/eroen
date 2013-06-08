@@ -5,7 +5,7 @@
 EAPI="5"
 PYTHON_DEPEND="2"
 
-inherit eutils python autotools-multilib
+inherit eutils flag-o-matic python autotools-multilib
 
 DESCRIPTION="Google C++ Testing Framework"
 HOMEPAGE="http://code.google.com/p/googletest/"
@@ -14,7 +14,7 @@ SRC_URI="http://googletest.googlecode.com/files/${P}.zip"
 LICENSE="BSD"
 SLOT="0"
 KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~ppc-macos"
-IUSE="examples static-libs"
+IUSE="examples +tr1 static-libs"
 
 DEPEND="app-arch/unzip"
 RDEPEND=""
@@ -28,6 +28,10 @@ AUTOTOOLS_AUTORECONF="1"
 pkg_setup() {
 	python_pkg_setup
 	python_set_active_version 2
+	if ! use tr1; then
+		append-cflags -DGTEST_USE_OWN_TR1_TUPLE=1
+		append-cxxflags -DGTEST_USE_OWN_TR1_TUPLE=1
+	fi
 }
 
 src_prepare() {

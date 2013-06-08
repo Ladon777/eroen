@@ -9,4 +9,7 @@
 		<doc lang="en">http://code.google.com/p/googletest/w/list</doc>
 		<remote-id type="google-code">googletest</remote-id>
 	</upstream>
+	<use>
+		<flag name="tr1">Use TR1 libraries</flag>
+	</use>
 </pkgmetadata>
