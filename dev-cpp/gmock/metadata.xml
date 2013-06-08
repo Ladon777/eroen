@@ -2,9 +2,11 @@
 <!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
 <pkgmetadata>
 	<maintainer>
-		<email>vapier@gentoo.org</email>
 	</maintainer>
 	<upstream>
 		<remote-id type="google-code">googlemock</remote-id>
 	</upstream>
+	<use>
+		<flag name=tr1>Use TR1 libraries</flag>
+	</use>
 </pkgmetadata>

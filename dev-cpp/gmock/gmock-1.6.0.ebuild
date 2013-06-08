@@ -4,7 +4,7 @@
 
 EAPI="4"
 
-inherit libtool
+inherit flag-o-matic libtool
 
 DESCRIPTION="Google's C++ mocking framework"
 HOMEPAGE="http://code.google.com/p/googlemock/"
@@ -13,11 +13,18 @@ SRC_URI="http://googlemock.googlecode.com/files/${P}.zip"
 LICENSE="BSD"
 SLOT="0"
 KEYWORDS="amd64 ~arm ~mips ppc ~ppc64 x86"
-IUSE="static-libs"
+IUSE="static-libs +tr1"
 
 RDEPEND="=dev-cpp/gtest-${PV}*"
 DEPEND="app-arch/unzip
 	${RDEPEND}"
+
+pkg_setup() {
+	if ! use tr1; then
+		append-cflags -DGTEST_USE_OWN_TR1_TUPLE=1
+		append-cxxflags -DGTEST_USE_OWN_TR1_TUPLE=1
+	fi
+}
 
 src_unpack() {
 	default
