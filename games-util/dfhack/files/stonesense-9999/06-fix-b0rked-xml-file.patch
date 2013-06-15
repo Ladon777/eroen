@@ -1,0 +1,34 @@
+fix b0rked xml file
+
+From: eroen <eroen@occam.eroen.eu>
+
+it breaks loading the file.
+
+    File load failed: /usr/share/games/dfhack-9999/stonesense/terrain/block_walls.xml
+    Failure in reading /usr/share/games/dfhack-9999/stonesense/terrain/block_walls.xml
+---
+ resources/terrain/block_walls.xml |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/resources/terrain/block_walls.xml b/resources/terrain/block_walls.xml
+index d48c5af..662b63a 100644
+--- a/resources/terrain/block_walls.xml
++++ b/resources/terrain/block_walls.xml
+@@ -1,7 +1,7 @@
+ <?xml version="1.0"?>
+ <walls file="block_walls.png">
+   <!-- construct -->
+-  <walls sheetIndex="0" color="material" halftile="no">
++  <wall sheetIndex="0" color="material" halftile="no">
+     <form value="block" />
+     <material value="Inorganic" />
+     <!-- pillar -->
+@@ -53,7 +53,7 @@
+ 		/>
+   </wall>
+ </walls>
+-<floors file="block_floors.png">
++<floors file="block_floors.png">
+   <!-- construct -->
+   <floor sheetIndex="0" color="material" halftile="no">
+     <form value="block" />

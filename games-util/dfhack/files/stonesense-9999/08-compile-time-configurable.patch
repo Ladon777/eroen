@@ -1,0 +1,25 @@
+compile time configurable benchmark location
+
+From: eroen <eroen@occam.eroen.eu>
+
+
+---
+ main.cpp |    4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/main.cpp b/main.cpp
+index 54a45e8..def4fe4 100644
+--- a/main.cpp
++++ b/main.cpp
+@@ -200,7 +200,11 @@ void benchmark()
+         reloadDisplayedSegment();
+     }
+ 
++    #ifdef DFHACK_STATEDIR
++    FILE* fp = fopen(DFHACK_STATEDIR "/benchmark.txt", "w" );
++    #else
+     FILE* fp = fopen("benchmark.txt", "w" );
++    #endif
+     if(!fp) {
+         return;
+     }

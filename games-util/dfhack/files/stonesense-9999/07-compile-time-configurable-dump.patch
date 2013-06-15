@@ -1,0 +1,132 @@
+compile time configurable dump location
+
+From: eroen <eroen@occam.eroen.eu>
+
+
+---
+ BuildingConfiguration.cpp       |    4 ++++
+ ContentLoader.cpp               |    6 +++++-
+ DumpInfo.cpp                    |   24 ++++++++++++++++++++++--
+ GroundMaterialConfiguration.cpp |    4 ++++
+ 4 files changed, 35 insertions(+), 3 deletions(-)
+
+diff --git a/BuildingConfiguration.cpp b/BuildingConfiguration.cpp
+index 6a74246..2519322 100644
+--- a/BuildingConfiguration.cpp
++++ b/BuildingConfiguration.cpp
+@@ -38,7 +38,11 @@ BuildingConfiguration::~BuildingConfiguration(void)
+ void DumpBuildingNamesToDisk()
+ {
+     /*
++    #ifdef DFHACK_STATEDIR
++    FILE* fp = fopen(DFHACK_STATEDIR "/buildingdump.txt", "w");
++    #else
+     FILE* fp = fopen("buildingdump.txt", "w");
++    #endif
+     if(!fp) return;
+     for(uint32_t j=0; j < contentLoader->classIdStrings.size(); j++){
+     fprintf(fp, "%i:%s\n",j, contentLoader->classIdStrings[j].c_str());
+diff --git a/ContentLoader.cpp b/ContentLoader.cpp
+index 19e2cff..e889891 100644
+--- a/ContentLoader.cpp
++++ b/ContentLoader.cpp
+@@ -206,7 +206,11 @@ bool ContentLoader::Load()
+             }
+         }
+     }
++    #ifdef DFHACK_STATEDIR
++    //DumpStringVector(DFHACK_STATEDIR "/professiondump.txt", &professionStrings);
++    #else
+     //DumpStringVector("professiondump.txt", &professionStrings);
++    #endif
+     gatherStyleIndices(&df::global::world->raws);
+     /*
+     if(classIdStrings.empty())
+@@ -953,4 +957,4 @@ ShadeBy getShadeType(const char* Input)
+         return ShadeItem;
+     }
+     return ShadeNone;
+-}
+\ No newline at end of file
++}
+diff --git a/DumpInfo.cpp b/DumpInfo.cpp
+index 2184f43..9779ff2 100644
+--- a/DumpInfo.cpp
++++ b/DumpInfo.cpp
+@@ -133,7 +133,11 @@ void dumpSegment()
+ //}
+ //
+ //void DumpCreatureNamesToDisk(){
+-//	/*FILE* fp = fopen("dump.txt", "w");
++//	/*#ifdef DFHACK_STATEDIR
++//	FILE* fp = fopen(DFHACK_STATEDIR "/dump.txt", "w");
++//	#else
++//	FILE* fp = fopen("dump.txt", "w");
++//	#endif
+ //	if(!fp) return;
+ //	for(uint32_t j=0; j < v_creatureNames.size(); j++){
+ //	fprintf(fp, "%i:%s\n",j, v_creatureNames[j].id);
+@@ -141,7 +145,11 @@ void dumpSegment()
+ //	fclose(fp);*/
+ //}
+ //void DumpProfessionsToDisk(){
++//	#ifdef DFHACK_STATEDIR
++//	FILE* fp = fopen(DFHACK_STATEDIR "/dump.txt", "w");
++//	#else
+ //	FILE* fp = fopen("dump.txt", "w");
++//	#endif
+ //	if(!fp) return;
+ //	string proffStr;
+ //	for(int j=0; (proffStr = contentLoader->professionStrings[j]) != "" ; j++){
+@@ -248,16 +256,28 @@ void DumpInfo(color_ostream & out, std::vector<std::string> & params)
+     string & p1 = params[0];
+     if(p1 == "dumpitems") {
+         out.print("dumping equippable item names to 'itemdump.txt'...\n");
++        #ifdef DFHACK_STATEDIR
++        DumpItemNamesToDisk(DFHACK_STATEDIR "/itemdump.txt");
++        #else
+         DumpItemNamesToDisk("itemdump.txt");
++        #endif
+         out.print("...done\n");
+     } else if(p1 == "dumptiles") {
+         out.print("dumping equippable item names to 'tiledump.txt'...\n");
++        #ifdef DFHACK_STATEDIR
++        DumpTileTypes(DFHACK_STATEDIR "/tiledump.txt");
++        #else
+         DumpTileTypes("tiledump.txt");
++        #endif
+         out.print("...done\n");
+     } else if(p1 == "genterrain") {
+         if(params.size() > 1) {
+             out.print("generating 'terrain.xml'...\n");
++            #ifdef DFHACK_STATEDIR
++            GenerateTerrainXml(DFHACK_STATEDIR "/terrain.xml", params[1], GetBasicShape(params[1]));
++            #else
+             GenerateTerrainXml("terrain.xml", params[1], GetBasicShape(params[1]));
++            #endif
+             out.print("...done\n");
+         } else {
+             out.printerr("invalid argument\n");
+@@ -266,4 +286,4 @@ void DumpInfo(color_ostream & out, std::vector<std::string> & params)
+         out.printerr("invalid argument\n");
+     }
+ 
+-}
+\ No newline at end of file
++}
+diff --git a/GroundMaterialConfiguration.cpp b/GroundMaterialConfiguration.cpp
+index 8b9a0d9..acd3e10 100644
+--- a/GroundMaterialConfiguration.cpp
++++ b/GroundMaterialConfiguration.cpp
+@@ -40,7 +40,11 @@ TerrainConfiguration::~TerrainConfiguration()
+ 
+ void DumpInorganicMaterialNamesToDisk()
+ {
++    #ifdef DFHACK_STATEDIR
++    FILE* fp = fopen(DFHACK_STATEDIR "/dump.txt", "w");
++    #else
+     FILE* fp = fopen("dump.txt", "w");
++    #endif
+     if(!fp) {
+         return;
+     }
