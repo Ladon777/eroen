@@ -5,3 +5,4 @@
 04-compile-time-configurable.patch
 05-compile-time-configurable-0.patch
 06-compile-time-configurable-1.patch
+07-startup-scripts-configurable.patch

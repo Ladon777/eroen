@@ -88,6 +88,7 @@ else
 fi
 
 pkg_setup() {
+	df_executable="df-${df_PV}"
 	dfhack_datadir="${GAMES_DATADIR}/${P}"
 	dfhack_docdir="/usr/share/doc/${P}"
 	dfhack_statedir="${GAMES_STATEDIR}/${P}"
@@ -100,6 +101,7 @@ src_prepare() {
 	epatch "${FILESDIR}"/${P}/04-compile-time-configurable.patch
 	epatch "${FILESDIR}"/${P}/05-compile-time-configurable-0.patch
 	epatch "${FILESDIR}"/${P}/06-compile-time-configurable-1.patch
+	epatch "${FILESDIR}"/${P}/07-startup-scripts-configurable.patch
 
 	pushd "${S}"/depends/clsocket
 	epatch "${FILESDIR}"/clsocket/0001-Compile-static-library-as-PIC.patch
@@ -119,20 +121,6 @@ src_prepare() {
 		#epatch "${FILESDIR}"/stonesense/0003-screenshots-in-home-dir.patch
 		popd
 	fi
-
-	# Fix up the startup scripts
-	sed -i "package/linux/dfhack" \
-		-e "s%\"\./hack\"%\"${dfhack_libdir}\"%" \
-		-e "s%\"\./hack/libs\"%\"${dfhack_libdir}/libs\"%" \
-		-e "s%\./hack/libdfhack.so%\"${dfhack_libdir}/libdfhack.so\"%" \
-		-e "s%\./libs/Dwarf_Fortress%df-${df_PV}%" \
-		|| die "dfhack sed"
-
-	sed -i "package/linux/dfhack-run" \
-		-e "s%\"\./hack"%"${dfhack_libdir}\"%" \
-		-e "s%\"\./hack/libs"%"${dfhack_libdir/libs}\"%" \
-		-e "s%hack/dfhack-run%\"${dfhack_libdir}/dfhack-run\"%" \
-		|| die "dfhack-run sed"
 
 	# Fix other scripts
 	sed -i "plugins/ruby/ruby.rb" \
@@ -181,6 +169,7 @@ src_configure() {
 		"-DCONSOLE_NO_CATCH=OFF"
 		"-DDL_RUBY=ON"
 
+		"-DDF_EXECUTABLE=${df_executable}"
 		"-DDFHACK_STATEDIR=${GAMES_STATEDIR}/${P}"
 		"-DDFHACK_BINARY_DESTINATION=${GAMES_BINDIR}"
 		"-DDFHACK_LIBRARY_DESTINATION=${dfhack_libdir}"
