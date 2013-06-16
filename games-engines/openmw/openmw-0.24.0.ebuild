@@ -11,7 +11,7 @@ DESCRIPTION="Unofficial open source engine reimplementation of the game Morrowin
 HOMEPAGE="https://openmw.org/"
 LICENSE="GPL-3 BitstreamVera DaedricFont OFL-1.1"
 SLOT="0"
-KEYWORDS=""
+KEYWORDS="~amd64 ~x86"
 IUSE="test"
 
 if [[ $(get_version_component_range $(get_version_component_count)) == *999? ]]; then
@@ -21,7 +21,7 @@ if [[ $(get_version_component_range $(get_version_component_count)) == *999? ]];
 		EGIT_BRANCH=openmw$(get_version_component_range 2)
 	fi
 else
-	SRC_URI="https://openmw.googlecode.com/files/${P}.tar.gz"
+	SRC_URI="https://openmw.googlecode.com/files/${P}-source.tar.gz"
 	S="${WORKDIR}"/${PN}-${P}
 fi
 
@@ -45,6 +45,11 @@ src_prepare() {
 	epatch "${FILESDIR}"/${PN}-0.24.0-0001-libc-fixes-avcodec-avformat-workaround.patch
 	epatch "${FILESDIR}"/${PN}-0.24.0-0002-libc-fixes-don-t-rely-on-tr1.patch
 	epatch_user
+}
+
+src_unpack() {
+	mkdir "${S}" && cd "${S}" || die
+	default
 }
 
 src_configure() {
