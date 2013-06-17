@@ -23,6 +23,7 @@ if [[ ! ${PV} == "9999" ]]; then
 	EGIT_COMMIT="${MY_PV}"
 fi
 
+CMAKE_MIN_VERSION=2.8.9
 CMAKE_REMOVE_MODULES_LIST="FindCurses FindDoxygen CMakeVS10FindMake"
 
 LICENSE="ZLIB MIT BSD-2"
@@ -51,6 +52,8 @@ RDEPEND="${LIBRARY_DEPEND}
 	games-simulation/dwarffortress
 	ssense? ( app-emulation/emul-linux-x86-opengl
 		app-emulation/emul-linux-x86-xlibs )"
+
+QA_PREBUILT+="${dfhack_libdir}"/libruby.so
 
 ## missing multilib
 #dev-lang/lua - binary bundled
@@ -83,8 +86,7 @@ multilib_toolchain_setup x86
 if use egg; then
 	dfhack_libdir="$(games_get_libdir)"
 else
-	#dfhack_libdir="$(games_get_libdir)/${P}"
-	dfhack_libdir="$(games_get_libdir)"
+	dfhack_libdir="$(games_get_libdir)/${P}"
 fi
 
 pkg_setup() {
@@ -102,6 +104,7 @@ src_prepare() {
 	epatch "${FILESDIR}"/${P}/05-compile-time-configurable-0.patch
 	epatch "${FILESDIR}"/${P}/06-compile-time-configurable-1.patch
 	epatch "${FILESDIR}"/${P}/07-startup-scripts-configurable.patch
+	epatch "${FILESDIR}"/${P}/08-ruby-plugin-configurable-paths.patch
 
 	pushd "${S}"/depends/clsocket
 	epatch "${FILESDIR}"/clsocket/0001-Compile-static-library-as-PIC.patch
@@ -123,9 +126,6 @@ src_prepare() {
 	fi
 
 	# Fix other scripts
-	sed -i "plugins/ruby/ruby.rb" \
-		-e "s%\./hack/ruby/%${GAMES_DATADIR}/${P}/ruby/%" \
-		|| die "ruby/ruby.rb sed failed"
 #	if use dfusion; then
 #	sed -f - -i plugins/Dfusion/luafiles/{init.lua,friendship/{init.lua,plugin.lua,install.lua},triggers/{plugin.lua,functions_menu.lua},friendship_civ/init.lua,common.lua,embark/{init.lua,plugin.lua},migrants/{init.lua,plugin.lua},xml_struct.lua,xml_types.lua} <<- EOF || die
 #		s:("dfusion/:("${datadir}/dfusion/:
@@ -134,15 +134,7 @@ src_prepare() {
 #		sed -i "s:libs/Dwarf_Fortress:Dwarf_Fortress:" plugins/Dfusion/luafiles/common.lua
 #	fi
 
-	#if use egg; then
-#	sed -f - -i ./library/Hooks-egg.cpp <<- EOF || die
-#		s/SDL_Event\* event/SDL::Event\* event/
-#		EOF
-	#fi
-
 	##Issues:
-	# - libdir should be hidden
-	# - egg
 	# - df version
 	# - dfusion is strange. It's always been that, though.
 	# - prebuilt ruby
@@ -208,8 +200,6 @@ src_configure() {
 src_compile() {
 	cmake-utils_src_compile
 }
-
-QA_PREBUILT+="${dfhack_libdir}"/libruby.so
 
 src_install() {
 	cmake-utils_src_install
