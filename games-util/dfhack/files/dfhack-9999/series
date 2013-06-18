@@ -7,3 +7,4 @@
 06-compile-time-configurable-1.patch
 07-startup-scripts-configurable.patch
 08-ruby-plugin-configurable-paths.patch
+09-eggy-remove-annoying-banner.patch

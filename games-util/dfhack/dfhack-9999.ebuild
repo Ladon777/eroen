@@ -29,7 +29,7 @@ CMAKE_REMOVE_MODULES_LIST="FindCurses FindDoxygen CMakeVS10FindMake"
 LICENSE="ZLIB MIT BSD-2"
 SLOT="0"
 KEYWORDS="~amd64"
-IUSE="doc api minimal dfusion ssense egg"
+IUSE="api dfusion doc egg isoworld minimal ssense"
 
 HDEPEND="
 	dev-perl/XML-LibXML
@@ -53,14 +53,12 @@ RDEPEND="${LIBRARY_DEPEND}
 	ssense? ( app-emulation/emul-linux-x86-opengl
 		app-emulation/emul-linux-x86-xlibs )"
 
-QA_PREBUILT+="${dfhack_libdir}"/libruby.so
-
 ## missing multilib
 #dev-lang/lua - binary bundled
 #dev-libs/protobuf - bundled
 #   sys-libs/zlib (libz.so.1) - baselibs
 ## ssense
-#allegro
+#allegro - binary bundled
 #	dev-libs/atk (libatk-1.0.so.0) - gtklibs
 #	dev-libs/glib (libgthread-2.0.so.0,libglib-2.0.so.0,libgobject-2.0.so.0,libgmodule-2.0.so.0,libgio-2.0.so.0) - baselibs
 #	media-libs/fontconfig (libfontconfig.so.1)
@@ -88,6 +86,7 @@ if use egg; then
 else
 	dfhack_libdir="$(games_get_libdir)/${P}"
 fi
+QA_PREBUILT+="${dfhack_libdir}"/libruby.so
 
 pkg_setup() {
 	df_executable="df-${df_PV}"
@@ -105,6 +104,7 @@ src_prepare() {
 	epatch "${FILESDIR}"/${P}/06-compile-time-configurable-1.patch
 	epatch "${FILESDIR}"/${P}/07-startup-scripts-configurable.patch
 	epatch "${FILESDIR}"/${P}/08-ruby-plugin-configurable-paths.patch
+	epatch "${FILESDIR}"/${P}/09-eggy-remove-annoying-banner.patch
 
 	pushd "${S}"/depends/clsocket
 	epatch "${FILESDIR}"/clsocket/0001-Compile-static-library-as-PIC.patch
@@ -124,6 +124,12 @@ src_prepare() {
 		#epatch "${FILESDIR}"/stonesense/0003-screenshots-in-home-dir.patch
 		popd
 	fi
+	if use isoworld; then
+		pushd "${S}"/plugins/isoworld
+		epatch "${FILESDIR}"/isoworld-${PV}/01-missing-include-dir.patch
+		popd
+		ewarn "The isoworld plugin requires agui, and will probably fail to build"
+	fi
 
 	# Fix other scripts
 #	if use dfusion; then
@@ -138,6 +144,8 @@ src_prepare() {
 	# - df version
 	# - dfusion is strange. It's always been that, though.
 	# - prebuilt ruby
+	# - prebuilt lua
+	# - isoworld requires agui
 	# - prebuilt allegro for stonesense.
 	# - stonesense conf file: /usr/share/games/dfhack-9999/stonesense/init.txt
 	# Set in ./Config.cpp, installed together with the rest of the directory.
@@ -151,7 +159,7 @@ src_configure() {
 		"$(cmake-utils_use dfusion BUILD_DFUSION)"
 		"$(cmake-utils_use doc BUILD_DOXYGEN)"
 		"$(cmake-utils_use egg BUILD_EGGY)"
-		"-DBUILD_ISOWORLD=OFF"
+		"$(cmake-utils_use isoworld BUILD_ISOWORLD)"
 		"-DBUILD_LIBRARY=ON"
 		"-DBUILD_PLUGINS=ON"
 		"-DBUILD_RUBY=ON"

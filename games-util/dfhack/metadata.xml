@@ -7,6 +7,7 @@
 		<flag name="api">Install development headers. This breaks slotting.</flag>
 		<flag name="dfusion">Build the Dfusion plugin. This does not work properly.</flag>
 		<flag name="egg">Build libegg in stead of the libsdl overriding library for interfacing with <pkg>games-simulation/dwarffortress</pkg>. Requires a patched <pkg>dev-libs/libgraphics</pkg>.</flag>
+		<flag name="isoworld">Build the isoworld plugin.</flag>
 		<flag name="ssense">Build the Stonesense plugin. This installs pre-built allegro libraries.</flag>
 	</use>
 </pkgmetadata>
