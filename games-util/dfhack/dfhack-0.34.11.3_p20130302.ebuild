@@ -26,7 +26,7 @@ else
 	if [[ $(get_version_component_count) -le 4 ]]; then
 		EGIT_COMMIT=${MY_PV}
 	else
-		:
+		EGIT_COMMIT=18a91ef221f531307ac5ddbe29532a3d6e0a04ec
 	fi
 	KEYWORDS="~amd64"
 fi

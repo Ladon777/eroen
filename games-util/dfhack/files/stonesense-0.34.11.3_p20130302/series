@@ -1,0 +1,9 @@
+# This series applies on GIT commit 0d41614ff3dae9245e786ad667b0e463fe0dea3e
+01-null-isn-t-an-int32.patch
+02-configurable-install-paths.patch
+03-don-t-segfault-if-logfile-is.patch
+04-compile-time-configuration-of.patch
+05-compile-time-configurable-log.patch
+06-fix-b0rked-xml-file.patch
+07-compile-time-configurable-dump.patch
+08-compile-time-configurable.patch

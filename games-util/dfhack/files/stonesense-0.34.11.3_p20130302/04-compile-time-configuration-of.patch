@@ -1,0 +1,188 @@
+compile time configuration of magic cwd
+
+From: eroen <eroen@occam.eroen.eu>
+
+
+---
+ Config.cpp                |    4 ++++
+ ContentBuildingReader.cpp |    4 ++++
+ ContentLoader.cpp         |    8 ++++++++
+ GUI.cpp                   |    4 ++++
+ Keybinds.cpp              |    4 ++++
+ OcclusionTest.cpp         |    5 +++++
+ Tile.cpp                  |    8 ++++++++
+ main.cpp                  |   12 ++++++++++++
+ 8 files changed, 49 insertions(+)
+
+diff --git a/Config.cpp b/Config.cpp
+index 2c431a8..76d3bd7 100644
+--- a/Config.cpp
++++ b/Config.cpp
+@@ -789,7 +789,11 @@ void parseConfigLine( string line )
+ bool loadConfigFile()
+ {
+     string line;
++    #ifdef DFHACK_DATA_DESTINATION
++    ALLEGRO_PATH * p =al_create_path(DFHACK_DATA_DESTINATION "/stonesense/init.txt");
++    #else
+     ALLEGRO_PATH * p =al_create_path("stonesense/init.txt");
++    #endif
+     const char * path = al_path_cstr(p,ALLEGRO_NATIVE_PATH_SEP);
+     ifstream myfile (path);
+     if (myfile.is_open() == false) {
+diff --git a/ContentBuildingReader.cpp b/ContentBuildingReader.cpp
+index cf62502..b092611 100644
+--- a/ContentBuildingReader.cpp
++++ b/ContentBuildingReader.cpp
+@@ -436,7 +436,11 @@ void flushBuildingConfig( vector<BuildingConfiguration>* knownBuildings )
+ /*
+ bool LoadBuildingConfiguration( vector<BuildingConfiguration>* knownBuildings ){
+   string line;
++  #ifdef DFHACK_DATA_DESTINATION
++  ifstream myfile (DFHACK_DATA_DESTINATION "/buildings/index.txt");
++  #else
+   ifstream myfile ("buildings/index.txt");
++  #endif
+   if (myfile.is_open() == false){
+     WriteErr("Unable to load building config index file!\n");
+     return false;
+diff --git a/ContentLoader.cpp b/ContentLoader.cpp
+index c4ffdb1..19e2cff 100644
+--- a/ContentLoader.cpp
++++ b/ContentLoader.cpp
+@@ -227,7 +227,11 @@ bool ContentLoader::Load()
+     contentLoader->obsidian = lookupMaterialIndex(INORGANIC, "OBSIDIAN");
+ 
+     loadGraphicsFromDisk(); //these get destroyed when flushImgFiles is called.
++    #ifdef DFHACK_DATA_DESTINATION
++    ALLEGRO_PATH * p = al_create_path(DFHACK_DATA_DESTINATION "/stonesense/index.txt");
++    #else
+     ALLEGRO_PATH * p = al_create_path("stonesense/index.txt");
++    #endif
+     bool overallResult = parseContentIndexFile( al_path_cstr(p, ALLEGRO_NATIVE_PATH_SEP) );
+     al_destroy_path(p);
+     translationComplete = false;
+@@ -249,7 +253,11 @@ bool ContentLoader::reload_configs()
+     flushImgFiles();
+ 
+     loadGraphicsFromDisk(); //these get destroyed when flushImgFiles is called.
++    #ifdef DFHACK_DATA_DESTINATION
++    ALLEGRO_PATH * p = al_create_path(DFHACK_DATA_DESTINATION "/stonesense/index.txt");
++    #else
+     ALLEGRO_PATH * p = al_create_path("stonesense/index.txt");
++    #endif
+     bool overallResult = parseContentIndexFile( al_path_cstr(p, ALLEGRO_NATIVE_PATH_SEP) );
+     al_destroy_path(p);
+ 
+diff --git a/GUI.cpp b/GUI.cpp
+index 1c45abf..a872df5 100644
+--- a/GUI.cpp
++++ b/GUI.cpp
+@@ -1058,7 +1058,11 @@ bool load_from_path (ALLEGRO_PATH * p, const char * filename, ALLEGRO_BITMAP *&
+ 
+ void loadGraphicsFromDisk()
+ {
++    #ifdef DFHACK_DATA_DESTINATION
++    ALLEGRO_PATH * p = al_create_path_for_directory(DFHACK_DATA_DESTINATION "/stonesense");
++    #else
+     ALLEGRO_PATH * p = al_create_path_for_directory("stonesense");
++    #endif
+     if(!load_from_path(p, "objects.png", IMGObjectSheet)) {
+         return;
+     }
+diff --git a/Keybinds.cpp b/Keybinds.cpp
+index 94cab94..ec67b6a 100644
+--- a/Keybinds.cpp
++++ b/Keybinds.cpp
+@@ -268,7 +268,11 @@ void parseKeymapLine( string line )
+ 
+ bool loadKeymapFile(){    
+     string line;
++    #ifdef DFHACK_DATA_DESTINATION
++    ALLEGRO_PATH * p =al_create_path(DFHACK_DATA_DESTINATION "/stonesense/keybinds.txt");
++    #else
+     ALLEGRO_PATH * p =al_create_path("stonesense/keybinds.txt");
++    #endif
+     const char * path = al_path_cstr(p,ALLEGRO_NATIVE_PATH_SEP);
+     ifstream myfile (path);
+     if (myfile.is_open() == false) {
+diff --git a/OcclusionTest.cpp b/OcclusionTest.cpp
+index 36b4c7c..16ab0c3 100644
+--- a/OcclusionTest.cpp
++++ b/OcclusionTest.cpp
+@@ -118,8 +118,13 @@ void init_masks()
+     //load up some mask files
+     int flags = al_get_new_bitmap_flags();
+     al_set_new_bitmap_flags(ALLEGRO_MEMORY_BITMAP);
++    #ifdef DFHACK_DATA_DESTINATION
++    ALLEGRO_BITMAP * wall = load_bitmap_withWarning(DFHACK_DATA_DESTINATION "/stonesense/mask_wall.png");
++    ALLEGRO_BITMAP * floor = load_bitmap_withWarning(DFHACK_DATA_DESTINATION "/stonesense/mask_floor.png");
++    #else
+     ALLEGRO_BITMAP * wall = load_bitmap_withWarning("stonesense/mask_wall.png");
+     ALLEGRO_BITMAP * floor = load_bitmap_withWarning("stonesense/mask_floor.png");
++    #endif
+     al_set_new_bitmap_flags(flags);
+ 
+     //copy the mask to the bitsets. Each half is seperate to simplify things.
+diff --git a/Tile.cpp b/Tile.cpp
+index 419e4b9..bfab1f5 100644
+--- a/Tile.cpp
++++ b/Tile.cpp
+@@ -636,9 +636,17 @@ void createEffectSprites()
+     sprite_dust			= CreateSpriteFromSheet( 182, IMGObjectSheet);
+     sprite_magma		= CreateSpriteFromSheet( 185, IMGObjectSheet);
+     sprite_smoke		= CreateSpriteFromSheet( 186, IMGObjectSheet);
++    #ifdef DFHACK_DATA_DESTINATION
++    sprite_dragonfire	= load_bitmap_withWarning(DFHACK_DATA_DESTINATION "/stonesense/Effect_flames.png");
++    #else
+     sprite_dragonfire	= load_bitmap_withWarning("stonesense/Effect_flames.png");
++    #endif
+     sprite_fire			= CreateSpriteFromSheet( 188, IMGObjectSheet);
++    #ifdef DFHACK_DATA_DESTINATION
++    sprite_webing		= load_bitmap_withWarning(DFHACK_DATA_DESTINATION "/stonesense/Effect_web.png");
++    #else
+     sprite_webing		= load_bitmap_withWarning("stonesense/Effect_web.png");
++    #endif
+     sprite_boiling		= CreateSpriteFromSheet( 190, IMGObjectSheet);
+     sprite_oceanwave	= CreateSpriteFromSheet( 191, IMGObjectSheet);
+ }
+diff --git a/main.cpp b/main.cpp
+index 9fa513d..090c0d2 100644
+--- a/main.cpp
++++ b/main.cpp
+@@ -161,7 +161,11 @@ void correctTileForDisplayedOffset(int32_t& x, int32_t& y, int32_t& z)
+ 
+ bool loadfont(DFHack::color_ostream & output)
+ {
++    #ifdef DFHACK_DATA_DESTINATION
++    ALLEGRO_PATH * p = al_create_path_for_directory(DFHACK_DATA_DESTINATION "/stonesense");
++    #else
+     ALLEGRO_PATH * p = al_create_path_for_directory("stonesense");
++    #endif
+     if(!al_join_paths(p, ssConfig.font)) {
+         al_destroy_path(p);
+         return false;
+@@ -217,7 +221,11 @@ void drawcredits()
+     //centred splash image
+     {
+         if(!SplashImage) {
++            #ifdef DFHACK_DATA_DESTINATION
++            ALLEGRO_PATH * p = al_create_path(DFHACK_DATA_DESTINATION "/stonesense/splash.png");
++            #else
+             ALLEGRO_PATH * p = al_create_path("stonesense/splash.png");
++            #endif
+             SplashImage = load_bitmap_withWarning(al_path_cstr(p, ALLEGRO_NATIVE_PATH_SEP));
+             al_destroy_path(p);
+         }
+@@ -448,7 +456,11 @@ static void * stonesense_thread(ALLEGRO_THREAD * main_thread, void * parms)
+         al_set_new_bitmap_flags(ALLEGRO_MIN_LINEAR|ALLEGRO_MIPMAP);
+     }
+ 
++    #ifdef DFHACK_DATA_DESTINATION
++    ALLEGRO_PATH * p = al_create_path(DFHACK_DATA_DESTINATION "/stonesense/stonesense.png");
++    #else
+     ALLEGRO_PATH * p = al_create_path("stonesense/stonesense.png");
++    #endif
+     IMGIcon = load_bitmap_withWarning(al_path_cstr(p, ALLEGRO_NATIVE_PATH_SEP));
+     al_destroy_path(p);
+     if(!IMGIcon) {

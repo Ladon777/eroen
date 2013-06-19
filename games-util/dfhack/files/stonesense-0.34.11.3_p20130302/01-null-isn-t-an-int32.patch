@@ -1,0 +1,46 @@
+NULL isn't int32_t
+
+From: eroen <eroen@occam.eroen.eu>
+
+ContentLoader.h declares
+vector<vector<int32_t>*> position_Indices;
+
+Thus, it is not appropriate to set
+position_Indices[ent_id]->resize(pos_id+1, NULL);
+
+Rather, 0s will do nicely.
+---
+ ContentLoader.cpp |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/ContentLoader.cpp b/ContentLoader.cpp
+index 9e305a3..c4ffdb1 100644
+--- a/ContentLoader.cpp
++++ b/ContentLoader.cpp
+@@ -150,7 +150,7 @@ bool ContentLoader::Load()
+                 if(!position_Indices[ent_id])
+                     position_Indices[ent_id] = new vector<int32_t>;
+                 if(pos_id  >= position_Indices[ent_id]->size())
+-                    position_Indices[ent_id]->resize(pos_id+1, NULL);
++                    position_Indices[ent_id]->resize(pos_id+1, 0);
+                 position_Indices[ent_id]->at(pos_id) = found;
+                 //LogError("%d(%d):%s->%d(%d):%s = %d\n", i, currentity->id, currentity->entity_raw->code.c_str(), j,currentpos->id, currentpos->code.c_str(), found);
+             }
+@@ -175,7 +175,7 @@ bool ContentLoader::Load()
+                 if(!position_Indices[ent_id])
+                     position_Indices[ent_id] = new vector<int32_t>;
+                 if(pos_id  >= position_Indices[ent_id]->size())
+-                    position_Indices[ent_id]->resize(pos_id+1, NULL);
++                    position_Indices[ent_id]->resize(pos_id+1, 0);
+                 position_Indices[ent_id]->at(pos_id) = found;
+                 //LogError("%d(%d):%s->%d(%d):%s = %d\n", i, currentity->id, currentity->entity_raw->code.c_str(), j,currentpos->id, currentpos->code.c_str(), found);
+             }
+@@ -200,7 +200,7 @@ bool ContentLoader::Load()
+                 if(!position_Indices[ent_id])
+                     position_Indices[ent_id] = new vector<int32_t>;
+                 if(pos_id  >= position_Indices[ent_id]->size())
+-                    position_Indices[ent_id]->resize(pos_id+1, NULL);
++                    position_Indices[ent_id]->resize(pos_id+1, 0);
+                 position_Indices[ent_id]->at(pos_id) = found;
+                 //LogError("%d(%d):%s->%d(%d):%s = %d\n", i, currentity->id, currentity->entity_raw->code.c_str(), j,currentpos->id, currentpos->code.c_str(), found);
+             }
