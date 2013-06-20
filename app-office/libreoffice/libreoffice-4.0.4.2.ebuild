@@ -247,11 +247,12 @@ CHECKREQS_DISK_BUILD="6G"
 pkg_pretend() {
 	local pgslot
 
-	if [[ ${MERGE_TYPE} != binary ]]; then
-		check-reqs_pkg_pretend
+	if [[ "${CHECK_ME_HARDER}" != no ]]; then
+		if [[ ${MERGE_TYPE} != binary ]]; then
+			check-reqs_pkg_pretend
 
-		if [[ $(gcc-major-version) -lt 4 ]] || \
-				 ( [[ $(gcc-major-version) -eq 4 && $(gcc-minor-version) -lt 6 ]] ) \
+			if [[ $(gcc-major-version) -lt 4 ]] || \
+				( [[ $(gcc-major-version) -eq 4 && $(gcc-minor-version) -lt 6 ]] ) \
 				; then
 			eerror "Compilation with gcc older than 4.6 is not supported"
 			die "Too old gcc found."
@@ -260,18 +261,19 @@ pkg_pretend() {
 
 	# ensure pg version
 	if use postgres && has_version dev-db/postgresql-base; then
-		 pgslot=$(postgresql-config show)
-		 if [[ ${pgslot//.} < 90 ]] ; then
+		pgslot=$(postgresql-config show)
+		if [[ ${pgslot//.} < 90 ]] ; then
 			eerror "PostgreSQL slot must be set to 9.0 or higher."
 			eerror "    postgresql-config set 9.0"
 			die "PostgreSQL slot is not set to 9.0 or higher."
-		 fi
+		fi
 	fi
+fi
 }
 
 pkg_setup() {
 	java-pkg-opt-2_pkg_setup
-	kde4-base_pkg_setup
+	nonfatal kde4-base_pkg_setup
 	python-single-r1_pkg_setup
 
 	[[ ${MERGE_TYPE} != binary ]] && check-reqs_pkg_setup
