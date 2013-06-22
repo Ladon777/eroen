@@ -4,7 +4,7 @@
 
 EAPI=5
 
-inherit eutils toolchain-funcs multilib
+inherit eutils toolchain-funcs multilib-minimal
 
 DESCRIPTION="Report faked system time to programs"
 HOMEPAGE="http://www.code-wizards.com/projects/libfaketime/"
@@ -21,14 +21,28 @@ src_prepare() {
 	epatch "${FILESDIR}"/${P}-us-zero.patch
 	epatch "${FILESDIR}"/${P}-us-zero-stat.patch
 	tc-export CC
+	multilib_copy_sources
 }
 
-src_install() {
+multilib_src_test() {
+	if [[ ${ABI} == ${DEFAULT_ABI} ]]; then
+		default_src_test
+	else
+		einfo "not running tests for ${ABI}"
+		echo ${DEFAULT_ABI}
+	fi
+}
+
+multilib_src_install() {
 	dobin src/faketime
-	doman man/faketime.1
 	exeinto /usr/$(get_libdir)/faketime
 	doexe src/${PN}*.so.*
 	dosym ${PN}.so.1 /usr/$(get_libdir)/faketime/${PN}.so
 	dosym ${PN}MT.so.1 /usr/$(get_libdir)/faketime/${PN}MT.so
+}
+
+src_install() {
+	multilib-minimal_src_install
+	doman man/faketime.1
 	dodoc NEWS README TODO
 }
