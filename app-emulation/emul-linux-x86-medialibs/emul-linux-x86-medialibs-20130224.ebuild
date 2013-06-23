@@ -7,7 +7,7 @@ inherit emul-linux-x86
 
 LICENSE="APL-1.0 GPL-2 BSD BSD-2 public-domain LGPL-2 MPL-1.1 LGPL-2.1 MPEG-4"
 KEYWORDS="-* amd64"
-IUSE="filter-libv4l"
+IUSE="filter-lame filter-libv4l"
 
 DEPEND=""
 RDEPEND="~app-emulation/emul-linux-x86-baselibs-${PV}
@@ -22,6 +22,10 @@ src_prepare() {
 	# Include all libv4l libs, bug #348277
 	ALLOWED="${S}/usr/lib32/libv4l/"
 
+	# media-sound/lame-3.99.5-r1
+	if use filter-lame; then
+		rm usr/lib32/libmp3lame.so{,.0,.0.0.0} || die
+	fi
 	# media-libs/libv4l-0.9.5-r1
 	if use filter-libv4l; then
 		rm usr/lib32/libv4l/ov51{1,8}-decomp || die
