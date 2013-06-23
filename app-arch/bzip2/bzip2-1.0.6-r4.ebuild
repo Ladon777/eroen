@@ -18,7 +18,9 @@ SLOT="0"
 KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~sparc-fbsd ~x86-fbsd"
 IUSE="static static-libs"
 
-RDEPEND="abi_x86_32? ( !<=app-emulation/emul-linux-x86-baselibs-20130224 )"
+RDEPEND="abi_x86_32? ( || (
+			app-emulation/emul-linux-x86-baselibs[filter-${PN}]
+			!<=app-emulation/emul-linux-x86-baselibs-20130224 ) )"
 
 src_prepare() {
 	epatch "${FILESDIR}"/${PN}-1.0.4-makefile-CFLAGS.patch
