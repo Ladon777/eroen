@@ -23,7 +23,9 @@ YASM=">=dev-lang/yasm-1"
 DEPEND="amd64? ( || ( ${YASM} ${NASM} ) )
 	x86? ( || ( ${YASM} ${NASM} ) )
 	x86-fbsd? ( || ( ${YASM} ${NASM} ) )"
-RDEPEND="abi_x86_32? ( !<=app-emulation/emul-linux-x86-medialibs-20130224 )"
+RDEPEND="abi_x86_32? ( || (
+			app-emulation/emul-linux-x86-medialibs[filter-${PN}]
+			!<=app-emulation/emul-linux-x86-medialibs-20130224 ) )"
 
 S=${WORKDIR}/${MY_PN}/build/generic
 
