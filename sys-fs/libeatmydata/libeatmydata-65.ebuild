@@ -3,7 +3,7 @@
 # $Header: /var/cvsroot/gentoo-x86/sys-fs/libeatmydata/libeatmydata-65.ebuild,v 1.1 2012/10/15 20:17:14 slyfox Exp $
 
 EAPI="4"
-inherit eutils
+inherit eutils multilib-minimal
 
 DESCRIPTION="LD_PRELOAD hack to convert sync()/msync() and the like to NO-OP"
 HOMEPAGE="https://launchpad.net/libeatmydata/"
@@ -22,8 +22,12 @@ RESTRICT=test
 DEPEND="sys-apps/sed"
 RDEPEND=""
 
+src_prepare() {
+	multilib_copy_sources
+}
+
 src_install() {
-	default
+	multilib-minimal_src_install
 
 	prune_libtool_files --all
 	dodoc AUTHORS README
