@@ -11,7 +11,7 @@ LICENSE="Artistic GPL-1 GPL-2 GPL-3 BSD BSD-2 BZIP2 AFL-2.1 LGPL-2.1 BSD-4 MIT
 	openssl tcp_wrappers_license"
 
 KEYWORDS="-* amd64"
-IUSE="filter-bzip2"
+IUSE="filter-bzip2 filter-zlib"
 
 DEPEND=""
 RDEPEND="!<app-emulation/emul-linux-x86-medialibs-10.2
@@ -26,6 +26,13 @@ src_prepare() {
 	if use filter-bzip2; then
 		rm lib32/libbz2.so{.1,.1.0,.1.0.6} || die
 		rm usr/lib32/libbz2.so || die
+	fi
+	# sys-libs/zlib-1.2.8-r1
+	if use filter-zlib; then
+		rm lib32/libz.so{.1,.1.2.7} || die
+		rm usr/lib32/libz.so || die
+		rm usr/lib32/libminizip.so{,.1,.1.0.0} || die
+		rm usr/lib32/pkgconfig/{zlib,minizip}.pc || die
 	fi
 
 	emul-linux-x86_src_prepare
