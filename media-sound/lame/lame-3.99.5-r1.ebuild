@@ -20,7 +20,9 @@ IUSE="debug mmx mp3rtp sndfile static-libs"
 # libmp3lame for multilib and these deps apply to the lame frontend executable.
 RDEPEND=">=sys-libs/ncurses-5.7-r7
 	sndfile? ( >=media-libs/libsndfile-1.0.2 )
-	abi_x86_32? ( !<=app-emulation/emul-linux-x86-medialibs-20130224 )"
+	abi_x86_32? ( || (
+			app-emulation/emul-linux-x86-medialibs[filter-${PN}]
+			!<=app-emulation/emul-linux-x86-medialibs-20130224 ) )"
 DEPEND="${RDEPEND}
 	virtual/pkgconfig
 	mmx? ( dev-lang/nasm )"
