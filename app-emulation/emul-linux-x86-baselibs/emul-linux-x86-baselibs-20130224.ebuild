@@ -11,6 +11,7 @@ LICENSE="Artistic GPL-1 GPL-2 GPL-3 BSD BSD-2 BZIP2 AFL-2.1 LGPL-2.1 BSD-4 MIT
 	openssl tcp_wrappers_license"
 
 KEYWORDS="-* amd64"
+IUSE="filter-bzip2"
 
 DEPEND=""
 RDEPEND="!<app-emulation/emul-linux-x86-medialibs-10.2
@@ -20,6 +21,13 @@ PYTHON_UPDATER_IGNORE="1"
 
 src_prepare() {
 	export ALLOWED="(${S}/lib32/security/pam_filter/upperLOWER|${S}/etc/env.d|${S}/lib32/security/pam_ldap.so)"
+
+	# app-arch/bzip2-1.0.6-r4
+	if use filter-bzip2; then
+		rm lib32/libbz2.so{.1,.1.0,.1.0.6} || die
+		rm usr/lib32/libbz2.so || die
+	fi
+
 	emul-linux-x86_src_prepare
 	rm -rf "${S}/etc/env.d/binutils/" \
 			"${S}/usr/i686-pc-linux-gnu/lib" \
