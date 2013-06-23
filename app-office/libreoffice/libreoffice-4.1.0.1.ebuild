@@ -256,7 +256,7 @@ pkg_pretend() {
 				 ( [[ $(gcc-major-version) -eq 4 && $(gcc-minor-version) -lt 6 ]] ) \
 				; then
 			eerror "Compilation with gcc older than 4.6 is not supported"
-			die "Too old gcc found."
+			[[ -z ${I_KNOW_WHAT_I_AM_DOING} ]] && die "Too old gcc found."
 		fi
 	fi
 
@@ -273,7 +273,11 @@ pkg_pretend() {
 
 pkg_setup() {
 	java-pkg-opt-2_pkg_setup
-	kde4-base_pkg_setup
+	if [[ -z ${I_KNOW_WHAT_I_AM_DOING} ]]; then
+		kde4-base_pkg_setup
+	else
+		nonfatal kde4-base_pkg_setup
+	fi
 	python-single-r1_pkg_setup
 
 	[[ ${MERGE_TYPE} != binary ]] && check-reqs_pkg_setup
