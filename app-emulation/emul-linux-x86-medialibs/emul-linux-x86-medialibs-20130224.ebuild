@@ -7,7 +7,7 @@ inherit emul-linux-x86
 
 LICENSE="APL-1.0 GPL-2 BSD BSD-2 public-domain LGPL-2 MPL-1.1 LGPL-2.1 MPEG-4"
 KEYWORDS="-* amd64"
-IUSE="filter-lame filter-libv4l"
+IUSE="filter-lame filter-libv4l filter-xvid"
 
 DEPEND=""
 RDEPEND="~app-emulation/emul-linux-x86-baselibs-${PV}
@@ -34,6 +34,10 @@ src_prepare() {
 		rm usr/lib32/libv4l{1,2}.so{,.0} || die
 		rm usr/lib32/libv4lconvert.so{,.0} || die
 		rm usr/lib32/pkgconfig/libv4l{1,2,convert}.pc || die
+	fi
+	# media-libs/xvid-1.3.2-r1
+	if use filter-xvid; then
+		rm usr/lib32/libxvidcore.so{,.4,.4.3} || die
 	fi
 
 	emul-linux-x86_src_prepare
