@@ -11,7 +11,7 @@ LICENSE="Artistic GPL-1 GPL-2 GPL-3 BSD BSD-2 BZIP2 AFL-2.1 LGPL-2.1 BSD-4 MIT
 	openssl tcp_wrappers_license"
 
 KEYWORDS="-* amd64"
-IUSE="filter-bzip2 filter-zlib"
+IUSE="filter-bzip2 filter-libpng filter-zlib"
 
 DEPEND=""
 RDEPEND="!<app-emulation/emul-linux-x86-medialibs-10.2
@@ -26,6 +26,11 @@ src_prepare() {
 	if use filter-bzip2; then
 		rm lib32/libbz2.so{.1,.1.0,.1.0.6} || die
 		rm usr/lib32/libbz2.so || die
+	fi
+	# libpng-1.6.2-r1
+	if use filter-libpng; then
+		rm usr/lib32/libpng.so || die
+		rm usr/lib32/pkgconfig/libpng.pc || die
 	fi
 	# sys-libs/zlib-1.2.8-r1
 	if use filter-zlib; then
