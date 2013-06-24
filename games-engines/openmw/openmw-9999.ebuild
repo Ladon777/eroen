@@ -25,10 +25,11 @@ else
 	S="${WORKDIR}"/${PN}-${P}
 fi
 
-HDEPEND=">=dev-util/cmake-2.8"
+HDEPEND=""
 LIBDEPEND="dev-games/ogre[boost,cg,freeimage,ois,opengl,threads,zip]
 	dev-games/mygui
-	dev-libs/boost[threads]
+	dev-libs/boost:=[threads]
+	media-libs/libsdl:2
 	media-libs/openal
 	sci-physics/bullet
 	virtual/ffmpeg
