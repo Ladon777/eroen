@@ -17,7 +17,9 @@ KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh ~spar
 IUSE="apng neon static-libs"
 
 RDEPEND=">=sys-libs/zlib-1.2.8-r1:=[abi_x86_32?]
-	abi_x86_32? ( !<=app-emulation/emul-linux-x86-baselibs-20130224 )"
+	abi_x86_32? ( || (
+			app-emulation/emul-linux-x86-baselibs[filter-${PN}]
+			!<=app-emulation/emul-linux-x86-baselibs-20130224 ) )"
 DEPEND="${RDEPEND}
 	app-arch/xz-utils"
 
