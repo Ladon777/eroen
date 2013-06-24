@@ -2,9 +2,9 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: /var/cvsroot/gentoo-x86/dev-lang/ruby/ruby-1.8.7_p371.ebuild,v 1.12 2013/03/10 16:18:50 ago Exp $
 
-EAPI=2
+EAPI=5
 
-inherit autotools eutils flag-o-matic multilib versionator
+inherit autotools eutils flag-o-matic versionator multilib-minimal
 
 MY_P="${PN}-$(replace_version_separator 3 '-')"
 S=${WORKDIR}/${MY_P}
@@ -30,7 +30,7 @@ SRC_URI="mirror://ruby/${SLOT}/${MY_P}.tar.bz2
 		 http://dev.gentoo.org/~flameeyes/ruby-team/${PN}-patches-${PATCHSET}.tar.bz2"
 
 LICENSE="|| ( Ruby GPL-2 )"
-KEYWORDS="alpha amd64 arm hppa ia64 ~mips ppc ppc64 s390 sh sparc x86 ~amd64-fbsd ~sparc-fbsd ~x86-fbsd"
+KEYWORDS="~amd64"
 IUSE="+berkdb debug doc examples +gdbm ipv6 rubytests socks5 ssl threads tk xemacs ncurses +readline libedit"
 
 RDEPEND="
@@ -57,9 +57,10 @@ src_prepare() {
 		configure.in || die "sed failed"
 
 	eautoreconf
+	multilib_copy_sources
 }
 
-src_configure() {
+multilib_src_configure() {
 	local myconf=
 
 	# -fomit-frame-pointer makes ruby segfault, see bug #150413.
@@ -113,11 +114,11 @@ src_configure() {
 		|| die "econf failed"
 }
 
-src_compile() {
+multilib_src_compile() {
 	emake EXTLDFLAGS="${LDFLAGS}" || die "emake failed"
 }
 
-src_test() {
+multilib_src_test() {
 	emake -j1 test || die "make test failed"
 
 	elog "Ruby's make test has been run. Ruby also ships with a make check"
@@ -135,7 +136,7 @@ src_test() {
 	fi
 }
 
-src_install() {
+multilib_src_install() {
 	# Ruby is involved in the install process, we don't want interference here.
 	unset RUBYOPT
 
