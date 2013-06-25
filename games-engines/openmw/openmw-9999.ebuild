@@ -26,7 +26,7 @@ else
 fi
 
 HDEPEND=""
-LIBDEPEND="dev-games/ogre[boost,cg,freeimage,ois,opengl,threads,zip]
+LIBDEPEND="dev-games/ogre[boost,cg,freeimage,opengl,threads,zip]
 	dev-games/mygui
 	dev-libs/boost:=[threads]
 	media-libs/libsdl:2
