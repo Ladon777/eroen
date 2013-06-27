@@ -33,6 +33,8 @@ S="${WORKDIR}/${MY_PN}-${PV}"
 PATCHES=(
 	"${FILESDIR}/${P}-contrib.patch"
 	"${FILESDIR}/${P}-pkgconfig.patch"
+	"${FILESDIR}/${P}-add-missing-include-pthread-h.patch"
+	"${FILESDIR}/${P}-libc-disambiguate-typedefs.patch"
 )
 
 src_prepare() {
