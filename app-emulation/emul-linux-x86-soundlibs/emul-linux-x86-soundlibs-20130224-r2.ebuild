@@ -7,12 +7,12 @@ inherit emul-linux-x86
 
 LICENSE="BSD FDL-1.2 GPL-2 LGPL-2.1 LGPL-2 MIT gsm public-domain"
 KEYWORDS="-* ~amd64"
-IUSE="abi_x86_32 alsa"
+IUSE="abi_x86_32 alsa filter-fftw filter-libmikmod filter-libsndfile"
 
 RDEPEND="~app-emulation/emul-linux-x86-baselibs-${PV}
 	~app-emulation/emul-linux-x86-medialibs-${PV}
-	!>=media-libs/libmikmod-3.2.0-r1[abi_x86_32]
-	!>=sci-libs/fftw-3.3.3-r1[abi_x86_32]
+	!filter-libmikmod? ( !>=media-libs/libmikmod-3.2.0-r1[abi_x86_32] )
+	!filter-fftw? ( !>=sci-libs/fftw-3.3.3-r1[abi_x86_32] )
 	abi_x86_32? (
 		>=media-libs/libogg-1.3.1[abi_x86_32(-)]
 		>=media-libs/libvorbis-1.3.3-r1[abi_x86_32(-)]
@@ -37,4 +37,22 @@ src_prepare() {
 
 	# Remove migrated stuff.
 	use abi_x86_32 && rm -f $(cat "${FILESDIR}/remove-native")
+
+	# sci-libs/fftw-3.3.3-r2
+	if use filter-fftw; then
+		rm "${S}"/usr/lib32/pkgconfig/fftw3{,f,l}.pc || die
+		rm "${S}"/usr/lib32/libfftw3{,f,l}.so{,.3} || die
+	fi
+
+	# media-libs/libmikmod-3.2.0-r1
+	if use filter-libmikmod; then
+		rm usr/lib32/libmikmod.so{,.2,.3,.3.0.0} || die
+		rm usr/lib32/pkgconfig/libmikmod.pc || die
+	fi
+
+	# media-libs/libsndfile-1.0.25-r1
+	if use filter-libsndfile; then
+		rm usr/lib32/libsndfile.so{,.1,.1.0.25} || die
+		rm usr/lib32/pkgconfig/sndfile.pc || die
+	fi
 }
