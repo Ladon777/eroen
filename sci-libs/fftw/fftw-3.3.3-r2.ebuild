@@ -25,7 +25,7 @@ RDEPEND="
 	mpi? ( virtual/mpi )
 	abi_x86_32? ( || ( 
 			app-emulation/emul-linux-x86-soundlibs[filter-${PN}]
-			!<=app-emulation/emul-linux-x86-soundlibs-20130224 ) )"
+			!<=app-emulation/emul-linux-x86-soundlibs-20130224-r2 ) )"
 DEPEND="${RDEPEND}
 	test? ( dev-lang/perl )"
 
