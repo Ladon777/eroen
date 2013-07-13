@@ -1,0 +1,27 @@
+From 059f041dfdffe0630ec573fb444c51cc463b90b1 Mon Sep 17 00:00:00 2001
+From: Julien Nabet <serval2412@yahoo.fr>
+Date: Thu, 13 Jun 2013 19:27:26 +0000
+Subject: cppcheck: fix duplicateExpression
+
+Change-Id: If3b7b1faab858afa82d4c665ee1a5036190e69aa
+Reviewed-on: https://gerrit.libreoffice.org/4278
+Reviewed-by: Tomáš Chvátal <tchvatal@suse.cz>
+Tested-by: Tomáš Chvátal <tchvatal@suse.cz>
+---
+(limited to 'binaryurp/source')
+
+diff --git a/binaryurp/source/lessoperators.cxx b/binaryurp/source/lessoperators.cxx
+index 55f3a49..3a515f5 100644
+--- a/binaryurp/source/lessoperators.cxx
++++ b/binaryurp/source/lessoperators.cxx
+@@ -36,7 +36,7 @@ bool operator<( const TypeDescription& rLeft, const TypeDescription& rRight) {
+ 	assert( rLeft.is() && rRight.is());
+ 	const typelib_TypeDescription& rA = *rLeft.get();
+ 	const typelib_TypeDescription& rB = *rRight.get();
+-	if( rA.eTypeClass != rA.eTypeClass)
++        if( rA.eTypeClass != rB.eTypeClass)
+ 		return (rA.eTypeClass < rB.eTypeClass);
+ 	const sal_Int32 nCmp = rtl_ustr_compare_WithLength(
+ 			rA.pTypeName->buffer, rA.pTypeName->length,
+--
+cgit v0.9.0.2-2-gbebe

@@ -1,0 +1,38 @@
+From 982462ac5c6df0c85ba6a0b3fbdaa80b38a94882 Mon Sep 17 00:00:00 2001
+From: Herbert Dürr <hdu@apache.org>
+Date: Tue, 16 Apr 2013 11:41:34 +0000
+Subject: eliminate type ambiguity for std::accumulate() invocation
+
+else clang/libc++ cannot decide between bool and a reference into a bit-vector
+specialization
+
+(cherry picked from commit 6a88a21257124d953637c4b8ead9c9771e15b899)
+
+Change-Id: I694bbad82b1a05ebe86c5c941f3ac85c71f5fc9e
+---
+(limited to 'slideshow/source/engine/activities/activitiesfactory.cxx')
+
+diff --git a/slideshow/source/engine/activities/activitiesfactory.cxx b/slideshow/source/engine/activities/activitiesfactory.cxx
+index 2354e51..530a8fe 100644
+--- a/slideshow/source/engine/activities/activitiesfactory.cxx
++++ b/slideshow/source/engine/activities/activitiesfactory.cxx
+@@ -557,7 +557,7 @@ public:
+         // interpolate between nIndex and nIndex+1 values
+         (*mpAnim)(
+             getPresentationValue(
+-                accumulate( maValues.back(),
++                accumulate<ValueType>( maValues.back(),
+                             mbCumulative ? nRepeatCount : 0,
+                             maInterpolator( maValues[ nIndex ],
+                                             maValues[ nIndex+1 ],
+@@ -577,7 +577,7 @@ public:
+         // this is discrete, thus no lerp here.
+         (*mpAnim)(
+             getPresentationValue(
+-                accumulate( maValues.back(),
++                accumulate<ValueType>( maValues.back(),
+                             mbCumulative ? nRepeatCount : 0,
+                             maValues[ nFrame ] ) ) );
+     }
+--
+cgit v0.9.0.2-2-gbebe

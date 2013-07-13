@@ -1,0 +1,234 @@
+From 08bb8fca4144608237418d64b1479840c408256f Mon Sep 17 00:00:00 2001
+From: Herbert Dürr <hdu@apache.org>
+Date: Wed, 08 May 2013 17:26:08 +0000
+Subject: #i122208# replace the binaryurp cache for improved C++ compatibility
+
+Failing to instantiatie incomplete types like the Map::iterator in
+binaryurp Cache's Entry members is allowed by the C++ standard.
+The rewrite makes it more compliant with other C++ compilers/STLs.
+And interesting alternative would be to use boost's multi_index_container.
+
+git-svn-id: http://svn.apache.org/repos/asf/openoffice/branches/rejuvenate01@1480367 13f79535-47bb-0310-9956-ffa450edef68
+---
+(limited to 'binaryurp/source')
+
+diff --git a/binaryurp/source/cache.hxx b/binaryurp/source/cache.hxx
+index 05c0069..7e5ba89 100644
+--- a/binaryurp/source/cache.hxx
++++ b/binaryurp/source/cache.hxx
+@@ -25,6 +25,7 @@
+ #include <cassert>
+ #include <cstddef>
+ #include <map>
++#include <list>
+ 
+ #include "boost/noncopyable.hpp"
+ #include "sal/types.h"
+@@ -37,88 +38,57 @@ enum { size = 256, ignore = 0xFFFF };
+ 
+ }
+ 
+-template< typename T > class Cache: private boost::noncopyable {
++template< typename T > class Cache : private boost::noncopyable {
+ public:
++    typedef sal_uInt16 IdxType;
++
+     explicit Cache(std::size_t size):
+-        size_(size), first_(map_.end()), last_(map_.end())
++        size_(size)
+     {
+         assert(size < cache::ignore);
+     }
+ 
+-    sal_uInt16 add(T const & content, bool * found) {
+-        assert(found != 0);
+-        typename Map::iterator i(map_.find(content));
+-        *found = i != map_.end();
+-        if (i == map_.end()) {
+-            typename Map::size_type n = map_.size();
+-            if (n < size_) {
+-                i =
+-                    (map_.insert(
+-                        typename Map::value_type(
+-                            content,
+-                            Entry(
+-                                static_cast< sal_uInt16 >(n), map_.end(),
+-                                first_)))).
+-                    first;
+-                if (first_ == map_.end()) {
+-                    last_ = i;
+-                } else {
+-                    first_->second.prev = i;
+-                }
+-                first_ = i;
+-            } else if (last_ != map_.end()) {
+-                i =
+-                    (map_.insert(
+-                        typename Map::value_type(
+-                            content,
+-                            Entry(last_->second.index, map_.end(), first_)))).
+-                    first;
+-                first_->second.prev = i;
+-                first_ = i;
+-                typename Map::iterator j(last_);
+-                last_ = last_->second.prev;
+-                last_->second.next = map_.end();
+-                map_.erase(j);
+-            } else {
+-                // Reached iff size_ == 0:
+-                return cache::ignore;
+-            }
+-        } else if (i != first_) {
+-            // Move to front (reached only if size_ > 1):
+-            i->second.prev->second.next = i->second.next;
+-            if (i->second.next == map_.end()) {
+-                last_ = i->second.prev;
+-            } else {
+-                i->second.next->second.prev = i->second.prev;
+-            }
+-            i->second.prev = map_.end();
+-            i->second.next = first_;
+-            first_->second.prev = i;
+-            first_ = i;
+-        }
+-        return i->second.index;
++    IdxType add( const T& rContent, bool* pbFound) {
++	assert( pbFound != NULL);
++	if( !size_) {
++		*pbFound = false;
++		return cache::ignore;
++	}
++	// try to insert into the map
++	list_.push_front( rContent); // create a temp entry
++	typedef std::pair<typename LruList::iterator, IdxType> MappedType;
++	typedef std::pair<typename LruItMap::iterator,bool> MapPair;
++	MapPair aMP = map_.insert( MappedType( list_.begin(), 0));
++	*pbFound = !aMP.second;
++	
++	if( !aMP.second) { // insertion not needed => found the entry
++		list_.pop_front(); // remove the temp entry
++		list_.splice( list_.begin(), list_, aMP.first->first); // the found entry is moved to front
++		return aMP.first->second;
++	}
++
++	// test insertion successful => it was new so we keep it
++	IdxType n = static_cast<IdxType>( map_.size() - 1);
++	if( n >= size_) { // cache full => replace the LRU entry
++		// find the least recently used element in the map
++		typename LruItMap::iterator it = map_.find( --list_.end());
++		n = it->second;
++		map_.erase( it); // remove it from the map
++		list_.pop_back(); // remove from the list
++	}
++	aMP.first->second = n;
++	return n;
+     }
+ 
+ private:
+-    struct Entry;
+-
+-    typedef std::map< T, Entry > Map;
+-
+-    struct Entry {
+-        sal_uInt16 index;
+-        typename Map::iterator prev;
+-        typename Map::iterator next;
+-
+-        Entry(
+-            sal_uInt16 theIndex, typename Map::iterator thePrev,
+-            typename Map::iterator theNext):
+-            index(theIndex), prev(thePrev), next(theNext) {}
+-    };
++    typedef std::list<T> LruList; // last recently used list
++    typedef typename LruList::iterator LruListIt;
++    struct CmpT{ bool operator()( const LruListIt& rA, const LruListIt& rB) const { return (*rA<*rB);}};
++    typedef ::std::map< LruListIt, IdxType, CmpT > LruItMap; // a map into a LruList
+ 
+     std::size_t size_;
+-    Map map_;
+-    typename Map::iterator first_;
+-    typename Map::iterator last_;
++    LruItMap map_;
++    LruList list_;
+ };
+ 
+ }
+diff --git a/binaryurp/source/lessoperators.cxx b/binaryurp/source/lessoperators.cxx
+index b0031e7..55f3a49 100644
+--- a/binaryurp/source/lessoperators.cxx
++++ b/binaryurp/source/lessoperators.cxx
+@@ -32,14 +32,38 @@
+ 
+ namespace com { namespace sun { namespace star { namespace uno {
+ 
+-bool operator <(TypeDescription const & left, TypeDescription const & right) {
+-    assert(left.is() && right.is());
+-    typelib_TypeClass tc1 = left.get()->eTypeClass;
+-    typelib_TypeClass tc2 = right.get()->eTypeClass;
+-    return tc1 < tc2 ||
+-        (tc1 == tc2 &&
+-         (OUString(left.get()->pTypeName) <
+-          OUString(right.get()->pTypeName)));
++bool operator<( const TypeDescription& rLeft, const TypeDescription& rRight) {
++	assert( rLeft.is() && rRight.is());
++	const typelib_TypeDescription& rA = *rLeft.get();
++	const typelib_TypeDescription& rB = *rRight.get();
++	if( rA.eTypeClass != rA.eTypeClass)
++		return (rA.eTypeClass < rB.eTypeClass);
++	const sal_Int32 nCmp = rtl_ustr_compare_WithLength(
++			rA.pTypeName->buffer, rA.pTypeName->length,
++			rB.pTypeName->buffer, rB.pTypeName->length);
++	return (nCmp < 0);
++}
++
++bool TypeDescEqual::operator()( const TypeDescription& rLeft, const TypeDescription& rRight) const
++{
++	assert( rLeft.is() && rRight.is());
++	const typelib_TypeDescription& rA = *rLeft.get();
++	const typelib_TypeDescription& rB = *rRight.get();
++	if( rA.eTypeClass != rB.eTypeClass)
++		return false;
++	const sal_Int32 nCmp = rtl_ustr_compare_WithLength(
++			rA.pTypeName->buffer, rA.pTypeName->length,
++			rB.pTypeName->buffer, rB.pTypeName->length);
++	return (nCmp == 0);
++}
++
++sal_Int32 TypeDescHash::operator()( const TypeDescription& rTD) const
++{
++	assert( rTD.is());
++	const typelib_TypeDescription& rA = *rTD.get();
++	sal_Int32 h = rtl_ustr_hashCode_WithLength( rA.pTypeName->buffer, rA.pTypeName->length);
++	h ^= static_cast<sal_Int32>(rA.eTypeClass);
++	return h;
+ }
+ 
+ } } } }
+@@ -47,8 +71,8 @@ bool operator <(TypeDescription const & left, TypeDescription const & right) {
+ namespace rtl {
+ 
+ bool operator <(ByteSequence const & left, ByteSequence const & right) {
+-    for (sal_Int32 i = 0; i != std::min(left.getLength(), right.getLength());
+-         ++i)
++    const sal_Int32 nLen = std::min( left.getLength(), right.getLength());
++    for( sal_Int32 i = 0; i < nLen; ++i )
+     {
+         if (left[i] < right[i]) {
+             return true;
+diff --git a/binaryurp/source/lessoperators.hxx b/binaryurp/source/lessoperators.hxx
+index f3202b5..317e76a 100644
+--- a/binaryurp/source/lessoperators.hxx
++++ b/binaryurp/source/lessoperators.hxx
+@@ -31,6 +31,10 @@ namespace com { namespace sun { namespace star { namespace uno {
+ 
+ bool operator <(TypeDescription const & left, TypeDescription const & right);
+ 
++struct TypeDescHash { sal_Int32 operator()( const TypeDescription&) const; };
++
++struct TypeDescEqual { bool operator()( const TypeDescription&, const TypeDescription&) const; };
++
+ } } } }
+ 
+ namespace rtl {
+--
+cgit v0.9.0.2-2-gbebe
