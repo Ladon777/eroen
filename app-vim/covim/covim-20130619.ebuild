@@ -27,7 +27,7 @@ VIM_PLUGIN_MESSAGES=""
 
 LDEPEND="
 	${PYTHON_DEPS}
-	dev-python/twisted
+	dev-python/twisted-core
 	app-editors/vim[python,${PYTHON_USEDEP}]"
 RDEPEND="${LDEPEND}"
 
