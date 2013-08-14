@@ -54,7 +54,7 @@ src_prepare() {
 
 	# https://bugzilla.gnome.org/show_bug.cgi?id=663779
 	epatch "${FILESDIR}/${PN}-0.30.1-alt-meta.patch"
-	
+
 	use termite-patch && epatch "${FILESDIR}"/${PN}-0.32.2-expose_select_text.patch
 
 	gnome2_src_prepare
