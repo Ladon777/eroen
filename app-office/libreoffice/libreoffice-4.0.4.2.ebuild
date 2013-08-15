@@ -1,6 +1,6 @@
 # Copyright 1999-2013 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/cvsroot/gentoo-x86/app-office/libreoffice/libreoffice-4.0.4.2.ebuild,v 1.2 2013/06/23 09:39:34 scarabeus Exp $
+# $Header: /var/cvsroot/gentoo-x86/app-office/libreoffice/libreoffice-4.0.4.2.ebuild,v 1.6 2013/06/30 21:12:02 ago Exp $
 
 EAPI=5
 
@@ -91,7 +91,7 @@ unset lo_xt
 LICENSE="|| ( LGPL-3 MPL-1.1 )"
 SLOT="0"
 [[ ${PV} == *9999* ]] || \
-KEYWORDS="~amd64 ~arm ~ppc ~x86 ~amd64-linux ~x86-linux"
+KEYWORDS="~amd64 ~x86"
 
 COMMON_DEPEND="
 	${PYTHON_DEPS}
@@ -232,6 +232,7 @@ PATCHES=(
 )
 
 REQUIRED_USE="
+	${PYTHON_REQUIRED_USE}
 	bluetooth? ( dbus )
 	gnome? ( gtk )
 	eds? ( gnome )
@@ -253,23 +254,23 @@ pkg_pretend() {
 			check-reqs_pkg_pretend
 
 			if [[ $(gcc-major-version) -lt 4 ]] || \
-				( [[ $(gcc-major-version) -eq 4 && $(gcc-minor-version) -lt 6 ]] ) \
-				; then
-			eerror "Compilation with gcc older than 4.6 is not supported"
-			die "Too old gcc found."
+					 ( [[ $(gcc-major-version) -eq 4 && $(gcc-minor-version) -lt 6 ]] ) \
+					; then
+				eerror "Compilation with gcc older than 4.6 is not supported"
+				die "Too old gcc found."
+			fi
 		fi
-	fi
 
-	# ensure pg version
-	if use postgres && has_version dev-db/postgresql-base; then
-		pgslot=$(postgresql-config show)
-		if [[ ${pgslot//.} < 90 ]] ; then
-			eerror "PostgreSQL slot must be set to 9.0 or higher."
-			eerror "    postgresql-config set 9.0"
-			die "PostgreSQL slot is not set to 9.0 or higher."
+		# ensure pg version
+		if use postgres && has_version dev-db/postgresql-base; then
+			 pgslot=$(postgresql-config show)
+			 if [[ ${pgslot//.} < 90 ]] ; then
+				eerror "PostgreSQL slot must be set to 9.0 or higher."
+				eerror "    postgresql-config set 9.0"
+				die "PostgreSQL slot is not set to 9.0 or higher."
+			 fi
 		fi
 	fi
-fi
 }
 
 pkg_setup() {
