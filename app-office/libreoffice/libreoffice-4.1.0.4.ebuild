@@ -72,7 +72,7 @@ unset EXT_URI
 unset ADDONS_SRC
 
 IUSE="bluetooth +branding +cups dbus debug eds gnome gstreamer +gtk
-gtk3 jemalloc kde mysql odk opengl postgres telepathy test +vba +webdav"
+gtk3 jemalloc kde libcxx mysql odk opengl postgres telepathy test +vba +webdav"
 
 LO_EXTS="nlpsolver presenter-minimizer scripting-beanshell scripting-javascript wiki-publisher"
 # Unpackaged separate extensions:
@@ -89,7 +89,7 @@ unset lo_xt
 LICENSE="|| ( LGPL-3 MPL-1.1 )"
 SLOT="0"
 [[ ${PV} == *9999* ]] || \
-KEYWORDS="~amd64 ~arm ~ppc ~x86 ~amd64-linux ~x86-linux"
+KEYWORDS="~amd64 ~x86"
 
 COMMON_DEPEND="
 	${PYTHON_DEPS}
@@ -332,6 +332,24 @@ src_prepare() {
 		EPATCH_SOURCE="${WORKDIR}/${PATCHSET/.tar.xz/}" \
 		EPATCH_SUFFIX="patch" \
 		epatch
+	fi
+
+	if use libcxx; then
+		epatch "${FILESDIR}"/Make-the-SAL_STREAM-thing-compile.patch
+		epatch "${FILESDIR}"/Nah-we-still-need-the-dynamic_cast.patch
+
+		# by eroen
+		epatch "${FILESDIR}"/stop-messing-with-stdlib-internals.patch
+
+		epatch "${FILESDIR}"/i122208-replace-the-binaryurp-cache.patch
+		epatch "${FILESDIR}"/eliminate-type-ambiguity-for-std-accumulate.patch
+
+		# by eroen
+		epatch "${FILESDIR}"/fake-exception-name2.patch
+		epatch "${FILESDIR}"/stop-messing-with-stdlib-internals2.patch
+		#epatch "${FILESDIR}"/disable-CppunitTest_sw_uwriter.patch
+		#epatch "${FILESDIR}"/disable-bridge-test.patch
+		epatch "${FILESDIR}"/disable-uno-test.patch
 	fi
 
 	base_src_prepare
