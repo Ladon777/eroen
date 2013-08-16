@@ -9,7 +9,7 @@ inherit eutils flag-o-matic versionator games cmake-utils
 
 DESCRIPTION="Unofficial open source engine reimplementation of the game Morrowind"
 HOMEPAGE="https://openmw.org/"
-LICENSE="GPL-3 BitstreamVera DaedricFont OFL-1.1"
+LICENSE="GPL-3 MIT BitstreamVera DaedricFont OFL-1.1"
 SLOT="0"
 KEYWORDS=""
 IUSE="test +tr1"
@@ -59,6 +59,7 @@ src_configure() {
 		-DDATAROOTDIR="${GAMES_DATADIR}"
 		-DDATADIR="${GAMES_DATADIR}/${PN}"
 		-DSYSCONFDIR="${GAMES_SYSCONFDIR}"/${PN}
+		-DBUILD_BSATOOL=ON
 		$(cmake-utils_use_build test UNITTESTS)
 		)
 	cmake-utils_src_configure
@@ -72,9 +73,11 @@ src_test() {
 
 src_install() {
 	cmake-utils_src_install
+	rm -r "${D}${GAMES_DATADIR}"/licenses
 	sed -e "s:resources=resources:resources=${GAMES_DATADIR}/${PN}/resources:" \
 		-i "${D}/${GAMES_SYSCONFDIR}"/${PN}/openmw.cfg || die
 	prepgamesdirs
+	# /etc/openmw/ is hardcoded, but we set SYSCONFDIR for games.eclass
 	mv -t "${D}"/etc "${D}/${GAMES_SYSCONFDIR}"/${PN} || die
 	rmdir "${D}/${GAMES_SYSCONFDIR}" || die
 }
