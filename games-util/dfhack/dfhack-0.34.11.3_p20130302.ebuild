@@ -43,8 +43,9 @@ HDEPEND="
 	dev-perl/XML-LibXSLT
 	doc? ( app-doc/doxygen )"
 LIBRARY_DEPEND="
-	app-emulation/emul-linux-x86-baselibs[development]
+	sys-libs/zlib[abi_x86_32]
 	ssense? ( media-libs/fontconfig[abi_x86_32]
+		app-emulation/emul-linux-x86-baselibs[development]
 		media-libs/freetype[abi_x86_32]
 		x11-libs/libICE[abi_x86_32]
 		x11-libs/libSM[abi_x86_32]
