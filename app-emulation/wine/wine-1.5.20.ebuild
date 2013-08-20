@@ -1,6 +1,6 @@
-# Copyright 1999-2012 Gentoo Foundation
+# Copyright 1999-2013 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/cvsroot/gentoo-x86/app-emulation/wine/wine-1.5.20.ebuild,v 1.4 2012/12/31 07:38:44 tetromino Exp $
+# $Header: /var/cvsroot/gentoo-x86/app-emulation/wine/wine-1.5.20.ebuild,v 1.9 2013/08/05 09:31:06 ssuominen Exp $
 
 EAPI="5"
 
@@ -43,6 +43,7 @@ REQUIRED_USE="elibc_glibc? ( threads )
 RESTRICT="test" #72375
 
 MLIB_DEPS="amd64? (
+	gstreamer? ( app-emulation/emul-linux-x86-gstplugins )
 	truetype? ( >=app-emulation/emul-linux-x86-xlibs-2.1 )
 	X? (
 		>=app-emulation/emul-linux-x86-xlibs-2.1
@@ -61,7 +62,7 @@ MLIB_DEPS="amd64? (
 RDEPEND="truetype? ( >=media-libs/freetype-2.0.0 media-fonts/corefonts )
 	perl? ( dev-lang/perl dev-perl/XML-Simple )
 	capi? ( net-dialup/capi4k-utils )
-	ncurses? ( >=sys-libs/ncurses-5.2 )
+	ncurses? ( >=sys-libs/ncurses-5.2:= )
 	fontconfig? ( media-libs/fontconfig:= )
 	gphoto2? ( media-libs/libgphoto2:= )
 	openal? ( media-libs/openal:= )
@@ -88,7 +89,7 @@ RDEPEND="truetype? ( >=media-libs/freetype-2.0.0 media-fonts/corefonts )
 		virtual/opengl
 	)
 	gsm? ( media-sound/gsm:= )
-	jpeg? ( virtual/jpeg:= )
+	jpeg? ( virtual/jpeg:0= )
 	ldap? ( net-nds/openldap:= )
 	lcms? ( media-libs/lcms:0= )
 	mp3? ( >=media-sound/mpg123-1.5.0 )
@@ -99,8 +100,8 @@ RDEPEND="truetype? ( >=media-libs/freetype-2.0.0 media-fonts/corefonts )
 	selinux? ( sec-policy/selinux-wine )
 	xml? ( dev-libs/libxml2 dev-libs/libxslt )
 	scanner? ( media-gfx/sane-backends:= )
-	ssl? ( dev-libs/openssl:= )
-	png? ( media-libs/libpng:= )
+	ssl? ( dev-libs/openssl:0= )
+	png? ( media-libs/libpng:0= )
 	v4l? ( media-libs/libv4l )
 	!win64? ( ${MLIB_DEPS} )
 	win32? ( ${MLIB_DEPS} )
@@ -121,6 +122,13 @@ DEPEND="${RDEPEND}
 	virtual/pkgconfig
 	virtual/yacc
 	sys-devel/flex"
+
+# These use a non-standard "Wine" category, which is provided by
+# /etc/xdg/applications-merged/wine.menu
+QA_DESKTOP_FILE="usr/share/applications/wine-browsedrive.desktop
+usr/share/applications/wine-notepad.desktop
+usr/share/applications/wine-uninstaller.desktop
+usr/share/applications/wine-winecfg.desktop"
 
 src_unpack() {
 	if use win64 ; then
