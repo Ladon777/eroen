@@ -21,17 +21,10 @@ IUSE="libgraphics"
 RESTRICT="strip"
 
 DEPEND="libgraphics? ( !dev-libs/libgraphics )
-	app-emulation/emul-linux-x86-baselibs
-	app-emulation/emul-linux-x86-gtklibs
-	app-emulation/emul-linux-x86-opengl
-	app-emulation/emul-linux-x86-sdl
-	app-emulation/emul-linux-x86-soundlibs
-	app-emulation/emul-linux-x86-xlibs
-	"
+	app-emulation/emul-linux-x86-sdl"
 RDEPEND="${DEPEND}
 	!libgraphics? ( ~dev-libs/libgraphics-${PV} )
-	>=sys-devel/gcc-4.5
-	"
+	>=sys-devel/gcc-4.5"
 
 S="${WORKDIR}/${MY_PN}_linux"
 MY_DATADIR="${GAMES_DATADIR}/${P}"
