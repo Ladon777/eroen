@@ -26,7 +26,8 @@ else
 fi
 
 HDEPEND=""
-LIBDEPEND="dev-games/ogre[boost,cg,freeimage,opengl,threads,zip]
+LIBDEPEND="app-arch/unshield
+	dev-games/ogre[boost,cg,freeimage,opengl,threads,zip]
 	dev-games/mygui
 	dev-libs/boost:=[threads]
 	media-libs/libsdl:2
