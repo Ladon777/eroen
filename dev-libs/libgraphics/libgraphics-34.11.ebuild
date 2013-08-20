@@ -21,7 +21,6 @@ IUSE="egg"
 
 DEPEND_SCONSCRIPT="virtual/pkgconfig
 	media-libs/sdl-image
-	sys-libs/zlib
 	media-libs/sdl-ttf
 	media-libs/libsndfile
 	x11-libs/gtk+
@@ -37,18 +36,23 @@ DEPEND_INCLUDE="media-libs/fmod
 	media-libs/libsndfile
 	media-libs/openal
 	media-libs/sdl-ttf
-	sys-libs/zlib
 	"
 
 COMMON_DEPEND="!games-simulation/dwarffortress[libgraphics]
 	egg? ( games-util/dfhack[egg] )
-	app-emulation/emul-linux-x86-baselibs
 	app-emulation/emul-linux-x86-gtklibs
 	app-emulation/emul-linux-x86-opengl
 	app-emulation/emul-linux-x86-sdl
-	app-emulation/emul-linux-x86-soundlibs
-	app-emulation/emul-linux-x86-xlibs
-	"
+	|| ( dev-libs/glib[abi_x86_32(-)] app-emulation/emul-linux-x86-baselibs[-abi_x86_32(-)] )
+	|| ( sys-libs/zlib[abi_x86_32(-)] app-emulation/emul-linux-x86-baselibs[-abi_x86_32(-)] )"
+
+	#||( media-libs/glu app-emulation/emul-linux-x86-opengl ) # or virtual/glu ?
+	#||( media-libs/glew app-emulation/emul-linux-x86-opengl )
+	#||( media-libs/mesa app-emulation/emul-linux-x86-opengl ) # or virtual/opengl ?
+	#||( media-libs/libsdl app-emulation/emul-linux-x86-sdl )
+	#||( media-libs/sdl-image app-emulation/emul-linux-x86-sdl )
+	#||( media-libs/sdl-ttf app-emulation/emul-linux-x86-sdl )
+	#||( x11-libs/gtk+ app-emulation/emul-linux-x86-gtklibs )
 
 RDEPEND="${COMMON_DEPEND}
 	"
