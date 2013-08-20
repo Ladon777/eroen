@@ -1,11 +1,13 @@
 # Copyright 1999-2013 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/cvsroot/gentoo-x86/dev-cpp/gtest/gtest-1.6.0-r2.ebuild,v 1.1 2013/04/06 07:45:16 tomka Exp $
+# $Header: /var/cvsroot/gentoo-x86/dev-cpp/gtest/gtest-1.6.0-r2.ebuild,v 1.3 2013/08/16 14:44:49 mgorny Exp $
 
 EAPI="5"
-PYTHON_DEPEND="2"
 
-inherit eutils flag-o-matic python autotools-multilib
+# Python is required for tests and some build tasks.
+PYTHON_COMPAT=( python{2_6,2_7} )
+
+inherit eutils flag-o-matic python-any-r1 autotools-multilib
 
 DESCRIPTION="Google C++ Testing Framework"
 HOMEPAGE="http://code.google.com/p/googletest/"
@@ -13,10 +15,11 @@ SRC_URI="http://googletest.googlecode.com/files/${P}.zip"
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~ppc-macos"
+KEYWORDS="~amd64 ~x86"
 IUSE="examples +tr1 static-libs"
 
-DEPEND="app-arch/unzip"
+DEPEND="app-arch/unzip
+	${PYTHON_DEPS}"
 RDEPEND=""
 
 PATCHES=(
@@ -40,8 +43,6 @@ src_prepare() {
 		-e '/^install-(data|exec)-local:/s|^.*$|&\ndisabled-&|' \
 		Makefile.am || die
 	autotools-multilib_src_prepare
-
-	python_convert_shebangs -r 2 .
 
 	multilib_copy_sources
 }
