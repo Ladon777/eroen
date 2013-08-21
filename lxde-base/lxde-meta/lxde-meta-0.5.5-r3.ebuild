@@ -9,8 +9,8 @@ HOMEPAGE="http://lxde.sf.net/"
 
 LICENSE="metapackage"
 SLOT="0"
-KEYWORDS="~alpha amd64 arm ppc x86"
-IUSE=""
+KEYWORDS="~amd64 ~x86"
+IUSE="udisks"
 
 RDEPEND=">=lxde-base/menu-cache-0.3.3
 	=lxde-base/lxappearance-0.5*
@@ -26,7 +26,7 @@ RDEPEND=">=lxde-base/menu-cache-0.3.3
 	=lxde-base/lxtask-0.1*
 	=lxde-base/lxterminal-0.1.11*
 	media-gfx/gpicview
-	x11-misc/pcmanfm
+	udisks? ( x11-misc/pcmanfm )
 	x11-wm/openbox
 	>=x11-misc/obconf-2.0.3_p20111019"
 
