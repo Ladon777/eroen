@@ -30,7 +30,7 @@ LIBDEPEND="app-arch/unshield
 	dev-games/ogre[boost,cg,freeimage,opengl,threads,zip]
 	dev-games/mygui
 	dev-libs/boost:=[threads]
-	media-libs/libsdl:2
+	media-libs/libsdl2
 	media-libs/openal
 	sci-physics/bullet
 	virtual/ffmpeg
