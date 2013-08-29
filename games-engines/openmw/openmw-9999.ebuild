@@ -45,8 +45,8 @@ RDEPEND="${LIBDEPEND}"
 
 pkg_setup() {
 	if use test && ! use tr1; then
-		append-cflags -DGTEST_USE_OWN_TR1_TUPLE=1	
-		append-cxxflags -DGTEST_USE_OWN_TR1_TUPLE=1	
+		append-cflags -DGTEST_USE_OWN_TR1_TUPLE=1
+		append-cxxflags -DGTEST_USE_OWN_TR1_TUPLE=1
 	fi
 }
 
