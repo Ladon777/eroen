@@ -74,7 +74,7 @@ src_test() {
 
 src_install() {
 	cmake-utils_src_install
-	rm -r "${D}${GAMES_DATADIR}"/licenses
+	rm -r "${D}"/usr/share/licenses
 	sed -e "s:resources=resources:resources=${GAMES_DATADIR}/${PN}/resources:" \
 		-i "${D}/${GAMES_SYSCONFDIR}"/${PN}/openmw.cfg || die
 	prepgamesdirs
