@@ -6,5 +6,8 @@
 
 		bedup looks for new and changed files, making sure that multiple copies of identical files share space on disk. It integrates deeply with btrfs so that scans are incremental and low-impact.
 	</longdescription>
+	<use>
+		<flag name="interactive">Pull in dependencies for running an interactive shell (useful for prototyping).</flag>
+	</use>
 </pkgmetadata>
 
