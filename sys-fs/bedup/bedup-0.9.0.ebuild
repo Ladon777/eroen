@@ -3,7 +3,8 @@
 # $Header: $
 
 EAPI=5
-PYTHON_COMPAT="python2_7" # For cffi
+PYTHON_COMPAT=( python2_7 python3_2 )
+# 3_3: alembic
 
 inherit eutils distutils-r1
 
@@ -13,16 +14,17 @@ SRC_URI="https://pypi.python.org/packages/source/b/bedup/bedup-0.9.0.tar.gz"
 
 LICENSE="GPL-2+"
 SLOT="0"
-KEYWORDS="~amd64"
+KEYWORDS="~amd64 ~x86"
 IUSE=""
 
 HDEPEND=""
-LIBDEPEND="dev-python/cffi
+LIBDEPEND="${PYTHON_DEPS}
+	dev-python/cffi[${PYTHON_USEDEP}]
 	sys-fs/btrfs-progs
-	dev-python/alembic
-	dev-python/contextlib2
-	dev-python/pyxdg
-	dev-python/sqlalchemy
+	dev-python/alembic[${PYTHON_USEDEP}]
+	dev-python/contextlib2[${PYTHON_USEDEP}]
+	dev-python/pyxdg[${PYTHON_USEDEP}]
+	dev-python/sqlalchemy[sqlite,${PYTHON_USEDEP}]
 	"
 DEPEND="${LIBDEPEND}"
 RDEPEND="${LIBDEPEND}"
