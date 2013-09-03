@@ -51,8 +51,12 @@ src_unpack() {
 
 src_prepare() {
 	# Prevent an access violation.
-	sed -e "s~/etc~${D}/etc~g" -i Makefile
-	sed -e "s~/etc~${D}/etc~g" -i hplj1000
+	sed -e "s~/etc~${D}/etc~g" \
+		-e "s~rm -f \$(LIBUDEVDIR)~rm -f${D}\$(LIBUDEVDIR)~" \
+		-i Makefile
+	sed -e "s~/etc~${D}/etc~g" \
+		-e "s~rm -f /lib/udev/rules.d~rm -f ${D}/lib/udev/rules.d~" \
+		-i hplj1000
 
 	# Prevent an access violation, do not create symlinks on live file system
 	# during installation.
