@@ -8,6 +8,7 @@
 	</longdescription>
 	<use>
 		<flag name="interactive">Pull in dependencies for running an interactive shell (useful for prototyping).</flag>
+		<flag name="xdg">Use <pkg>dev-python/pyxdg</pkg> to place database in $HOME.</flag>
 	</use>
 </pkgmetadata>
 
