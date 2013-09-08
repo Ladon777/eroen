@@ -29,6 +29,8 @@ pkg_setup() {
 
 src_prepare() {
 	epatch "${FILESDIR}"/${P}-ldflags.patch
+	sed -e '/^PQIV_WARNING_FLAGS/s/-Werror//' \
+		-i "${S}/Makefile" || die
 }
 
 src_configure() {
