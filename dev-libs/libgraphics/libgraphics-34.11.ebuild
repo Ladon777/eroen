@@ -72,6 +72,8 @@ pkg_setup() {
 }
 
 src_prepare() {
+	rm -r data raw || die
+	rm libs/{Dwarf_Fortress,libgcc_s.so.1,libgraphics.so,libstdc++.so.6} || die
 	if use egg; then
 		epatch "${FILESDIR}/0001-Add-something-eggy.patch"
 		cp "${FILESDIR}/SConscript-egg" "g_src/SConscript" || die
@@ -79,7 +81,6 @@ src_prepare() {
 		cp "${FILESDIR}/SConscript" "g_src/SConscript" || die
 	fi
 	cp "${FILESDIR}/SConstruct" "SConstruct" || die
-	rm "libs/libgraphics.so" || die
 }
 
 src_compile() {
