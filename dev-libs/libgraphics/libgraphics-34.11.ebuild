@@ -1,5 +1,5 @@
-# Copyright 1999-2012 Gentoo Foundation
-# Distributed under the terms of the GNU General Public License v2
+# By Eroen, 2012-2013
+# Distributed under the terms of the ISC license
 # $Header: $
 
 EAPI=5
@@ -14,7 +14,9 @@ DESCRIPTION="General purpose library used for games-simulation/dwarffortress"
 HOMEPAGE="https://github.com/Baughn/Dwarf-Fortress--libgraphics-"
 SRC_URI="http://www.bay12games.com/dwarves/${DF_P}_linux.tar.bz2"
 
-LICENSE="DwarfFortress as-is LGPL-2.1 BSD fmod MIT"
+# LGPL-2.1 (for sdl) and fmod are explicitly claimed by the readme.
+# BSD, MIT refer to bundled glew headers
+LICENSE="DwarfFortress fmod LGPL-2.1 BSD MIT BitstreamVera"
 SLOT="0"
 KEYWORDS="~amd64"
 IUSE="egg"
