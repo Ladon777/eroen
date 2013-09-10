@@ -15,8 +15,7 @@ HOMEPAGE="http://www.bay12games.com/dwarves/"
 SRC_URI="http://www.bay12games.com/dwarves/${MY_P}_linux.tar.bz2"
 
 # LGPL-2.1 (for sdl) and fmod are explicitly claimed by the readme.
-# BSD, MIT refer to bundled glew headers
-LICENSE="DwarfFortress fmod LGPL-2.1 BSD MIT BitstreamVera"
+LICENSE="DwarfFortress fmod LGPL-2.1 BitstreamVera"
 SLOT="0"
 KEYWORDS="~amd64"
 IUSE="libgraphics"
