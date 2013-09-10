@@ -21,48 +21,37 @@ SLOT="0"
 KEYWORDS="~amd64"
 IUSE="egg"
 
-DEPEND_SCONSCRIPT="virtual/pkgconfig
+DEPEND_SCONS="virtual/pkgconfig"
+
+DEPEND_INCLUDE="media-libs/glew
+	virtual/glu
+	media-libs/libsdl
+	media-libs/libsndfile
+	media-libs/openal
 	media-libs/sdl-image
 	media-libs/sdl-ttf
-	media-libs/libsndfile
-	x11-libs/gtk+
-	media-libs/openal
-	media-libs/libsndfile
-	media-libs/libsdl
-	media-libs/glu
-	media-libs/glew
-	"
-
-DEPEND_INCLUDE="media-libs/fmod
-	media-libs/libsdl
-	media-libs/libsndfile
-	media-libs/openal
-	media-libs/sdl-ttf
-	"
+	sys-libs/ncurses
+	x11-libs/gtk+"
 
 COMMON_DEPEND="!games-simulation/dwarffortress[libgraphics]
 	egg? ( games-util/dfhack[egg] )
 	app-emulation/emul-linux-x86-gtklibs
 	app-emulation/emul-linux-x86-opengl
 	app-emulation/emul-linux-x86-sdl
-	|| ( dev-libs/glib[abi_x86_32(-)] app-emulation/emul-linux-x86-baselibs[-abi_x86_32(-)] )
 	|| ( sys-libs/zlib[abi_x86_32(-)] app-emulation/emul-linux-x86-baselibs[-abi_x86_32(-)] )"
 
 	#||( media-libs/glu app-emulation/emul-linux-x86-opengl ) # or virtual/glu ?
 	#||( media-libs/glew app-emulation/emul-linux-x86-opengl )
-	#||( media-libs/mesa app-emulation/emul-linux-x86-opengl ) # or virtual/opengl ?
 	#||( media-libs/libsdl app-emulation/emul-linux-x86-sdl )
 	#||( media-libs/sdl-image app-emulation/emul-linux-x86-sdl )
 	#||( media-libs/sdl-ttf app-emulation/emul-linux-x86-sdl )
 	#||( x11-libs/gtk+ app-emulation/emul-linux-x86-gtklibs )
 
-RDEPEND="${COMMON_DEPEND}
-	"
+RDEPEND="${COMMON_DEPEND}"
 
 DEPEND="${COMMON_DEPEND}
-	${DEPEND_SCONSCRIPT}
-	${DEPEND_INCLUDE}
-	"
+	${DEPEND_SCONS}
+	${DEPEND_INCLUDE}"
 
 S="${WORKDIR}/${DF_PN}_linux"
 
@@ -73,6 +62,8 @@ pkg_setup() {
 
 src_prepare() {
 	rm -r data raw || die
+	rm g_src/{find_files.cpp,music_and_sound_fmodex.cpp,music_and_sound_fmodex.h} \
+		g_src/template.h || die
 	rm libs/{Dwarf_Fortress,libgcc_s.so.1,libgraphics.so,libstdc++.so.6} || die
 	if use egg; then
 		epatch "${FILESDIR}/0001-Add-something-eggy.patch"
