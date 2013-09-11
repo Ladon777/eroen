@@ -18,7 +18,7 @@ IUSE=""
 
 HDEPEND=""
 LIBDEPEND="media-libs/fmod
-	media-libs/libsdl:2
+	media-libs/libsdl2
 	virtual/opengl"
 DEPEND=""
 RDEPEND="${LIBDEPEND}"
