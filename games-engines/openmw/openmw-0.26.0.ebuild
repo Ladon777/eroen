@@ -21,8 +21,8 @@ if [[ $(get_version_component_range $(get_version_component_count)) == *999? ]];
 		EGIT_BRANCH=openmw$(get_version_component_range 2)
 	fi
 else
-	SRC_URI="https://github.com/zinnschlag/${PN}/archive/${P}.tar.gz"
-	S="${WORKDIR}"/${PN}-${P}
+	SRC_URI="https://${PN}.googlecode.com/files/${P}-source.tar.gz"
+	#S="${WORKDIR}"/${PN}-${P}
 fi
 
 HDEPEND=""
@@ -48,6 +48,11 @@ pkg_setup() {
 		append-cflags -DGTEST_USE_OWN_TR1_TUPLE=1
 		append-cxxflags -DGTEST_USE_OWN_TR1_TUPLE=1
 	fi
+}
+
+src_unpack() {
+	mkdir "${S}" && cd "${S}" || die
+	default
 }
 
 src_prepare() {
