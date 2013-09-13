@@ -4,20 +4,25 @@
 
 EAPI=5
 
-inherit eutils games
+inherit eutils versionator games
 
 DESCRIPTION="An uncompromising wilderness survival game full of science and magic."
 HOMEPAGE="http://www.dontstarvegame.com/"
-SRC_URI="dontstarve_x64_${PV}.tar.gz"
+SRC_URI="dontstarve_x64_$(get_major_version).tar.gz"
 
 # BSD MIT - various files in data/scripts/
 LICENSE="dontstarve-EULA BSD MIT"
 RESTRICT="fetch strip"
 SLOT="0"
-KEYWORDS="-* ~amd64"
+#KEYWORDS="-* ~amd64"
 IUSE="+system-fmod"
 
+if [[ "$(get_version_components 2)" == "9999" ]]; then
+	LIVE=yes
+fi
+
 HDEPEND=""
+[[ -n "${LIVE}" ]] && HDEPEND+=" games-util/dontstarve-updater-ng"
 LIBDEPEND="system-fmod? ( >=media-libs/fmod-4.44.07[designer(+)] )
 	virtual/opengl"
 	# system libsdl2 breaks input
@@ -27,6 +32,28 @@ RDEPEND="${LIBDEPEND}"
 [[ ${EAPI} == *-hdepend ]] || DEPEND+=" ${HDEPEND}"
 
 S="${WORKDIR}"/${PN}
+
+pkg_pretend() {
+	default
+	if [[ -n "${LIVE}" ]] && ! [[ -n "${dontstarve_KEY}" ]]; then
+		eerror "dontstarve_KEY is not set, but a live install is requested."
+		die
+	fi
+}
+
+src_unpack() {
+	default
+
+	if [[ -n "${LIVE}" ]]; then
+		einfo "Will run dontstarve-updater-ng to fetch latest version"
+		pushd "${S}" || die
+		mkdir -p ~/.klei/DoNotStarve || die
+		echo -n "{\"key\": \"${dontstarve_KEY}\"}" > ~/.klei/DoNotStarve/updater.json
+		/usr/games/bin/dontstarve-updater-ng --checkconsistency || die \
+			"the updater failed. It does that sometimes, perhaps trying again helps."
+		popd || die
+	fi
+}
 
 src_install() {
 	exeinto "${GAMES_BINDIR}"

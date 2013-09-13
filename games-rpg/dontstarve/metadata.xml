@@ -5,6 +5,6 @@
 		An Uncompromising Wilderness Survival Game Full of Science &amp; Magic!
 	</longdescription>
 	<use>
-		<flag name="update">Run update after unpacking the tarball. Requires a configured update key, a network connection and an X server.</flag>
+		<flag name="system-fmod">Use system <pkg>media-libs/fmod</pkg> in stead of the bundled version.</flag>
 	</use>
 </pkgmetadata>
