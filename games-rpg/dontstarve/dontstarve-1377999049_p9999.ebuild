@@ -17,7 +17,7 @@ SLOT="0"
 #KEYWORDS="-* ~amd64"
 IUSE="+system-fmod"
 
-if [[ "$(get_version_components 2)" == "9999" ]]; then
+if [[ "$(get_version_component_range 2)" == "p9999" ]]; then
 	LIVE=yes
 fi
 
@@ -34,7 +34,6 @@ RDEPEND="${LIBDEPEND}"
 S="${WORKDIR}"/${PN}
 
 pkg_pretend() {
-	default
 	if [[ -n "${LIVE}" ]] && ! [[ -n "${dontstarve_KEY}" ]]; then
 		eerror "dontstarve_KEY is not set, but a live install is requested."
 		die
@@ -49,7 +48,7 @@ src_unpack() {
 		pushd "${S}" || die
 		mkdir -p ~/.klei/DoNotStarve || die
 		echo -n "{\"key\": \"${dontstarve_KEY}\"}" > ~/.klei/DoNotStarve/updater.json
-		/usr/games/bin/dontstarve-updater-ng --checkconsistency || die \
+		dontstarve-updater-ng --checkconsistency || die \
 			"the updater failed. It does that sometimes, perhaps trying again helps."
 		popd || die
 	fi
