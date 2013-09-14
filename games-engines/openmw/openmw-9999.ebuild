@@ -30,6 +30,7 @@ LIBDEPEND="app-arch/unshield
 	dev-games/ogre[boost,cg,freeimage,opengl,threads,zip]
 	dev-games/mygui
 	dev-libs/boost:=[threads]
+	dev-libs/tinyxml
 	media-libs/libsdl2
 	media-libs/openal
 	sci-physics/bullet
@@ -61,6 +62,7 @@ src_configure() {
 		-DDATADIR="${GAMES_DATADIR}/${PN}"
 		-DSYSCONFDIR="${GAMES_SYSCONFDIR}"/${PN}
 		-DBUILD_BSATOOL=ON
+		-DUSE_SYSTEM_TINYXML=ON
 		$(cmake-utils_use_build test UNITTESTS)
 		)
 	cmake-utils_src_configure
