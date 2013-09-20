@@ -26,6 +26,14 @@ DEPEND="${LIBDEPEND}"
 RDEPEND="${LIBDEPEND}"
 [[ ${EAPI} == *-hdepend ]] || DEPEND+=" ${HDEPEND}"
 
+python_prepare() {
+	echo ${EPYTHON}
+	if [[ "${EPYTHON}" == python3.2 ]]; then
+		# Randomly puts includes in wrong order.
+		sed -e '212,223d' -i src/lib3to2/tests/test_imports2.py || die
+	fi
+}
+
 python_test() {
 	esetup.py test
 }
