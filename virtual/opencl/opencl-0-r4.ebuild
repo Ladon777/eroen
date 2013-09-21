@@ -23,6 +23,6 @@ RDEPEND="app-admin/eselect-opencl
 		video_cards_fglrx? (
 			>=x11-drivers/ati-drivers-12.1-r1[${MULTILIB_USEDEP}] )
 		video_cards_nvidia? (
-			>=x11-drivers/nvidia-drivers-290.10-r2[${MULTILIB_USEDEP}] )
+			>=x11-drivers/nvidia-drivers-290.10-r2 )
 		dev-util/intel-ocl-sdk[${MULTILIB_USEDEP}]
 	)"
