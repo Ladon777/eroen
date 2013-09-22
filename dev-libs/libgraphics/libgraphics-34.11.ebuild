@@ -37,14 +37,14 @@ COMMON_DEPEND="!games-simulation/dwarffortress[libgraphics]
 	app-emulation/emul-linux-x86-gtklibs
 	app-emulation/emul-linux-x86-opengl
 	app-emulation/emul-linux-x86-sdl
+	|| ( virtual/glu[abi_x86_32(-)] app-emulation/emul-linux-x86-opengl )
+	|| ( media-libs/glew[abi_x86_32(-)] app-emulation/emul-linux-x86-opengl )
 	|| ( sys-libs/zlib[abi_x86_32(-)] app-emulation/emul-linux-x86-baselibs[-abi_x86_32(-)] )"
 
-	#||( media-libs/glu app-emulation/emul-linux-x86-opengl ) # or virtual/glu ?
-	#||( media-libs/glew app-emulation/emul-linux-x86-opengl )
-	#||( media-libs/libsdl app-emulation/emul-linux-x86-sdl )
-	#||( media-libs/sdl-image app-emulation/emul-linux-x86-sdl )
-	#||( media-libs/sdl-ttf app-emulation/emul-linux-x86-sdl )
-	#||( x11-libs/gtk+ app-emulation/emul-linux-x86-gtklibs )
+	#|| ( media-libs/libsdl app-emulation/emul-linux-x86-sdl )
+	#|| ( media-libs/sdl-image app-emulation/emul-linux-x86-sdl )
+	#|| ( media-libs/sdl-ttf app-emulation/emul-linux-x86-sdl )
+	#|| ( x11-libs/gtk+ app-emulation/emul-linux-x86-gtklibs )
 
 RDEPEND="${COMMON_DEPEND}"
 
