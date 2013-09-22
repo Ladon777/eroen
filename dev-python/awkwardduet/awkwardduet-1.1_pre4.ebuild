@@ -22,7 +22,8 @@ IUSE="test"
 
 HDEPEND="test? ( >=dev-python/nose-1.0.0[${PYTHON_USEDEP}] )"
 LIBDEPEND="${PYTHON_DEPS}"
-DEPEND="${LIBDEPEND}"
+DEPEND="${LIBDEPEND}
+	!!dev-python/3to2"
 RDEPEND="${LIBDEPEND}"
 [[ ${EAPI} == *-hdepend ]] || DEPEND+=" ${HDEPEND}"
 
