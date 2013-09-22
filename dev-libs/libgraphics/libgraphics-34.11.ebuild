@@ -35,7 +35,6 @@ DEPEND_INCLUDE="media-libs/glew
 COMMON_DEPEND="!games-simulation/dwarffortress[libgraphics]
 	egg? ( games-util/dfhack[egg] )
 	app-emulation/emul-linux-x86-gtklibs
-	app-emulation/emul-linux-x86-opengl
 	app-emulation/emul-linux-x86-sdl
 	|| ( virtual/glu[abi_x86_32(-)] app-emulation/emul-linux-x86-opengl )
 	|| ( media-libs/glew[abi_x86_32(-)] app-emulation/emul-linux-x86-opengl )
