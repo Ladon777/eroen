@@ -4,11 +4,10 @@
 
 EAPI=5
 
-inherit eutils toolchain-funcs versionator git-2
+inherit eutils toolchain-funcs versionator git-r3
 
 DESCRIPTION="A keyboard-centric VTE-based terminal"
 HOMEPAGE="https://github.com/thestinger/termite"
-EGIT_HAS_SUBMODULES=yes
 EGIT_REPO_URI="git://github.com/thestinger/termite.git"
 if [[ ${PV} != 999? ]]; then
 	EGIT_COMMIT=v${PV}
@@ -28,15 +27,16 @@ RDEPEND="${LIBDEPEND}"
 
 pkg_pretend() {
 	if ! version_is_at_least 4.7 $(gcc-version); then
-		eerror "${PN} uses -std=c++11 and requires a version"
+		eerror "${PN} passes -std=c++11 to \${CXX} and requires a version"
 		eerror "of gcc newer than 4.7.0"
 	fi
 }
 
 src_prepare() {
-	sed -i '/PREFIX/s:/usr/local:/usr:' Makefile
-	sed -i 's/-O3//g' Makefile util/test/Makefile
-	sed -i '/LDFLAGS/s/-s//' Makefile util/test/Makefile
+	sed -e '/PREFIX/s:/usr/local:/usr:' \
+		-e 's/-O3//g' \
+		-e '/LDFLAGS/s/-s//' \
+		-i Makefile || die
 }
 
 src_install() {
