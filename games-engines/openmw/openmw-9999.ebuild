@@ -5,7 +5,7 @@
 EAPI=5
 
 inherit eutils flag-o-matic versionator games cmake-utils
-[[ $(get_version_component_range $(get_version_component_count)) == *999? ]] && inherit git-2
+[[ $(get_version_component_range $(get_version_component_count)) == *999? ]] && inherit git-r3
 
 DESCRIPTION="Unofficial open source engine reimplementation of the game Morrowind"
 HOMEPAGE="https://openmw.org/"
@@ -15,7 +15,6 @@ KEYWORDS=""
 IUSE="test +tr1"
 
 if [[ $(get_version_component_range $(get_version_component_count)) == *999? ]]; then
-	S="${WORKDIR}"/${PN}
 	EGIT_REPO_URI="git://github.com/zinnschlag/openmw.git"
 	if [[ $(get_version_component_count) -ge 4 ]]; then
 		EGIT_BRANCH=openmw$(get_version_component_range 2)
