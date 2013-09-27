@@ -8,20 +8,21 @@ EAPI=5
 # pypy random exceptions, someone should take a closer look, it may
 # be just the usual test suite overload
 # py3.3 unfit with some types
-PYTHON_COMPAT=( python{2_6,2_7,3_2} )
+PYTHON_COMPAT=( python{2_6,2_7,3_2,3_3} )
 
-inherit distutils-r1
+inherit distutils-r1 git-r3
 
 MY_PN="Beaker"
 MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="A Session and Caching library with WSGI Middleware"
 HOMEPAGE="http://beaker.groovie.org/ http://pypi.python.org/pypi/Beaker"
-SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
+#SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
+EGIT_REPO_URI="https://github.com/bbangert/beaker.git"
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm ~hppa ia64 ppc ~ppc64 s390 sh sparc x86 ~amd64-linux ~x86-linux ~x64-macos ~x86-macos"
+#KEYWORDS="~alpha amd64 ~arm ~hppa ia64 ppc ~ppc64 s390 sh sparc x86 ~amd64-linux ~x86-linux ~x64-macos ~x86-macos"
 IUSE="test"
 
 # webtest-based tests are skipped when webtest is not installed
@@ -31,7 +32,7 @@ DEPEND="dev-python/setuptools[${PYTHON_USEDEP}]
 		dev-python/webtest[$(python_gen_usedep python{2_6,2_7,3_2,3_3})] )"
 RDEPEND=""
 
-S="${WORKDIR}/${MY_P}"
+#S="${WORKDIR}/${MY_P}"
 
 python_prepare_all() {
 	# Workaround for http://bugs.python.org/issue11276.
