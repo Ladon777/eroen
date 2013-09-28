@@ -12,8 +12,8 @@ HOMEPAGE="https://live.gnome.org/Terminal/VTE"
 
 LICENSE="LGPL-2+"
 SLOT="2.90"
-IUSE="debug glade +introspection"
-KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~x86-freebsd ~x86-interix ~amd64-linux ~arm-linux ~x86-linux ~x64-solaris ~x86-solaris"
+IUSE="debug glade +introspection termite-patch"
+KEYWORDS="~amd64 ~x86"
 
 PDEPEND="=x11-libs/gnome-pty-helper-${PV}"
 RDEPEND="
@@ -46,6 +46,8 @@ src_prepare() {
 
 	# https://bugzilla.gnome.org/show_bug.cgi?id=663779
 	epatch "${FILESDIR}/${PN}-0.30.1-alt-meta.patch"
+
+	use termite-patch && epatch "${FILESDIR}"/${PN}-0.32.2-expose_select_text.patch
 
 	gnome2_src_prepare
 }
