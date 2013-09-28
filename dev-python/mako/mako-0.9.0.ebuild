@@ -17,9 +17,10 @@ SRC_URI="http://www.makotemplates.org/downloads/${MY_P}.tar.gz"
 LICENSE="MIT"
 SLOT="0"
 KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-linux ~x86-linux ~x64-macos ~x86-macos"
-IUSE="doc test"
+IUSE="doc +cache test"
+REQUIRED_USE="cache? ( !python_targets_python3_2 !python_targets_python3_3 )"
 
-RDEPEND=">=dev-python/beaker-1.1[${PYTHON_USEDEP}]
+RDEPEND="cache? ( >=dev-python/beaker-1.1[${PYTHON_USEDEP}] )
 	>=dev-python/markupsafe-0.9.2[${PYTHON_USEDEP}]"
 DEPEND="${RDEPEND}
 	dev-python/setuptools[${PYTHON_USEDEP}]
