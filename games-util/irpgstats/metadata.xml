@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<longdescription lang="en">
+		irpgstats is a set of tools to parse the [IdleRPG](https://idlerpg.net/) state
+		database (`irpg.db`) written in python by eroen.
+	</longdescription>
+</pkgmetadata>
