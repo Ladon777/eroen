@@ -6,5 +6,6 @@
 	<flag name='glade'>Provide integration with <pkg>dev-util/glade</pkg>.</flag>
 	<flag name="introspection">Use <pkg>dev-libs/gobject-introspection</pkg> for
 	introspection</flag>
+	<flag name="termite-patch">Apply patch for <pkg>x11-terms/termite</pkg></flag>
 </use>
 </pkgmetadata>
