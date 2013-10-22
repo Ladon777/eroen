@@ -17,6 +17,7 @@ RDEPEND="
 		x11-misc/alock
 		x11-misc/i3lock
 		x11-misc/slimlock
+		>=x11-misc/slim-1.3.6
 		x11-misc/slock
 		x11-misc/xlockmore
 		x11-misc/xtrlock
