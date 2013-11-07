@@ -24,19 +24,25 @@ else
 	S="${WORKDIR}"/${PN}-${P}
 fi
 
-HDEPEND=""
-LIBDEPEND="app-arch/unshield
-	dev-games/ogre[boost,cg,freeimage,opengl,threads,zip]
-	dev-games/mygui
-	dev-libs/boost:=[threads]
+OPENMW_LIBS="dev-games/mygui
 	dev-libs/tinyxml
-	media-libs/libsdl2
 	media-libs/openal
-	sci-physics/bullet
 	virtual/ffmpeg
+	sci-physics/bullet"
+LAUNCHER_LIBS="app-arch/unshield
 	dev-qt/qtcore
+	dev-qt/qtgui"
+OPENCS_LIBS="dev-qt/qtcore
 	dev-qt/qtgui
 	dev-qt/qtxmlpatterns"
+
+HDEPEND=""
+LIBDEPEND="${OPENMW_LIBS}
+	${LAUNCHER_LIBS}
+	${OPENCS_LIBS}
+	dev-games/ogre[boost,cg,freeimage,opengl,threads,zip]
+	dev-libs/boost:=[threads]
+	media-libs/libsdl2"
 DEPEND="${LIBDEPEND}
 	test? ( dev-cpp/gmock[tr1=]
 	    dev-cpp/gtest[tr1=] )"
