@@ -12,7 +12,7 @@ HOMEPAGE="https://openmw.org/"
 LICENSE="GPL-3 MIT BitstreamVera OFL-1.1"
 SLOT="0"
 KEYWORDS=""
-IUSE="test +tr1"
+IUSE="+launcher minimal +opencs profile test +tr1"
 
 if [[ $(get_version_component_range $(get_version_component_count)) == *999? ]]; then
 	EGIT_REPO_URI="git://github.com/zinnschlag/openmw.git"
@@ -38,8 +38,8 @@ OPENCS_LIBS="dev-qt/qtcore
 
 HDEPEND=""
 LIBDEPEND="${OPENMW_LIBS}
-	${LAUNCHER_LIBS}
-	${OPENCS_LIBS}
+	launcher? ( ${LAUNCHER_LIBS} )
+	opencs? ( ${OPENCS_LIBS} )
 	dev-games/ogre[boost,cg,freeimage,opengl,threads,zip]
 	dev-libs/boost:=[threads]
 	media-libs/libsdl2"
@@ -67,7 +67,12 @@ src_configure() {
 		-DDATAROOTDIR="${GAMES_DATADIR_BASE}"
 		-DDATADIR="${GAMES_DATADIR}/${PN}"
 		-DSYSCONFDIR="${GAMES_SYSCONFDIR}"/${PN}
-		-DBUILD_BSATOOL=ON
+		$(cmake-utils_use_build launcher LAUNCHER)
+		$(cmake-utils_use_build opencs OPENCS)
+		$(cmake-utils_use_build !minimal BSATOOL)
+		$(cmake-utils_use_build !minimal ESMTOOL)
+		$(cmake-utils_use_build !minimal MWINIIMPORTER)
+		$(cmake-utils_use_with profile CODE_COVERAGE)
 		-DUSE_SYSTEM_TINYXML=ON
 		$(cmake-utils_use_build test UNITTESTS)
 		)
