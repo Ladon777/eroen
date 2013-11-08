@@ -5,7 +5,7 @@
 EAPI="3"
 PYTHON_DEPEND="python? 2:2.5"
 
-inherit versionator autotools eutils gnome2 fdo-mime multilib python
+inherit versionator virtualx autotools eutils gnome2 fdo-mime multilib python
 
 DESCRIPTION="GNU Image Manipulation Program"
 HOMEPAGE="http://www.gimp.org/"
@@ -127,6 +127,10 @@ _clean_up_locales() {
 		}
 		rm -Rf "${ED}"/usr/share/locale/"${lang}" || die
 	done
+}
+
+src_test() {
+	Xemake check
 }
 
 src_install() {
