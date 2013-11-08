@@ -56,6 +56,7 @@ src_prepare() {
 
 src_configure() {
 	mycmakeargs=(
+		-DDPKG_PROGRAM=""
 		-DCMAKE_INSTALL_PREFIX="${GAMES_PREFIX}"
 		-DDATAROOTDIR="${GAMES_DATADIR_BASE}"
 		-DDATADIR="${GAMES_DATADIR}/${PN}"
