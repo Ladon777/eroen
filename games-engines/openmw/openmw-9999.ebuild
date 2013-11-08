@@ -9,7 +9,7 @@ inherit eutils flag-o-matic versionator games cmake-utils
 
 DESCRIPTION="Unofficial open source engine reimplementation of the game Morrowind"
 HOMEPAGE="https://openmw.org/"
-LICENSE="GPL-3 MIT BitstreamVera DaedricFont OFL-1.1"
+LICENSE="GPL-3 MIT BitstreamVera OFL-1.1"
 SLOT="0"
 KEYWORDS=""
 IUSE="test +tr1"
