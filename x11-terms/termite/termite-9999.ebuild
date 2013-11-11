@@ -47,6 +47,8 @@ src_install() {
 }
 
 pkg_postinst() {
+	ewarn
+	ewarn "After termite-7 transparency functionality was dropped."
 	elog
 	elog "Termite looks for a config file ~/.config/termite/config"
 	elog "An example config can be found in ${ROOT}usr/share/doc/${PF}/"
