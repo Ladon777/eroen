@@ -1,0 +1,28 @@
+--- termite-9999.ebuild	2013-09-25 16:39:56.753562930 +0200
++++ termite-9999.ebuild	2013-11-11 10:03:08.158660185 +0100
+@@ -32,16 +32,18 @@
+ 	fi
+ }
+ 
+-src_prepare() {
+-	sed -e '/PREFIX/s:/usr/local:/usr:' \
+-		-e 's/-O3//g' \
+-		-e '/LDFLAGS/s/-s//' \
+-		-i Makefile || die
++pkg_setup() {
++	# Makefile prepends -O3
++	CXXFLAGS="-O0 ${CXXFLAGS}"
++}
++
++src_compile() {
++	emake LDFLAGS="${LDFLAGS}"
+ }
+ 
+ src_install() {
+-	default
+-	dodoc config
++	emake DESTDIR="${D}" PREFIX=/usr install
++	dodoc README* config
+ }
+ 
+ pkg_postinst() {
