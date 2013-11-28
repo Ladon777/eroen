@@ -72,6 +72,7 @@ DEPEND="${RDEPEND}
 	) ) )
 "
 
+PATCHES=( "${FILESDIR}"/ffmpeg21.patch )
 DOCS=( README )
 
 src_configure() {
