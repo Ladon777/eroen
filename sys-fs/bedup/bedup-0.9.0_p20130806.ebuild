@@ -3,7 +3,7 @@
 # $Header: $
 
 EAPI=5
-PYTHON_COMPAT=( python2_7 python3_2 )
+PYTHON_COMPAT=( python2_7 python3_2 python3_3 )
 # 3_3: alembic
 
 inherit eutils git-2 distutils-r1
