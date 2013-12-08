@@ -103,6 +103,14 @@ pkg_setup() {
 	dfhack_statedir="${GAMES_STATEDIR}/${P}"
 }
 
+src_unpack() {
+	git-2_src_unpack
+	# git-2 doesn't do submodules properly
+	pushd "${EGIT_SOURCEDIR}" || die > /dev/null
+	git submodule update || die "could not update git submodules"
+	popd || die > /dev/null
+}
+
 src_prepare() {
 	epatch "${FILESDIR}"/${P}/01-compile-static-libraries-as.patch
 	epatch "${FILESDIR}"/${P}/02-drop-strange-build-options.patch

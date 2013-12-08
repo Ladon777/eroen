@@ -60,6 +60,14 @@ pkg_setup() {
 	fi
 }
 
+src_unpack() {
+	git-2_src_unpack
+	# git-2 doesn't do submodules properly
+	pushd "${EGIT_SOURCEDIR}" || die > /dev/null
+	git submodule update || die "could not update git submodules"
+	popd || die > /dev/null
+}
+
 src_prepare() {
 	# Not sure why git-2 eclass doesn't fix this.
 	git submodule update
