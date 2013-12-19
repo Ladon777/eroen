@@ -5,7 +5,7 @@
 EAPI=5
 PYTHON_COMPAT=( python2_{6,7} )
 
-inherit versionator autotools eutils gnome2 fdo-mime multilib python-single-r1
+inherit versionator virtualx autotools eutils gnome2 fdo-mime multilib python-single-r1
 
 DESCRIPTION="GNU Image Manipulation Program"
 HOMEPAGE="http://www.gimp.org/"
@@ -132,6 +132,10 @@ _clean_up_locales() {
 		}
 		rm -Rf "${ED}"/usr/share/locale/"${lang}" || die
 	done
+}
+
+src_test() {
+	Xemake check
 }
 
 src_install() {
