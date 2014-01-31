@@ -43,7 +43,11 @@ src_configure() {
 			$(cmake-utils_use sse)
 		)
 
-		multilib_is_native_abi && mycmakeargs+=( $(cmake-utils_use alstream EXAMPLES) )
+		if multilib_is_native_abi; then
+			mycmakeargs+=( $(cmake-utils_use alstream EXAMPLES) )
+		else
+			mycmakeargs+=( "-DEXAMPLES=OFF" )
+		fi
 
 		cmake-utils_src_configure
 	}
