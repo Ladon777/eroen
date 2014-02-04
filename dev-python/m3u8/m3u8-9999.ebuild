@@ -7,8 +7,7 @@
 # $Header: $
 
 EAPI=5
-# needs 2to3 for urlparse
-PYTHON_COMPAT=(python2_7)
+PYTHON_COMPAT=(python2_7 python3_2 python3_3)
 
 DESCRIPTION="m3u8 parser"
 HOMEPAGE="https://pypi.python.org/pypi/m3u8 https://github.com/globocom/m3u8"
@@ -38,7 +37,16 @@ DEPEND="${VCS_DEPEND}
 		sys-process/procps )"
 RDEPEND=""
 
+python_prepare() {
+	if [[ "${EPYTHON}" == python3* ]]; then
+		2to3-"${EPYTHON#python}" -w ${PN} || die
+	fi
+}
+
 python_test() {
+	if [[ "${EPYTHON}" == python3* ]]; then
+		2to3-"${EPYTHON#python}" -w tests || die
+	fi
 	sed -e '/pip install/c:' \
 		-i runtests || die
 	./runtests || die
