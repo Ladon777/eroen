@@ -25,6 +25,8 @@ RDEPEND=""
 S=${WORKDIR}/${MY_P/-src}
 
 pkg_setup() {
+	# https://bugs.gentoo.org/501394
+	# src/sed/config/mdate-sh parses `ls` output
 	export TIME_STYLE=posix-locale
 }
 
