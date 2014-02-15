@@ -24,6 +24,10 @@ RDEPEND=""
 
 S=${WORKDIR}/${MY_P/-src}
 
+pkg_setup() {
+	export TIME_STYLE=posix-locale
+}
+
 src_prepare() {
 	rm -rf "${S}/kBuild/bin"
 
