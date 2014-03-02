@@ -41,7 +41,7 @@ DEPEND="
 	vorbis? ( media-libs/libvorbis )
 "
 RDEPEND="${DEPEND}
-	$(add_kdebase_dep kdelibs 'udev,udisks(+)')
+	$(add_kdebase_dep kdelibs 'udev')
 	app-cdr/cdrdao
 	media-sound/cdparanoia
 	virtual/cdrtools
