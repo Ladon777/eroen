@@ -25,6 +25,7 @@ Think of Wine as a compatibility layer for running Windows programs. Wine does n
 		http://wiki.winehq.org/NtlmAuthSetupGuide and
 		http://wiki.winehq.org/NtlmSigningAndSealing</flag>
 	<flag name='swtor'>Enable patch to run SWTOR</flag>
+	<flag name='teso'>Enable patch to run The Elder Scrolls Online</flag>
 	<flag name='udisks'>Support dynamic storage devices using <pkg>sys-fs/udisks</pkg></flag>
 	<flag name='win32'>Build a 32bit version of Wine (won't run Win64 binaries)</flag>
 	<flag name='win64'>Build a 64bit version of Wine (won't run Win32 binaries)</flag>
