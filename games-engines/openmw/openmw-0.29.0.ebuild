@@ -11,7 +11,7 @@ DESCRIPTION="Unofficial open source engine reimplementation of the game Morrowin
 HOMEPAGE="https://openmw.org/"
 LICENSE="GPL-3 MIT BitstreamVera OFL-1.1"
 SLOT="0"
-KEYWORDS=""
+KEYWORDS="~amd64 ~x86"
 IUSE="+launcher minimal +opencs profile test +tr1"
 
 if [[ $(get_version_component_range $(get_version_component_count)) == *999? ]]; then
@@ -64,7 +64,6 @@ src_prepare() {
 
 src_configure() {
 	mycmakeargs=(
-		-DDPKG_PROGRAM=""
 		-DCMAKE_INSTALL_PREFIX="${GAMES_PREFIX}"
 		-DDATAROOTDIR="${GAMES_DATADIR_BASE}"
 		-DDATADIR="${GAMES_DATADIR}/${PN}"
