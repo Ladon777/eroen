@@ -25,7 +25,7 @@ IUSE="assets charts jinja markdown"
 
 DEPEND="dev-python/docutils" # needs rst2man to build manpage
 RDEPEND="${DEPEND}
-	python_targets_python2_7? ( =dev-python/configparser-3.2.0* )
+	python_targets_python2_7? ( >=dev-python/configparser-3.2.0 )
 	>=dev-python/doit-0.23.0
 	dev-python/logbook
 	dev-python/lxml
