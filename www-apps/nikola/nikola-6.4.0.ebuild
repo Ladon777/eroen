@@ -3,7 +3,9 @@
 # $Header: $
 
 EAPI=5
-PYTHON_COMPAT=( python{2_7,3_3} )
+# >=2.7 >=3.3
+# PyRSS2Gen -3.3
+PYTHON_COMPAT=( python2_7 )
 inherit distutils-r1
 
 DESCRIPTION="A static website and blog generator"
@@ -23,25 +25,51 @@ LICENSE="MIT-with-advertising"
 SLOT="0"
 IUSE="assets charts jinja markdown"
 
-DEPEND="dev-python/docutils" # needs rst2man to build manpage
+# needs rst2man to build manpage
+# TODO: test if setuptools needed at runtime
+DEPEND="dev-python/docutils[${PYTHON_USEDEP}]
+	dev-python/setuptools[${PYTHON_USEDEP}]"
 RDEPEND="${DEPEND}
-	python_targets_python2_7? ( >=dev-python/configparser-3.2.0 )
-	>=dev-python/doit-0.23.0
-	dev-python/logbook
-	dev-python/lxml
-	>=dev-python/mako-0.6
-	dev-python/pygments
-	dev-python/PyRSS2Gen
+	python_targets_python2_7? ( >=dev-python/configparser-3.2.0[python_targets_python2_7] )
+	dev-python/blinker[${PYTHON_USEDEP}]
+	dev-python/colorama[${PYTHON_USEDEP}]
+	>=dev-python/doit-0.23.0[${PYTHON_USEDEP}]
+	dev-python/logbook[${PYTHON_USEDEP}]
+	dev-python/lxml[${PYTHON_USEDEP}]
+	>=dev-python/mako-0.6[${PYTHON_USEDEP}]
+	dev-python/pygments[${PYTHON_USEDEP}]
+	dev-python/PyRSS2Gen[${PYTHON_USEDEP}]
 	dev-python/python-dateutil
-	>=dev-python/pytz-2013d
+	>=dev-python/pytz-2013d[${PYTHON_USEDEP}]
 	>=dev-python/requests-1.0
-	dev-python/unidecode
-	>=dev-python/yapsy-1.10.2
-	virtual/python-imaging
+	dev-python/unidecode[${PYTHON_USEDEP}]
+	>=dev-python/yapsy-1.10.2[${PYTHON_USEDEP}]
+	>=virtual/python-imaging-2[${PYTHON_USEDEP}]
 	assets? ( dev-python/assets )
 	charts? ( dev-python/pygal )
 	jinja? ( >=dev-python/jinja-2.7 )
 	markdown? ( dev-python/markdown )"
+### optional:
+# dev-python/bbcode # not in gentoo
+# dev-python/colorama # 6.4.0
+# >=dev-python/ipython-1.0.0
+# >=dev-python/jinja-2.7 # XXX
+# >=dev-python/livereload-2.1.0
+# dev-python/markdown # XXX
+# dev-python/micawber # not in gentoo
+# dev-python/phpserialize # not in gentoo
+# dev-python/pygal # XXX
+# dev-python/pyphen
+# dev-python/python-dateutil # XXX
+# >=dev-python/requests-1.0 # XXX NOQA
+# >=dev-python/typogrify-2.0.4 # not in gentoo
+# dev-python/assets # XXX # -33
+### test:
+# dev-python/coverage
+# dev-python/freezegun # not in gentoo
+# >=dev-python/mock-1.0.0
+# dev-python/nose
+# dev-python/python-coveralls # not in gentoo
 
 src_install() {
 	distutils-r1_src_install
