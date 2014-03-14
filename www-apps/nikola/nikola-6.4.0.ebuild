@@ -23,7 +23,7 @@ fi
 
 LICENSE="MIT-with-advertising"
 SLOT="0"
-IUSE="assets charts jinja markdown"
+IUSE="assets charts jinja markdown minimal"
 
 # needs rst2man to build manpage
 # TODO: test if setuptools needed at runtime
@@ -39,16 +39,16 @@ RDEPEND="${DEPEND}
 	>=dev-python/mako-0.6[${PYTHON_USEDEP}]
 	dev-python/pygments[${PYTHON_USEDEP}]
 	dev-python/PyRSS2Gen[${PYTHON_USEDEP}]
-	dev-python/python-dateutil
 	>=dev-python/pytz-2013d[${PYTHON_USEDEP}]
-	>=dev-python/requests-1.0
 	dev-python/unidecode[${PYTHON_USEDEP}]
 	>=dev-python/yapsy-1.10.2[${PYTHON_USEDEP}]
 	>=virtual/python-imaging-2[${PYTHON_USEDEP}]
-	assets? ( dev-python/assets )
-	charts? ( dev-python/pygal )
-	jinja? ( >=dev-python/jinja-2.7 )
-	markdown? ( dev-python/markdown )"
+	assets? ( dev-python/assets[${PYTHON_USEDEP}] )
+	charts? ( dev-python/pygal[${PYTHON_USEDEP}] )
+	jinja? ( >=dev-python/jinja-2.7[${PYTHON_USEDEP}] )
+	markdown? ( dev-python/markdown[${PYTHON_USEDEP}] )
+	!minimal? ( dev-python/python-dateutil[${PYTHON_USEDEP}]
+		>=dev-python/requests-1.0[${PYTHON_USEDEP}] )"
 ### optional:
 # dev-python/bbcode # not in gentoo
 # dev-python/colorama # 6.4.0
