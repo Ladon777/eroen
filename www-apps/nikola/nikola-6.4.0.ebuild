@@ -71,12 +71,13 @@ RDEPEND="${DEPEND}
 # dev-python/nose
 # dev-python/python-coveralls # not in gentoo
 
+DOCS=( AUTHORS.txt CHANGES.txt CONTRIBUTING.rst README.rst )
+
 src_install() {
 	distutils-r1_src_install
 
 	# hackish way to remove docs that ended up in the wrong place
 	rm -rf "${D}"/usr/share/doc/${PN}
 
-	dodoc AUTHORS.txt CHANGES.txt README.rst docs/*.txt
-	doman docs/man/*
+	dodoc docs/*.txt
 }
