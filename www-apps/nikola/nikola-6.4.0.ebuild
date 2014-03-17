@@ -23,7 +23,6 @@ fi
 
 # Apache-2.0: bootstrap.{css,js}
 # CC-BY-NC-SA-2.5: conf.py.in
-# !!!: a-study-in-scarlet.txt
 LICENSE="MIT-with-advertising Apache-2.0 CC-BY-NC-SA-2.5"
 SLOT="0"
 IUSE="assets charts jinja markdown minimal"
@@ -75,6 +74,19 @@ optfeature() {
 	done
 }
 
+src_prepare() {
+	# Redact non-public-domain parts
+	# http://www.gutenberg.org/wiki/Gutenberg:The_Project_Gutenberg_License
+	sed -e '/Posting Date/d' \
+		-e '/Release Date/d' \
+		-e '/Produced By/d' \
+		-e '/note::/s:The Project Gutenberg EBook of ::' \
+		-e '/This eBook is for the use/,/Part II, The Country of the Saints/d' \
+		-e '/END OF THIS PROJECT GUTENBERG EBOOK/,$d' \
+		-i nikola/data/samplesite/stories/a-study-in-scarlet.txt || die
+	grep -Ei 'gutenberg|license' nikola/data/samplesite/stories/a-study-in-scarlet.txt && die "Redaction failed."
+}
+
 src_install() {
 	distutils-r1_src_install
 
@@ -86,42 +98,46 @@ src_install() {
 
 pkg_postinst() {
 	elog "For additional features, a number of optional runtime dependencies may be"
-	elog "installed. Note that many dependencies need to be installed for the python"
-	elog "interpreter you are using, or their functionality will not be available."
+	elog "installed. Note that dependencies marked with (*) need to be installed for the"
+	elog "python interpreter you are using, or their functionality will not be available."
 
-#	optfeature "Compile BBCode into html" dev-python/bbcode # not in gentoo
-	optfeature "Colorized log messages" dev-python/colorama
-	optfeature "Compile IPython notebooks into HTML" ">=dev-python/ipython-1.0.0"
-#	optfeature "Support for Jinja2 templates" ">=dev-python/jinja-2.7" # currently use flag
-#	optfeature "Automatically rebuild site on file changes" >=dev-python/python-livereload-2.1.0 # not in gentoo
-#	optfeature "Compile Markdown into HTML" dev-python/markdown # currently use flag
-#	optfeature "Embed media from many websites" dev-python/micawber # not in gentoo
-#	optfeature "Download files while importing WordPress dumps" dev-python/phpserialize ">=dev-python/requests-1.0" # not in gentoo
-#	optfeature "Produce SVG charts for embedding" dev-python/pygal # currently use flag
-	optfeature "Hyphenation" dev-python/pyphen
-#	optfeature "Enhanced date format parsing" dev-python/python-dateutil # currently use flag
-#	optfeature "Install plugins and themes" ">=dev-python/requests-1.0" # currently use flag
-#	optfeature "Embed media from Vimeo" ">=dev-python/requests-1.0" # currently use flag
-#	optfeature "Inline source code from GIST" ">=dev-python/requests-1.0" # currently use flag
-#	optfeature "Yield typographically-improved HTML" ">=dev-python/typogrify-2.0.4" # not in gentoo
-#	optfeature "Make bundles of theme CSS and js" dev-python/assets # currently use flag # no python3_3 support
+#	optfeature "Compiling BBCode into html (*)" dev-python/bbcode # not in gentoo
+	optfeature "Compiling IPython notebooks into HTML (*)" ">=dev-python/ipython-1.0.0"
+	optfeature "Jinja2 template support (*)" ">=dev-python/jinja-2.7" # currently use flag
+	optfeature "Compiling Markdown into HTML (*)" dev-python/markdown # currently use flag
+
+	optfeature "Colorized log messages (*)" dev-python/colorama
+#	optfeature "Embedding media from many websites (*)" dev-python/micawber # not in gentoo
+	optfeature "Downloading files while importing WordPress dumps (*)" dev-python/phpserialize ">=dev-python/requests-1.0" # not in gentoo
+	optfeature "Producing SVG charts for embedding (*)" dev-python/pygal # currently use flag
+	optfeature "Hyphenation (*)" dev-python/pyphen
+	optfeature "Enhanced date format parsing (*)" dev-python/python-dateutil # currently use flag
+#	optfeature "Automatically rebuilding site on file changes (*)" >=dev-python/python-livereload-2.1.0 # not in gentoo
+	optfeature "Installing plugins and themes (*)" ">=dev-python/requests-1.0" # currently use flag
+	optfeature "Embedding media from Vimeo (*)" ">=dev-python/requests-1.0" # currently use flag
+	optfeature "Inline source code from GIST (*)" ">=dev-python/requests-1.0" # currently use flag
+
+#	optfeature "Yielding typographically-improved HTML (*)" ">=dev-python/typogrify-2.0.4" # not in gentoo
+	optfeature "Making bundles of theme CSS and js (*)" dev-python/assets # currently use flag # no python3_3 support
 
 ### Not mentioned in requirements*.txt:
-	optfeature "Import Atom/RSS feeds and Blogger dumps" dev-python/feedparser
-#	optfeature "Remove unused and redundant CSS" dev-python/mincss # not in gentoo
-	optfeature "Feed aggregation" dev-python/peewee # no python3_3 support
-#	optfeature "Render galleries" ">=virtual/python-imaging-2" # not optional
-	optfeature "Compile asciidoc documents into HTML" app-text/asciidoc # executable
-	optfeature "Compile Textile into HTML" app-text/pytextile # old python eclass
-#	optfeature "Compile reStructuredText into HTML" dev-python/docutils # not optional
-	optfeature "Compile misaka markdown documents to HTML" dev-python/misaka # no python3_3 support
-	optfeature "Compile txt2tags documents to HTML" app-text/txt2tags # old python eclas
-#	optfeature "Compile CreoleWiki to HTML" dev-python/creole # not in gentoo
-	optfeature "Compile various documents into HTML" app-text/pandoc # executable
-	optfeature "Tidy up HTML" app-text/htmltidy # executable
-#	optfeature "Compress CSS and js" app-text/yuicompressor # executable # not in gentoo
-	optfeature "Optimize PNG images" media-gfx/optipng # executable
-	optfeature "Optimize JPEG images" media-gfx/jpegoptim # executable
-#	optfeature "Generate CSS out of LESS sources" www-apps/less # executable lessc # not in gentoo, bundled in ipython, meteor
-	optfeature "Build CSS out of Sass sources" dev-ruby/sass # executable
+	optfeature "Compiling asciidoc documents into HTML" app-text/asciidoc # executable
+	optfeature "Compiling Textile into HTML (*)" app-text/pytextile # old python eclass
+#	optfeature "Compiling reStructuredText into HTML (*)" dev-python/docutils # not optional
+	optfeature "Compiling misaka markdown documents to HTML (*)" dev-python/misaka # no python3_3 support
+	optfeature "Compiling txt2tags documents to HTML (*)" app-text/txt2tags # old python eclas
+#	optfeature "Compiling CreoleWiki to HTML (*)" dev-python/creole # not in gentoo
+	optfeature "Compiling various documents into HTML" app-text/pandoc # executable
+
+	optfeature "Importing Atom/RSS feeds and Blogger dumps (*)" dev-python/feedparser
+	optfeature "Feed aggregation (*)" dev-python/peewee # no python3_3 support
+#	optfeature "Rendering galleries (*)" ">=virtual/python-imaging-2" # not optional
+
+	optfeature "Tidying up HTML" app-text/htmltidy # executable
+#	optfeature "Compressing CSS and js" app-text/yuicompressor # executable # not in gentoo
+#	optfeature "Removing unused and redundant CSS (*)" dev-python/mincss # not in gentoo
+	optfeature "Optimizing JPEG images" media-gfx/jpegoptim # executable
+	optfeature "Optimizing PNG images" media-gfx/optipng # executable
+	optfeature "Building CSS from Sass sources" dev-ruby/sass # executable
+#	optfeature "Building CSS from LESS sources" www-apps/less # executable lessc # not in gentoo, bundled in ipython, meteor
 }
