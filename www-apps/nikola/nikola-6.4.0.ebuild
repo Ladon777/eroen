@@ -57,6 +57,7 @@ RDEPEND="app-arch/gzip
 # >=dev-python/mock-1.0.0
 # dev-python/nose
 # dev-python/python-coveralls # not in gentoo
+# dev-python/flake8
 # pip?
 
 DOCS=( AUTHORS.txt CHANGES.txt CONTRIBUTING.rst README.rst )
@@ -74,6 +75,14 @@ optfeature() {
 	done
 }
 
+checkpythonlocale() {
+	${PYTHON} <<-EOF
+		import locale
+		locale.setlocale(locale.LC_ALL, '${1}')
+		EOF
+	return $?
+}
+
 src_prepare() {
 	# Redact non-public-domain parts
 	# http://www.gutenberg.org/wiki/Gutenberg:The_Project_Gutenberg_License
@@ -85,6 +94,17 @@ src_prepare() {
 		-e '/END OF THIS PROJECT GUTENBERG EBOOK/,$d' \
 		-i nikola/data/samplesite/stories/a-study-in-scarlet.txt || die
 	grep -Ei 'gutenberg|license' nikola/data/samplesite/stories/a-study-in-scarlet.txt && die "Redaction failed."
+}
+
+python_test() {
+	if ! checkpythonlocale en_US.utf8 || ! checkpythonlocale pl_PL.utf8 ; then
+		ewarn "Skipping tests due to locales en_US.utf8 and pl_PL.utf8 not usable by ${EPYTHON}."
+		return 0
+	fi
+	nosetests \
+		--with-coverage --cover-package=nikola \
+		--with-doctest --doctest-options=+NORMALIZE_WHITESPACE \
+		--logging-filter=-yapsy || die 'nosetests failed'
 }
 
 src_install() {
