@@ -18,7 +18,7 @@ if [[ ${PV} == *9999* ]]; then
 	KEYWORDS=""
 else
 	SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${P}.tar.gz"
-	KEYWORDS=""
+	KEYWORDS="~amd64"
 fi
 
 # Apache-2.0: bootstrap.{css,js}
@@ -26,9 +26,9 @@ fi
 LICENSE="MIT-with-advertising Apache-2.0 CC-BY-NC-SA-2.5"
 SLOT="0"
 IUSE="assets charts jinja markdown minimal"
+RESTRICT=test
 
 # needs rst2man to build manpage
-# TODO: test if setuptools needed at runtime
 DEPEND="dev-python/docutils
 	dev-python/setuptools[${PYTHON_USEDEP}]"
 RDEPEND="app-arch/gzip
@@ -59,9 +59,11 @@ RDEPEND="app-arch/gzip
 # dev-python/python-coveralls # not in gentoo
 # dev-python/flake8
 # pip?
+# dev-python/phpserialize # XXX # not in gentoo
 
 DOCS=( AUTHORS.txt CHANGES.txt CONTRIBUTING.rst README.rst )
 
+# from net-misc/netctl
 optfeature() {
 	local desc=$1
 	shift
@@ -75,6 +77,7 @@ optfeature() {
 	done
 }
 
+# used for src_test()
 checkpythonlocale() {
 	${PYTHON} <<-EOF
 		import locale
@@ -96,6 +99,7 @@ src_prepare() {
 	grep -Ei 'gutenberg|license' nikola/data/samplesite/stories/a-study-in-scarlet.txt && die "Redaction failed."
 }
 
+# Unfinished, due to phpserialize dependency.
 python_test() {
 	if ! checkpythonlocale en_US.utf8 || ! checkpythonlocale pl_PL.utf8 ; then
 		ewarn "Skipping tests due to locales en_US.utf8 and pl_PL.utf8 not usable by ${EPYTHON}."
@@ -117,6 +121,7 @@ src_install() {
 }
 
 pkg_postinst() {
+	# workaround until https://bugs.gentoo.org/453618
 	elog "For additional features, a number of optional runtime dependencies may be"
 	elog "installed. Note that dependencies marked with (*) need to be installed for the"
 	elog "python interpreter you are using, or their functionality will not be available."
