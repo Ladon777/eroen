@@ -3,9 +3,7 @@
 # $Header: $
 
 EAPI=5
-# >=2.7 >=3.3
-# PyRSS2Gen, assets -3.3
-PYTHON_COMPAT=( python2_7 )
+PYTHON_COMPAT=( python2_7 ) # 3_3 needs PyRSS2Gen update
 inherit distutils-r1
 
 DESCRIPTION="A static website and blog generator"
@@ -25,15 +23,15 @@ fi
 # CC-BY-NC-SA-2.5: conf.py.in
 LICENSE="MIT-with-advertising Apache-2.0 CC-BY-NC-SA-2.5"
 SLOT="0"
-IUSE="assets charts jinja markdown minimal"
+IUSE="assets charts hyphenation ipython jinja markdown minimal"
 RESTRICT=test
 
 # needs rst2man to build manpage
 DEPEND="dev-python/docutils
 	dev-python/setuptools[${PYTHON_USEDEP}]"
 RDEPEND="app-arch/gzip
-	dev-python/blinker[${PYTHON_USEDEP}]
 	python_targets_python2_7? ( >=dev-python/configparser-3.2.0[python_targets_python2_7] )
+	dev-python/blinker[${PYTHON_USEDEP}]
 	dev-python/docutils[${PYTHON_USEDEP}]
 	>=dev-python/doit-0.23.0[${PYTHON_USEDEP}]
 	dev-python/logbook[${PYTHON_USEDEP}]
@@ -47,9 +45,12 @@ RDEPEND="app-arch/gzip
 	>=virtual/python-imaging-2[${PYTHON_USEDEP}]
 	assets? ( dev-python/assets[${PYTHON_USEDEP}] )
 	charts? ( dev-python/pygal[${PYTHON_USEDEP}] )
+	hyphenation? ( dev-python/pyphen[${PYTHON_USEDEP}] )
+	ipython? ( >=dev-python/ipython-1.0.0[${PYTHON_USEDEP}] )
 	jinja? ( >=dev-python/jinja-2.7[${PYTHON_USEDEP}] )
 	markdown? ( dev-python/markdown[${PYTHON_USEDEP}] )
-	!minimal? ( dev-python/python-dateutil[${PYTHON_USEDEP}]
+	!minimal? ( dev-python/colorama[${PYTHON_USEDEP}]
+		dev-python/python-dateutil[${PYTHON_USEDEP}]
 		>=dev-python/requests-1.0[${PYTHON_USEDEP}] )"
 ### test:
 # dev-python/coverage
