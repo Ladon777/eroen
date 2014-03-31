@@ -40,6 +40,7 @@ S=${WORKDIR}/${MY_P}
 PATCHES=(
 	"${FILESDIR}/${P}-ffmpeg-0.11.patch"
 	"${FILESDIR}/${P}-includepaths.patch"
+	"${FILESDIR}/${P}-ffmpeg-2.1.patch"
 )
 
 pkg_postinst() {
