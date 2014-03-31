@@ -85,6 +85,8 @@ src_prepare() {
 	fi
 
 	epatch "${FILESDIR}/${PN}-3.12.4-java-ruby-swig-fix.patch"
+	epatch "${FILESDIR}/30644-updated-to-yet-another-ffmpeg-libav-api-change.patch"
+	epatch "${FILESDIR}/30645-fixed-use-with-older-ffmpeg-after-upgrading-to-later-ffmpeg-isnt-this-fun.patch"
 
 	sed -i -e "s:\(.*HAS_H224.*\), \[OPAL_H323\]:\1:" configure.ac \
 		|| die "sed failed"
