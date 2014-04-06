@@ -1,4 +1,4 @@
-# Copyright 1999-2013 Gentoo Foundation
+# Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: /var/cvsroot/gentoo-x86/app-emulation/wine/wine-1.7.4.ebuild,v 1.4 2013/12/01 09:45:09 mgorny Exp $
 
@@ -24,7 +24,7 @@ fi
 
 GV="2.24"
 MV="4.5.2"
-PULSE_PATCHES="winepulse-patches-1.7.4"
+PULSE_PATCHES="winepulse-patches-1.7.8"
 WINE_GENTOO="wine-gentoo-2013.06.24"
 DESCRIPTION="Free implementation of Windows(tm) on Unix"
 HOMEPAGE="http://www.winehq.org/"
@@ -39,8 +39,7 @@ SRC_URI="${SRC_URI}
 
 LICENSE="LGPL-2.1"
 SLOT="0"
-IUSE="+abi_x86_32 +abi_x86_64 +alsa capi cups custom-cflags dos elibc_glibc +fontconfig +gecko gphoto2 gsm gstreamer +jpeg lcms ldap +mono mp3 ncurses nls odbc openal opencl +opengl osmesa oss +perl +png +prelink +realtime +run-exes samba scanner selinux +ssl test +threads +truetype +udisks v4l +X xcomposite xinerama +xml"
-[[ ${PV} == "9999" ]] || IUSE="${IUSE} pulseaudio"
+IUSE="+abi_x86_32 +abi_x86_64 +alsa capi cups custom-cflags dos elibc_glibc +fontconfig +gecko gphoto2 gsm gstreamer +jpeg lcms ldap +mono mp3 ncurses netapi nls odbc openal opencl +opengl osmesa oss +perl +png +prelink pulseaudio +realtime +run-exes samba scanner selinux +ssl test +threads +truetype +udisks v4l +X xcomposite xinerama +xml"
 REQUIRED_USE="|| ( abi_x86_32 abi_x86_64 )
 	test? ( abi_x86_32 )
 	elibc_glibc? ( threads )
@@ -80,17 +79,17 @@ NATIVE_DEPEND="
 	ldap? ( net-nds/openldap:= )
 	lcms? ( media-libs/lcms:2= )
 	mp3? ( >=media-sound/mpg123-1.5.0 )
+	netapi? ( net-fs/samba[netapi(+)] )
 	nls? ( sys-devel/gettext )
 	odbc? ( dev-db/unixODBC:= )
 	osmesa? ( media-libs/mesa[osmesa] )
+	pulseaudio? ( media-sound/pulseaudio )
 	xml? ( dev-libs/libxml2 dev-libs/libxslt )
 	scanner? ( media-gfx/sane-backends:= )
 	ssl? ( net-libs/gnutls:= )
 	png? ( media-libs/libpng:0= )
 	v4l? ( media-libs/libv4l )
 	xcomposite? ( x11-libs/libXcomposite )"
-[[ ${PV} == "9999" ]] || NATIVE_DEPEND="${NATIVE_DEPEND}
-	pulseaudio? ( media-sound/pulseaudio )"
 
 COMMON_DEPEND="
 	!amd64? ( ${NATIVE_DEPEND} )
@@ -168,11 +167,18 @@ COMMON_DEPEND="
 				app-emulation/emul-linux-x86-soundlibs[development]
 				>=media-sound/mpg123-1.5.0[abi_x86_32]
 			) )
-			nls? ( app-emulation/emul-linux-x86-baselibs[development] )
+			nls? ( || (
+				app-emulation/emul-linux-x86-baselibs[development]
+				sys-devel/gettext[abi_x86_32]
+			) )
 			odbc? ( app-emulation/emul-linux-x86-db[development] )
 			osmesa? ( || (
 				>=app-emulation/emul-linux-x86-opengl-20121028[development]
 				media-libs/mesa[osmesa,abi_x86_32]
+			) )
+			pulseaudio? ( || (
+				app-emulation/emul-linux-x86-soundlibs[development]
+				>=media-sound/pulseaudio-4.0-r1[abi_x86_32]
 			) )
 			xml? ( || (
 				>=app-emulation/emul-linux-x86-baselibs-20131008[development]
@@ -197,24 +203,17 @@ COMMON_DEPEND="
 			) )
 		)
 	)"
-[[ ${PV} == "9999" ]] || COMMON_DEPEND="${COMMON_DEPEND}
-	amd64? ( abi_x86_32? ( pulseaudio? (
-		|| (
-			app-emulation/emul-linux-x86-soundlibs[development]
-			>=media-sound/pulseaudio-4.0-r1[abi_x86_32]
-		)
-	) ) )"
 
 RDEPEND="${COMMON_DEPEND}
 	dos? ( games-emulation/dosbox )
 	perl? ( dev-lang/perl dev-perl/XML-Simple )
 	samba? ( >=net-fs/samba-3.0.25 )
 	selinux? ( sec-policy/selinux-wine )
-	udisks? ( sys-fs/udisks:2 )"
-[[ ${PV} == "9999" ]] || RDEPEND="${RDEPEND}
+	udisks? ( sys-fs/udisks:2 )
 	pulseaudio? ( realtime? ( sys-auth/rtkit ) )"
 
 DEPEND="${COMMON_DEPEND}
+	amd64? ( abi_x86_32? ( !abi_x86_64? ( ${NATIVE_DEPEND} ) ) )
 	X? (
 		x11-proto/inputproto
 		x11-proto/xextproto
@@ -280,9 +279,9 @@ src_prepare() {
 		"${FILESDIR}"/${PN}-1.7.2-osmesa-check.patch #429386
 		"${FILESDIR}"/${PN}-1.6-memset-O3.patch #480508
 	)
-	if [[ ${PV} == "9999" ]] ; then
-		use pulseaudio && PATCHES+="../${PULSE_PATCHES}"/*.patch #421365
-	fi
+	use pulseaudio && PATCHES+=(
+		"../${PULSE_PATCHES}"/*.patch #421365
+	)
 
 	autotools-utils_src_prepare
 
@@ -308,7 +307,12 @@ do_configure() {
 		if [[ ${ABI} == amd64 ]]; then
 			myeconfargs+=( --enable-win64 )
 		else
-			myeconfargs+=( --disable-win64 )
+			use netapi && ewarn "Disabling netapi in wine32; see https://bugs.gentoo.org/494394"
+			# We currently don't have 32-bit libnetapi on amd64; #494394
+			myeconfargs+=(
+				--without-netapi
+				--disable-win64
+			)
 		fi
 
 		# Note: using --with-wine64 results in problems with multilib.eclass
@@ -339,6 +343,7 @@ src_configure() {
 		$(use_with jpeg)
 		$(use_with ldap)
 		$(use_with mp3 mpg123)
+		$(use_with netapi)
 		$(use_with nls gettext)
 		$(use_with openal)
 		$(use_with opencl)
@@ -358,7 +363,7 @@ src_configure() {
 		$(use_with xml xslt)
 	)
 
-	[[ ${PV} == "9999" ]] || use pulseaudio && myeconfargs+=( $(use_with pulseaudio pulse) )
+	use pulseaudio && myeconfargs+=( --with-pulse )
 
 	if use amd64 && use abi_x86_32; then
 		# Avoid crossdev's i686-pc-linux-gnu-pkg-config if building wine32 on amd64; #472038
