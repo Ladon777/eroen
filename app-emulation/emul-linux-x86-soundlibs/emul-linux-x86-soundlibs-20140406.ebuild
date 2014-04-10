@@ -61,5 +61,5 @@ src_prepare() {
 	fi
 
 	# Remove migrated stuff.
-	use abi_x86_32 && rm -f $(cat "${FILESDIR}/remove-native")
+	use abi_x86_32 && rm -f $(cat "${FILESDIR}/remove-native-${PVR}")
 }
