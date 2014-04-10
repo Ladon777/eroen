@@ -18,14 +18,14 @@ RDEPEND="!<app-emulation/emul-linux-x86-medialibs-10.2
 	abi_x86_32? (
 		>=sys-libs/zlib-1.2.8-r1[abi_x86_32(-)]
 		>=app-arch/bzip2-1.0.6-r4[abi_x86_32(-)]
-		>=media-libs/libpng-1.5.16-r1:0[abi_x86_32(-)]
+		>=media-libs/libpng-1.6.3-r1:0[abi_x86_32(-)]
 		>=dev-libs/udis86-1.7-r2[abi_x86_32(-)]
 		>=virtual/libffi-3.0.13-r1[abi_x86_32(-)]
 		>=sys-devel/llvm-3.3-r1[abi_x86_32(-)]
 		>=media-libs/libpng-1.2.50-r1:1.2[abi_x86_32(-)]
-		virtual/jpeg:62[abi_x86_32(-)]
 		>=sys-libs/libraw1394-2.1.0-r1[abi_x86_32(-)]
 		>=sys-libs/libavc1394-0.5.4-r1[abi_x86_32(-)]
+		virtual/jpeg:62[abi_x86_32(-)]
 		>=dev-libs/expat-2.1.0-r3[abi_x86_32(-)]
 		>=virtual/libusb-0-r1:0[abi_x86_32(-)]
 		>=virtual/libusb-1-r1:1[abi_x86_32(-)]
@@ -54,6 +54,7 @@ RDEPEND="!<app-emulation/emul-linux-x86-medialibs-10.2
 		>=dev-libs/libxml2-2.9.1-r2[abi_x86_32(-)]
 		>=dev-libs/dbus-glib-0.100.2-r1[abi_x86_32(-)]
 		>=sys-libs/readline-6.2_p5-r1:0[abi_x86_32(-)]
+		>=media-libs/libmng-1.10.2-r2[abi_x86_32(-)]
 		>=sys-devel/gettext-0.18.3.2[abi_x86_32(-)]
 		>=dev-libs/libgpg-error-1.12-r1[abi_x86_32(-)]
 		>=dev-db/sqlite-3.8.3:3[abi_x86_32(-)]
@@ -64,6 +65,7 @@ RDEPEND="!<app-emulation/emul-linux-x86-medialibs-10.2
 		>=dev-libs/lzo-2.06-r1[abi_x86_32(-)]
 		>=dev-libs/libxslt-1.1.28-r2[abi_x86_32(-)]
 		>=sys-apps/file-5.18-r1[abi_x86_32(-)]
+		>=app-arch/xz-utils-5.0.5-r1[abi_x86_32(-)]
 	)
 	>=sys-libs/glibc-2.15" # bug 340613
 
