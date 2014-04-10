@@ -19,6 +19,8 @@ RDEPEND="~app-emulation/emul-linux-x86-baselibs-${PV}
 		>=x11-libs/gdk-pixbuf-2.30.5-r1[abi_x86_32(-)]
 		>=x11-libs/pango-1.36.2-r1[abi_x86_32(-)]
 		>=x11-libs/pangox-compat-0.0.2-r1[abi_x86_32(-)]
+		>=media-gfx/graphite2-1.2.4-r1[abi_x86_32(-)]
+		>=media-libs/harfbuzz-0.9.26-r1[abi_x86_32(-)]
 	)"
 # RDEPEND on opengl stuff needed due cairo, bug #410213
 
