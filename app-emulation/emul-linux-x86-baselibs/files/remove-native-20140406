@@ -221,11 +221,7 @@ lib32/libwrap.so.0
 lib32/libwrap.so.0.7.6
 usr/lib32/libwrap.so
 usr/lib32/libgdbm.so
-usr/lib32/libgdbm.so.3
-usr/lib32/libgdbm.so.3.0.0
 usr/lib32/libgdbm_compat.so
-usr/lib32/libgdbm_compat.so.3
-usr/lib32/libgdbm_compat.so.3.0.0
 usr/lib32/libjson-c.so
 usr/lib32/libjson-c.so.2
 usr/lib32/libjson-c.so.2.0.1
