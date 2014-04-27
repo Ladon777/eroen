@@ -20,7 +20,7 @@ KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd6
 IUSE="doc +cache test"
 REQUIRED_USE="cache? ( !python_targets_python3_2 !python_targets_python3_3 )"
 
-RDEPEND="cache? ( >=dev-python/beaker-1.1[${PYTHON_USEDEP}] )
+RDEPEND="cache? ( >=dev-python/beaker-1.1[$(python_gen_usedep python2\*)] )
 	>=dev-python/markupsafe-0.9.2[${PYTHON_USEDEP}]"
 DEPEND="${RDEPEND}
 	dev-python/setuptools[${PYTHON_USEDEP}]
