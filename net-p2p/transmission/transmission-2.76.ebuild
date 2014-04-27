@@ -28,8 +28,9 @@ RDEPEND="
 		ayatana? ( >=dev-libs/libappindicator-0.4.90:3 )
 		)
 	qt4? (
-		x11-libs/qt-core:4
-		x11-libs/qt-gui:4[dbus]
+		dev-qt/qtcore:4=
+		dev-qt/qtdbus:4=
+		dev-qt/qtgui:4=
 		)"
 
 DEPEND="${RDEPEND}
