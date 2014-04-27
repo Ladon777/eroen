@@ -138,7 +138,7 @@ _clean_up_locales() {
 }
 
 src_test() {
-	Xemake check
+	Xemake -j1 check
 }
 
 src_install() {
