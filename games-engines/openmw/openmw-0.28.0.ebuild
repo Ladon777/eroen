@@ -44,7 +44,7 @@ LIBDEPEND="${OPENMW_LIBS}
 	opencs? ( ${OPENCS_LIBS} )
 	dev-games/ogre[boost,cg,freeimage,opengl,threads,zip]
 	dev-libs/boost:=[threads]
-	media-libs/libsdl2[-directfb]"
+	media-libs/libsdl2[-directfb(-)]"
 DEPEND="${LIBDEPEND}
 	test? ( dev-cpp/gmock[tr1=]
 	    dev-cpp/gtest[tr1=] )"
