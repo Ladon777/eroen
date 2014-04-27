@@ -1,4 +1,4 @@
-# Copyright 1999-2013 Gentoo Foundation
+# Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -58,7 +58,7 @@ src_install() {
 	games_make_wrapper ${PN} "${dir}/bin/${PN}" "${dir}" "${dir}/lib"
 	make_desktop_entry ${PN} "Faster Than Light" "/usr/share/pixmaps/FTL.bmp"
 
-	newicon data/exe_icon.bmp FTL.bmp
+	newicon data/resources/exe_icon.bmp FTL.bmp
 	dohtml ${PN}_README.html
 
 	prepgamesdirs
