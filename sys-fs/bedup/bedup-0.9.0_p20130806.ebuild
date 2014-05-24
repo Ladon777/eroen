@@ -27,7 +27,7 @@ LIBDEPEND="${PYTHON_DEPS}
 	dev-python/contextlib2[${PYTHON_USEDEP}]
 	>=dev-python/pycparser-2.9.1[${PYTHON_USEDEP}]
 	xdg? ( dev-python/pyxdg[${PYTHON_USEDEP}] )
-	dev-python/sqlalchemy[sqlite,${PYTHON_USEDEP}]
+	<dev-python/sqlalchemy-0.9[sqlite,${PYTHON_USEDEP}]
 	sys-fs/btrfs-progs
 	"
 DEPEND="${LIBDEPEND}
