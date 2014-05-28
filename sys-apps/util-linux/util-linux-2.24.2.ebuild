@@ -65,6 +65,7 @@ src_prepare() {
 		po/update-potfiles
 		eautoreconf
 	fi
+	epatch "${FILESDIR}"/${PN}-2.24-last-tests.patch #501408
 	find tests/ -name bigyear -delete #489794
 	elibtoolize
 }
