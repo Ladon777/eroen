@@ -42,6 +42,7 @@ src_prepare() {
 	epatch "${FILESDIR}"/${PN}-1.41.8-makefile.patch
 	epatch "${FILESDIR}"/${PN}-1.40-fbsd.patch
 	epatch "${FILESDIR}"/${PN}-1.41.12-darwin-makefile.patch
+	epatch "${FILESDIR}"/${P}-e2fsck-fix-makefile-dependency.patch
 	if [[ ${CHOST} == *-mint* ]] ; then
 		epatch "${FILESDIR}"/${PN}-1.41-mint.patch
 		epatch "${FILESDIR}"/${PN}-1.41.12-mint-blkid.patch
