@@ -7,7 +7,7 @@ inherit emul-linux-x86
 
 LICENSE="APL-1.0 GPL-2 BSD BSD-2 public-domain LGPL-2 MPL-1.1 LGPL-2.1 !abi_x86_32? ( MPEG-4 )"
 KEYWORDS="-* ~amd64"
-IUSE="abi_x86_32"
+IUSE="abi_x86_32 pulseaudio"
 
 DEPEND=""
 # required libs
@@ -26,7 +26,7 @@ RDEPEND="
 		media-libs/libpng[abi_x86_32(-)]
 		media-libs/libvorbis[abi_x86_32(-)]
 		media-sound/jack-audio-connection-kit[abi_x86_32(-)]
-		media-sound/pulseaudio[abi_x86_32(-)]
+		pulseaudio? ( media-sound/pulseaudio[abi_x86_32(-)] )
 		sci-libs/fftw[abi_x86_32(-)]
 		virtual/jpeg:62[abi_x86_32(-)]
 		x11-libs/libX11[abi_x86_32(-)]
