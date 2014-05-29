@@ -11,7 +11,7 @@ DESCRIPTION="Unofficial open source engine reimplementation of the game Morrowin
 HOMEPAGE="https://openmw.org/"
 LICENSE="GPL-3 MIT BitstreamVera OFL-1.1"
 SLOT="0"
-KEYWORDS=""
+KEYWORDS="~amd64 ~x86"
 IUSE="+launcher minimal +opencs profile test +tr1"
 
 if [[ ${PV} == *999? ]]; then
@@ -64,7 +64,6 @@ src_prepare() {
 
 src_configure() {
 	mycmakeargs=(
-		-DDPKG_PROGRAM=""
 		-DCMAKE_INSTALL_PREFIX="${GAMES_PREFIX}"
 		-DDATAROOTDIR="${GAMES_DATADIR_BASE}"
 		-DDATADIR="${GAMES_DATADIR}/${PN}"
@@ -89,9 +88,9 @@ src_test() {
 
 src_install() {
 	cmake-utils_src_install
-	rm -r "${D}"/usr/share/licenses
-	sed -e "s:resources=resources:resources=${GAMES_DATADIR}/${PN}/resources:" \
-		-i "${D}/${GAMES_SYSCONFDIR}"/${PN}/openmw.cfg || die
+	#rm -r "${D}"/usr/share/licenses
+	#sed -e "s:resources=resources:resources=${GAMES_DATADIR}/${PN}/resources:" \
+	#	-i "${D}/${GAMES_SYSCONFDIR}"/${PN}/openmw.cfg || die
 	prepgamesdirs
 	# /etc/openmw/ is hardcoded, but we set SYSCONFDIR for games.eclass
 	mv -t "${D}"/etc "${D}/${GAMES_SYSCONFDIR}"/${PN} || die
