@@ -22,7 +22,7 @@ RDEPEND="
 	!bundled-libs? (
 		media-libs/devil[png]
 		media-libs/freetype:2
-		media-libs/libsdl[X,audio,joystick,opengl,video]
+		media-libs/libsdl[X,joystick,opengl,sound,video]
 	)"
 
 QA_PREBUILT="${GAMES_PREFIX_OPT#/}/${PN}/bin/${PN}
