@@ -88,9 +88,9 @@ src_test() {
 
 src_install() {
 	cmake-utils_src_install
-	#rm -r "${D}"/usr/share/licenses
-	#sed -e "s:resources=resources:resources=${GAMES_DATADIR}/${PN}/resources:" \
-	#	-i "${D}/${GAMES_SYSCONFDIR}"/${PN}/openmw.cfg || die
+	rm -r "${D}"/usr/share/licenses
+	sed -e "s:resources=resources:resources=${GAMES_DATADIR}/${PN}/resources:" \
+		-i "${D}/${GAMES_SYSCONFDIR}"/${PN}/openmw.cfg || die
 	prepgamesdirs
 	# /etc/openmw/ is hardcoded, but we set SYSCONFDIR for games.eclass
 	mv -t "${D}"/etc "${D}/${GAMES_SYSCONFDIR}"/${PN} || die
