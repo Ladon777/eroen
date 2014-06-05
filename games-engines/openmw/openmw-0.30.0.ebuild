@@ -8,19 +8,19 @@ inherit eutils flag-o-matic versionator games cmake-utils
 [[ $(get_version_component_range $(get_version_component_count)) == *999? ]] && inherit git-r3
 
 DESCRIPTION="Unofficial open source engine reimplementation of the game Morrowind"
-HOMEPAGE="https://openmw.org/"
-LICENSE="GPL-3 MIT BitstreamVera OFL-1.1"
+HOMEPAGE="http://openmw.org/"
+LICENSE="GPL-3 MIT BitstreamVera"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
 IUSE="+launcher minimal +opencs profile test +tr1"
 
 if [[ ${PV} == *999? ]]; then
-	EGIT_REPO_URI="git://github.com/zinnschlag/openmw.git"
+	EGIT_REPO_URI="git://github.com/OpenMW/openmw.git"
 	if [[ $(get_version_component_count) -ge 4 ]]; then
 		EGIT_BRANCH=openmw$(get_version_component_range 2)
 	fi
 else
-	SRC_URI="https://github.com/OpenMW/${PN}/archive/${P}.tar.gz"
+	SRC_URI="http://github.com/OpenMW/${PN}/archive/${P}.tar.gz"
 	S=${WORKDIR}/${PN}-${P}
 fi
 
