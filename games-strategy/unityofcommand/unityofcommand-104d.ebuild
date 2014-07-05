@@ -8,7 +8,7 @@ inherit eutils games
 
 DESCRIPTION="Operational-level wargame covering the 1942/43 Stalingrad campaign"
 HOMEPAGE="http://unityofcommand.net/"
-SRC_URI="Unity_of_Command_LINUX_v104d.tgz"
+SRC_URI="Unity_of_Command_LINUX_v${PV}.tgz"
 RESTRICT="fetch mirror"
 S="${WORKDIR}/Unity of Command"
 
