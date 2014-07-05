@@ -133,6 +133,7 @@ src_install() {
 	dedup "${D%/}${MY_PREFIX}"
 	# Creates fontconfig crap in CWD if writeable, falls back to ~/.fontconfig/
 	games_make_wrapper ${P} bin/uoc "${MY_PREFIX}" "${MY_PREFIX}/bin"
+	make_desktop_entry ${P} ${P} "${MY_PREFIX}"/data/uoc_icon_big.png
 	prepgamesdirs
 	chmod 750 "${D%/}/${MY_PREFIX}"/bin/uoc || die
 }
