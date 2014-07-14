@@ -1,0 +1,9 @@
+## 40.03
+- Fails to run with pre-built libgraphics unless zlib is preloaded.
+- "Broken Unicode" warnings for some keybindings.[1]
+
+1: <http://www.bay12games.com/dwarves/mantisbt/view.php?id=6558>
+
+### Todo:
+- Split out libgraphics.
+- More granular check for installed folders.
