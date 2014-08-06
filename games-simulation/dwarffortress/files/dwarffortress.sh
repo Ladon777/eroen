@@ -43,36 +43,39 @@ DF_DIR="@@DF_DIR@@"
 DATA_PREFIX="@@DATA_PREFIX@@"
 
 if ! [ -d "${DF_DIR}" ]; then
-	echo "Creating and populating ${DF_DIR} ..."
+	echo "Creating ${DF_DIR} ..."
 	mkdir -p "${DF_DIR}"
+fi
 
-	for item in data data/save; do
+for item in data data/save; do
+	if ! [ -d "${DF_DIR}/${item}" ]; then
 		echo "Creating ${item}/ ..."
 		mkdir -p "${DF_DIR}/${item}"
-	done
+	fi
+done
 
-	#    40.03:
-	# open("data/announcement/fortressintro", O_RDWR|O_LARGEFILE
-	# open("data/dipscript/dwarf_liaison", O_RDWR|O_LARGEFILE
-	# open("data/help/main", O_RDWR|O_LARGEFILE)
-	# data/init holds user configuration files
-	# open("data/index", O_RDWR|O_LARGEFILE)
-	# open("data/movies/last_record.cmv", O_WRONLY|O_CREAT|O_APPEND|O_LARGEFILE, 0666)
-	for item in data/announcement data/dipscript data/help data/init data/index data/movies; do
+#    40.03:
+# open("data/announcement/fortressintro", O_RDWR|O_LARGEFILE
+# open("data/dipscript/dwarf_liaison", O_RDWR|O_LARGEFILE
+# open("data/help/main", O_RDWR|O_LARGEFILE)
+# data/init holds user configuration files
+# open("data/index", O_RDWR|O_LARGEFILE)
+# open("data/movies/last_record.cmv", O_WRONLY|O_CREAT|O_APPEND|O_LARGEFILE, 0666)
+for item in data/announcement data/dipscript data/help data/init \
+	data/index data/movies; do
+	if ! [ -e "${DF_DIR}/${item}" ]; then
 		echo "Copying ${item} ..."
 		cp -R "${DATA_PREFIX}/${item}" "${DF_DIR}/${item}"
-	done
+	fi
+done
 
-	for item in data/art data/initial_movies data/shader.fs data/shader.vs \
-		data/sound data/speech raw; do
+for item in data/art data/initial_movies data/shader.fs data/shader.vs \
+	data/sound data/speech raw; do
+	if ! [ -e "${DF_DIR}/${item}" ]; then
 		echo "Symlinking ${item} ..."
 		ln -s "${DATA_PREFIX}/${item}" "${DF_DIR}/${item}"
-	done
-
-	echo "${DF_DIR} populated, launching..."
-else
-	echo "${DF_DIR} already exists, not populating..."
-fi
+	fi
+done
 
 # Exit early if only installing.
 if [ -n "${DOINSTALL}" ]; then
