@@ -10,13 +10,31 @@
 # to some of them. This script sets up a minimal CWD within $DF_DIR by
 # symlinking and copying from $DATA_PREFIX, then executes DF.
 
-if [ "--help" == "${1}" ] || [ "-h" == "${1}" ]; then
-	echo "Usage: ${0} [OPTION]"
+unset DOHELP
+unset DOINSTALL
+DFOPTS=""
+while [ "0" -lt "${#}" ]; do
+	if [ "--help" = "${1}" ] || [ "-h" = "${1}" ]; then
+		DOHELP=y
+	elif [ "--install" = "${1}" ] || [ "-i" = "${1}" ]; then
+		DOINSTALL=y
+	elif [ "--" = "${1}" ]; then
+		DFOPTS="${DFOPTS} ${*}"
+		break
+	else
+		DFOPTS="${DFOPTS} ${1}"
+	fi
+	shift
+done
+
+if [ -n "${DOHELP}" ]; then
+	echo "Usage: ${0} [OPTION] [-- DF_OPTION ...]"
 	echo "  -h, --help	Print this message and exit."
 	echo "  -i, --install	Only install workdir files to \$HOME, do not launch DF."
+	echo "  Unrecognized options and options after '--' are passed on to DF."
 	echo
-	echo "This launcher script is specific to Gentoo Linux."
-	echo "Please report any issues to the package maintainer."
+	echo "This launcher script is specific to Gentoo Linux. Please report any"
+	echo "issues to the package maintainer."
 
 	exit 0
 fi
@@ -45,7 +63,8 @@ if ! [ -d "${DF_DIR}" ]; then
 		cp -R "${DATA_PREFIX}/${item}" "${DF_DIR}/${item}"
 	done
 
-	for item in data/{art,initial_movies,shader.fs,shader.vs,sound,speech} raw; do
+	for item in data/art data/initial_movies data/shader.fs data/shader.vs \
+		data/sound data/speech raw; do
 		echo "Symlinking ${item} ..."
 		ln -s "${DATA_PREFIX}/${item}" "${DF_DIR}/${item}"
 	done
@@ -56,14 +75,15 @@ else
 fi
 
 # Exit early if only installing.
-if [ "--install" == "${1}" ] || [ "-i" == "${1}" ]; then
+if [ -n "${DOINSTALL}" ]; then
 	exit 0
 fi
 
 # 40.03: There seems to be an issue with prebuilt libgraphics
 if false; then # PRELOAD_LIBZ
-	export LD_PRELOAD=${LD_PRELOAD}:/lib32/libz.so.1
+	LD_PRELOAD=${LD_PRELOAD}:/lib32/libz.so.1
+	export LD_PRELOAD
 fi
 
 cd "${DF_DIR}"
-exec "${DATA_PREFIX}"/libs/Dwarf_Fortress
+exec "${DATA_PREFIX}"/libs/Dwarf_Fortress ${DFOPTS}
