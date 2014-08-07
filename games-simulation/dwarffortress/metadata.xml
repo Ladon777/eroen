@@ -5,6 +5,7 @@
 	</longdescription>
 	<use>
 		<flag name="libgraphics">Install bundled, binary libgraphics.so</flag>
+		<flag name="system-libgraphics">Do not install and use bundled libgraphics.so</flag>
 	</use>
 </pkgmetadata>
 
