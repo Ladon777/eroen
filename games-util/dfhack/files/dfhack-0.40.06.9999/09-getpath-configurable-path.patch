@@ -1,0 +1,46 @@
+getPath() - configurable path
+
+From: eroen <eroen@occam.eroen.eu>
+
+
+---
+ library/Core.cpp          |    4 ++++
+ library/Process-linux.cpp |    4 ++++
+ 2 files changed, 8 insertions(+)
+
+diff --git a/library/Core.cpp b/library/Core.cpp
+index 94a290d..386b89b 100644
+--- a/library/Core.cpp
++++ b/library/Core.cpp
+@@ -422,6 +422,10 @@ string findScript(string path, string name) {
+     if (fileExists(file)) {
+         return file;
+     }
++    file = path + "/scripts/" + name;
++    if (fileExists(file)) {
++        return file;
++    }
+     return "";
+ }
+ 
+diff --git a/library/Process-linux.cpp b/library/Process-linux.cpp
+index 1b430e5..210a625 100644
+--- a/library/Process-linux.cpp
++++ b/library/Process-linux.cpp
+@@ -190,12 +190,16 @@ uint32_t Process::getTickCount()
+ 
+ string Process::getPath()
+ {
++    #ifdef DFHACK_DATA_DESTINATION
++    return string(DFHACK_DATA_DESTINATION);
++    #else
+     const char * cwd_name = "/proc/self/cwd";
+     char target_name[1024];
+     int target_result;
+     target_result = readlink(cwd_name, target_name, sizeof(target_name));
+     target_name[target_result] = '\0';
+     return(string(target_name));
++    #endif
+ }
+ 
+ int Process::getPID()

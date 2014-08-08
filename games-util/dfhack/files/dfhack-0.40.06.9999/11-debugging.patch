@@ -1,0 +1,22 @@
+debugging
+
+From: eroen <eroen@occam.eroen.eu>
+
+
+---
+ library/Core.cpp |    2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/library/Core.cpp b/library/Core.cpp
+index 8906f85..dd5725d 100644
+--- a/library/Core.cpp
++++ b/library/Core.cpp
+@@ -400,6 +400,8 @@ static bool try_autocomplete(color_ostream &con, const std::string &first, std::
+ }
+ 
+ string findScript(string path, string name) {
++	cerr << "findScript(" << path << ", " << name << std::endl;
++
+     if (df::global::world) {
+         //first try the save folder if it exists
+         string save = World::ReadWorldFolder();
