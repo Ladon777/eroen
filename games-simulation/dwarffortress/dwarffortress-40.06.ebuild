@@ -54,11 +54,13 @@ src_prepare() {
 	# libgcc: GLIBC_2.2.4 -> gcc-4.5 ?
 	# libstdc++: GLIBCXX_3.4.14 -> gcc-4.5 ?
 	rm -f libs/{libgcc_s.so.1,libstdc++.so.6} || die
-	use system-libgraphics && rm -f libs/libgraphics.so || die
+	! use system-libgraphics || rm -f libs/libgraphics.so || die
 
 	cp "${FILESDIR}"/dwarffortress.sh "${T}"/${P}
 	sed -e "s:@@DF_DIR@@:${DF_DIR}:" \
 		-e "s:@@DATA_PREFIX@@:${MY_PREFIX}:" \
+		-i "${T}"/${P} || die
+	use system-libgraphics || sed \
 		-e '/PRELOAD_LIBZ/s/false/true/' \
 		-i "${T}"/${P} || die
 
