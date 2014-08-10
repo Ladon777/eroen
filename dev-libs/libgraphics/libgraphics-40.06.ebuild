@@ -18,6 +18,7 @@ SRC_URI="http://www.bay12games.com/dwarves/df_${PV//./_}_linux.tar.bz2"
 LICENSE="BSD"
 SLOT="0"
 KEYWORDS="~amd64" # ~x86
+IUSE="egg"
 
 HDEPEND="virtual/pkgconfig"
 LIBDEPEND="
@@ -31,6 +32,7 @@ LIBDEPEND="
 	sys-libs/ncurses[abi_x86_32]
 	sys-libs/zlib[abi_x86_32]
 	x11-libs/gtk+:2[abi_x86_32]
+	egg? ( games-util/dfhack[egg] )
 	"
 RDEPEND="${LIBDEPEND}"
 DEPEND="${HDEPEND}
@@ -49,7 +51,13 @@ src_prepare() {
 	rm g_src/{find_files.cpp,music_and_sound_fmodex.cpp,music_and_sound_fmodex.h} \
 		g_src/template.h || die
 	rm libs/{Dwarf_Fortress,libgcc_s.so.1,libgraphics.so,libstdc++.so.6} || die
-	cp "${FILESDIR}/SConscript" "g_src/SConscript" || die
+
+	if use egg; then
+		epatch "${FILESDIR}/0001-Add-something-eggy.patch"
+		cp "${FILESDIR}/SConscript-egg" "g_src/SConscript" || die
+	else
+		cp "${FILESDIR}/SConscript" "g_src/SConscript" || die
+	fi
 	cp "${FILESDIR}/SConstruct" "SConstruct" || die
 }
 
