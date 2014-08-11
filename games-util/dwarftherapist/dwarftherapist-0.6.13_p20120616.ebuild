@@ -1,15 +1,16 @@
-# By eroen, 2013
-# Distributed under the terms of the ISC licence
+# By eroen, 2013-2014
+#
+# Permission to use, copy, modify, and/or distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
 # $Header: $
 
 EAPI=5
 
-inherit games qt4-r2 mercurial
+inherit base qmake-utils mercurial games
 
-MY_PN="DwarfTherapist"
-MY_P="${MY_PN}-${PV}"
-
-S="${WORKDIR}/${MY_P}"
+S=${WORKDIR}/DwarfTherapist-${PV}
 
 DESCRIPTION="Management tool designed to run side-by-side with games-simulation/dwarffortress"
 HOMEPAGE="https://code.google.com/p/dwarftherapist/"
@@ -21,19 +22,15 @@ SLOT="0"
 KEYWORDS="~amd64"
 IUSE=""
 
-COMMON_DEPEND="dev-qt/qtcore
+HDEPEND="dev-qt/qtcore"
+LIBDEPEND="
+	dev-qt/qtcore
 	dev-qt/qtgui
 	dev-qt/qtscript
 	"
-DEPEND="${COMMON_DEPEND}
-	"
-RDEPEND="${COMMON_DEPEND}
-	"
-
-src_unpack() {
-	mercurial_src_unpack
-	qt4-r2_src_unpack
-}
+DEPEND="${HDEPEND}
+	${LIBDEPEND}"
+RDEPEND="${LIBDEPEND}"
 
 src_prepare() {
 	#Change paths to reflect games policy. The project file controls
@@ -52,12 +49,14 @@ src_prepare() {
 		/^Version=/d
 		/^Encoding=/d
 		EOF
+}
 
-	qt4-r2_src_prepare
+src_configure() {
+	eqmake4 dwarftherapist.pro
 }
 
 src_install() {
-	qt4-r2_src_install
+	emake INSTALL_ROOT="${D}" install
 
 	dodoc "README.txt" "CHANGELOG.txt" "KNOWN_ISSUES.txt"
 	dohtml "doc/"*".html"
