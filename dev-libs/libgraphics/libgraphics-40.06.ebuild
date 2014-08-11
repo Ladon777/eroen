@@ -16,7 +16,7 @@ HOMEPAGE="http://www.bay12games.com/dwarves
 SRC_URI="http://www.bay12games.com/dwarves/df_${PV//./_}_linux.tar.bz2"
 
 LICENSE="BSD"
-SLOT="0"
+SLOT=${PV}
 KEYWORDS="~amd64" # ~x86
 IUSE="egg"
 
@@ -32,7 +32,7 @@ LIBDEPEND="
 	sys-libs/ncurses[abi_x86_32]
 	sys-libs/zlib[abi_x86_32]
 	x11-libs/gtk+:2[abi_x86_32]
-	egg? ( games-util/dfhack[egg] )
+	egg? ( =games-util/dfhack-0.${PV}*[egg] )
 	"
 RDEPEND="${LIBDEPEND}"
 DEPEND="${HDEPEND}
@@ -44,6 +44,8 @@ S=${WORKDIR}/df_linux
 pkg_setup() {
 	multilib_toolchain_setup x86
 	games_pkg_setup
+
+	df_LIBPATH=$(games_get_libdir)/dwarffortress-${PV}
 }
 
 src_prepare() {
@@ -62,10 +64,13 @@ src_prepare() {
 }
 
 src_compile() {
-	LIBPATH="$(games_get_libdir)" escons
+	LIBPATH="${df_LIBPATH}" escons
 }
 
 src_install() {
-	dogameslib.so "libs/libgraphics.so"
+	exeinto "${df_LIBPATH}"
+	doexe "libs/libgraphics.so"
 	prepgamesdirs
+	# userpriv: portage user will need to link against libraries here.
+	fperms o+rx "${df_LIBPATH}"
 }
