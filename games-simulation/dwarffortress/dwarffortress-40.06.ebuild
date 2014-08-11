@@ -47,6 +47,8 @@ DEPEND=""
 
 MY_PREFIX=${GAMES_PREFIX_OPT}/${P}
 DF_DIR='${HOME}'/.${P}
+#df_LIBPATH=$(games_get_libdir)/${P}
+df_LIBPATH=${GAMES_PREFIX}/lib32/${P}
 
 QA_PREBUILT="${MY_PREFIX#/}/libs/*"
 
@@ -59,6 +61,8 @@ src_prepare() {
 	cp "${FILESDIR}"/dwarffortress.sh "${T}"/${P}
 	sed -e "s:@@DF_DIR@@:${DF_DIR}:" \
 		-e "s:@@DATA_PREFIX@@:${MY_PREFIX}:" \
+		-e "s:@@LIBPATH@@:${df_LIBPATH}:" \
+		-e '/SET_LIBPATH/s/false/true/' \
 		-i "${T}"/${P} || die
 	use system-libgraphics || sed \
 		-e '/PRELOAD_LIBZ/s/false/true/' \

@@ -41,6 +41,7 @@ fi
 
 DF_DIR="@@DF_DIR@@"
 DATA_PREFIX="@@DATA_PREFIX@@"
+LIBPATH="@@LIBPATH@@"
 
 if ! [ -d "${DF_DIR}" ]; then
 	echo "Creating ${DF_DIR} ..."
@@ -84,8 +85,22 @@ fi
 
 # 40.03: There seems to be an issue with prebuilt libgraphics
 if false; then # PRELOAD_LIBZ
-	LD_PRELOAD=${LD_PRELOAD}:/lib32/libz.so.1
+	if [ "${LD_LIBRARY_PATH+set}" = "set" ] ; then
+		LD_PRELOAD=${LD_PRELOAD}:/lib32/libz.so.1
+	else
+		LD_PRELOAD=/lib32/libz.so.1
+	fi
 	export LD_PRELOAD
+fi
+
+# Used for system-libgraphics and dfhack
+if false; then # SET_LIBPATH
+	if [ "${LD_LIBRARY_PATH+set}" = "set" ] ; then
+		LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${LIBPATH}
+	else
+		LD_LIBRARY_PATH=${LIBPATH}
+	fi
+	export LD_LIBRARY_PATH
 fi
 
 cd "${DF_DIR}"
