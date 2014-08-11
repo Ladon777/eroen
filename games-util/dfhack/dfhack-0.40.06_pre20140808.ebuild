@@ -157,6 +157,11 @@ src_prepare() {
 	# Set in ./Config.cpp, installed together with the rest of the directory.
 	# - output files
 	# - - Make symlinks to (unversioned) /var
+
+	# Doesn't build:
+	sed -e '/autolabor2/d' \
+		-e '/rprobe/d' \
+		-i plugins/devel/CMakeLists.txt || die
 }
 
 src_configure() {
@@ -165,8 +170,7 @@ src_configure() {
 		#"-DBUILD_DEVEL=OFF"
 		"$(cmake-utils_use_build api DEVEL)"
 		#"-DBUILD_DEV_PLUGINS=OFF"
-		#"$(cmake-utils_use_build !minimal DEV_PLUGINS)"
-		"-DBUILD_DEV_PLUGINS=OFF"
+		"$(cmake-utils_use_build !minimal DEV_PLUGINS)"
 		#"-DBUILD_DFUSION=ON"
 		"$(cmake-utils_use_build dfusion DFUSION)"
 		#"-DBUILD_DOXYGEN=OFF"
