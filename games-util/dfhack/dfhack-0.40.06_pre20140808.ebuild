@@ -52,11 +52,12 @@ LIBRARY_DEPEND="
 DEPEND="${LIBRARY_DEPEND}
 	${HDEPEND}"
 RDEPEND="${LIBRARY_DEPEND}
-	!egg? ( ~games-simulation/dwarffortress-${df_PV} )
 	stonesense? ( app-emulation/emul-linux-x86-opengl
 		app-emulation/emul-linux-x86-xlibs
 		)
 	"
+# Circular dependency when building egg.
+PDEPEND="~games-simulation/dwarffortress-${df_PV}"
 
 ## missing multilib
 #dev-lang/lua - binary bundled
@@ -92,15 +93,11 @@ pkg_setup() {
 	dfhack_docdir="/usr/share/doc/${P}"
 	dfhack_statedir="${GAMES_STATEDIR}/${P}"
 
-	if use egg; then
-		dfhack_libdir="$(games_get_libdir)"
-	else
-		dfhack_libdir="$(games_get_libdir)/${P}"
-	fi
+	dfhack_libdir=$(games_get_libdir)/dwarffortress-${df_PV}
 
-	QA_FLAGS_IGNORED=("${dfhack_libdir}"/libruby.so)
-	QA_PRESTRIPPED=("${dfhack_libdir}"/libruby.so)
-	QA_SONAME_NO_SYMLINK=("${dfhack_libdir}"/libruby.so)
+	QA_FLAGS_IGNORED=("${dfhack_libdir#/}"/libruby.so)
+	QA_PRESTRIPPED=("${dfhack_libdir#/}"/libruby.so)
+	QA_SONAME_NO_SYMLINK=("${dfhack_libdir#/}"/libruby.so)
 }
 
 src_unpack() {
@@ -250,9 +247,10 @@ src_install() {
 		elog "${GAMES_SYSCONFDIR#/}/${P}/stonesense/init.txt"
 	fi
 	prepgamesdirs
-	fperms g+w "${dfhack_statedir}" || die
+	fperms g+w "${dfhack_statedir}"
 	# userpriv: portage user needs to be able to link:
-	! use egg || fperms o+rx "$(games_get_libdir)"/libegg.so || die
+	fperms o+rx "${dfhack_libdir}"
+	use egg && fperms o+rx "${dfhack_libdir}"/libegg.so
 }
 
 pkg_postinst() {
