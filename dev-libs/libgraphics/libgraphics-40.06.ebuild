@@ -68,9 +68,14 @@ src_compile() {
 }
 
 src_install() {
-	exeinto "${df_LIBPATH}"
-	doexe "libs/libgraphics.so"
-	prepgamesdirs
-	# userpriv: portage user will need to link against libraries here.
-	fperms o+rx "${df_LIBPATH}"
+	if use egg; then
+		exeinto "${df_LIBPATH}"
+		doexe "libs/libgraphics.so"
+		prepgamesdirs
+		# userpriv: portage user will need to link against libraries here.
+		fperms o+rx "${df_LIBPATH}"
+	else
+		dogameslib.so "libs/libgraphics.so"
+		prepgamesdirs
+	fi
 }
