@@ -238,6 +238,8 @@ src_install() {
 		"${D%/}/${GAMES_BINDIR}/dfhack-${df_PV}" || die
 	mv "${D%/}/${GAMES_BINDIR}/dfhack-run" \
 		"${D%/}/${GAMES_BINDIR}/dfhack-run-${df_PV}" || die
+	! use egg || mv "${D%/}/${GAMES_BINDIR}/egghack" \
+		"${D%/}/${GAMES_BINDIR}/egghack-${df_PV}" || die
 	rm -f "${D%/}/${dfhack_docdir}"/LICENSE || die
 	dodir "${dfhack_statedir}"
 	if use stonesense; then
