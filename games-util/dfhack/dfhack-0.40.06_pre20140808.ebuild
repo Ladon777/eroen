@@ -9,18 +9,19 @@
 EAPI=5
 inherit base eutils multilib git-r3 cmake-utils games
 
-df_PV=${PV#0.}
+df_PV=${PV%%_*}
+df_PV=${df_PV#0.}
 [[ "${df_PV}" = *.*.* ]] && df_PV=${df_PV%.*}
 
 DESCRIPTION="Memory hacking library for Dwarf Fortress and a set of tools that
 use it"
 HOMEPAGE="http://github.com/DFHack/dfhack"
-#EGIT_REPO_URI="git://github.com/DFHack/dfhack.git"
-EGIT_REPO_URI="git://github.com/quietust/dfhack.git"
-EGIT_BRANCH=develop
+EGIT_REPO_URI="git://github.com/DFHack/dfhack.git"
+#EGIT_BRANCH=develop
+EGIT_COMMIT=0f99ea0ccb65130e7ce01b0c5d6807a522e4f0c6
 SRC_URI="http://cloud.github.com/downloads/jjyg/dfhack/libruby187.tar.gz"
 
-KEYWORDS="" # ~amd64 ~x86
+KEYWORDS="~amd64" # ~x86
 
 CMAKE_MIN_VERSION=2.8.9
 CMAKE_REMOVE_MODULES_LIST="FindCurses FindDoxygen CMakeVS10FindMake"
@@ -83,14 +84,6 @@ RDEPEND="${LIBRARY_DEPEND}
 #	x11-libs/libXrandr (libXrandr.so.2)
 #	x11-libs/pango (libpangocairo-1.0.so.0,libpango-1.0.so.0,libpangoft2-1.0.so.0) - gtklibs
 
-#QA_PREBUILT="$(games_get_libdir)/libruby.so"
-#QA_PREBUILT="$(games_get_libdir)/${P}/libruby.so"
-#QA_PREBUILT=usr/games/lib32/dfhack-0.40.06.9999/libruby.so
-#QA_PREBUILT=usr/games/lib32/dfhack-0.40.06.9999/libruby.so
-#echo ${QA_PREBUILT}
-#QA_PREBUILT=("${GAMES_PREFIX#/}"/"$(get_libdir)"/${P}/libruby.so)
-#echo ${QA_PREBUILT}
-
 pkg_setup() {
 	multilib_toolchain_setup x86
 
@@ -107,6 +100,7 @@ pkg_setup() {
 
 	QA_FLAGS_IGNORED=("${dfhack_libdir}"/libruby.so)
 	QA_PRESTRIPPED=("${dfhack_libdir}"/libruby.so)
+	QA_SONAME_NO_SYMLINK=("${dfhack_libdir}"/libruby.so)
 }
 
 src_unpack() {
