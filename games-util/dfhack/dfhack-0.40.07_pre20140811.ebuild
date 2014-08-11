@@ -17,8 +17,8 @@ DESCRIPTION="Memory hacking library for Dwarf Fortress and a set of tools that
 use it"
 HOMEPAGE="http://github.com/DFHack/dfhack"
 EGIT_REPO_URI="git://github.com/DFHack/dfhack.git"
-EGIT_BRANCH=develop
-#EGIT_COMMIT=
+#EGIT_BRANCH=develop
+EGIT_COMMIT=2471c4a68eea8813473a5f44303e11cb7b1fb203
 SRC_URI="http://cloud.github.com/downloads/jjyg/dfhack/libruby187.tar.gz"
 
 KEYWORDS="~amd64" # ~x86
