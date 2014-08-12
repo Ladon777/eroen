@@ -21,7 +21,7 @@ EGIT_BRANCH=develop
 #EGIT_COMMIT=
 SRC_URI="http://cloud.github.com/downloads/jjyg/dfhack/libruby187.tar.gz"
 
-KEYWORDS="~amd64" # ~x86
+KEYWORDS="" # ~amd64 ~x86
 
 CMAKE_MIN_VERSION=2.8.9
 CMAKE_REMOVE_MODULES_LIST="FindCurses FindDoxygen CMakeVS10FindMake"
