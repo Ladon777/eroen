@@ -34,7 +34,13 @@ LIBDEPEND="
 	x11-libs/gtk+:2[abi_x86_32]
 	egg? ( =games-util/dfhack-0.${PV}*[egg] )
 	"
-RDEPEND="${LIBDEPEND}"
+BLOCKDEPEND="!egg? (
+	!<${CATEGORY}/${PF}[-egg]
+	!>${CATEGORY}/${PF}[-egg]
+	)"
+RDEPEND="${LIBDEPEND}
+	${BLOCKDEPEND}
+	"
 DEPEND="${HDEPEND}
 	${LIBDEPEND}
 	"
