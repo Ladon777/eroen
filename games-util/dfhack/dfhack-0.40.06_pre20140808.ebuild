@@ -232,6 +232,7 @@ src_compile() {
 	cmake-utils_src_compile
 }
 
+DOCS=""
 src_install() {
 	cmake-utils_src_install
 	mv "${D%/}/${GAMES_BINDIR}/dfhack" \
@@ -265,9 +266,12 @@ pkg_postinst() {
 	elog "Due to Dwarf Fortress' special needs regarding working directory,"
 	elog "specifying relative paths to DFHack plugins can give unintended results."
 	elog
-	elog "DFHack installs custom raw files for dwarffortress in"
-	elog "    ${dfhack_datadir}/raw"
-	elog "To use them, copy them into your raw folder and apply the diffs."
+	elog "Your dfhack.init should be placed in \${HOME}/.dwarffortress-${df-PV}/ ,"
+	elog "otherwise the example configuration will be used."
 	elog
-	elog "To start DFHack, please run dfhack-${df_PV}"
+	if ! use egg; then
+		elog "To start DFHack, please run dfhack-${df_PV}"
+	else
+		elog "To start DFHack, please run dwarffortress-${df_PV}"
+	fi
 }
