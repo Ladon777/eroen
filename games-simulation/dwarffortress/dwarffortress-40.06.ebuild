@@ -38,7 +38,9 @@ LIBGRAPHICS_RDEPEND="
 	x11-libs/gtk+:2[abi_x86_32]
 	"
 RDEPEND="
-	system-libgraphics? ( >=dev-libs/libgraphics-40.05 )
+	system-libgraphics? ( || ( >=dev-libs/libgraphics-40.05[-egg(-)]
+		~dev-libs/libgraphics-${PV}
+		) )
 	!system-libgraphics? ( ${LIBGRAPHICS_RDEPEND} )
 	=media-libs/libsdl-1*[abi_x86_32]
 	>=sys-devel/gcc-4.5
