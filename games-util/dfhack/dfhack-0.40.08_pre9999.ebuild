@@ -111,7 +111,7 @@ src_prepare() {
 	# stg export -n -d patches-master-$(date -I) -e patch
 	# rm /usr/local/portage/games-util/dfhack/files/dfhack-0.40.06.9999/*
 	# cp patches-master-$(date -I)/* /usr/local/portage/games-util/dfhack/files/dfhack-0.40.06.9999/
-	epatch "${FILESDIR}"/${P}/*.patch
+	epatch "${FILESDIR}"/${PN}-0.${df_PV}/*.patch
 
 	pushd "${S}"/depends/clsocket
 	epatch "${FILESDIR}"/clsocket/0001-Compile-static-library-as-PIC.patch
