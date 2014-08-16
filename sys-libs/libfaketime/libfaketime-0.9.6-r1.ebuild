@@ -4,7 +4,7 @@
 
 EAPI=5
 
-inherit toolchain-funcs multilib
+inherit toolchain-funcs multilib-minimal
 
 DESCRIPTION="Report faked system time to programs"
 HOMEPAGE="http://www.code-wizards.com/projects/libfaketime/ https://github.com/wolfcw/libfaketime/"
@@ -16,18 +16,31 @@ KEYWORDS="~amd64 ~x86"
 
 src_prepare() {
 	tc-export CC
+	multilib_copy_sources
 }
 
-src_compile() {
+multilib_src_compile() {
 	emake CC="$(tc-getCC)" LIBDIRNAME="/$(get_libdir)" PREFIX=/usr
 }
 
-src_install() {
+multilib_src_test() {
+	if [[ ${ABI} == ${DEFAULT_ABI} ]]; then
+		default_src_test
+	else
+		einfo "not running tests for ${ABI}"
+	fi
+}
+
+multilib_src_install() {
 	dobin src/faketime
-	doman man/faketime.1
 	exeinto /usr/$(get_libdir)
 	doexe src/${PN}*.so.*
 	dosym ${PN}.so.1 /usr/$(get_libdir)/${PN}.so
 	dosym ${PN}MT.so.1 /usr/$(get_libdir)/${PN}MT.so
+}
+
+src_install() {
+	multilib-minimal_src_install
+	doman man/faketime.1
 	dodoc NEWS README TODO
 }
