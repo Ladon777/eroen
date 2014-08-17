@@ -32,15 +32,9 @@ LIBDEPEND="
 	sys-libs/ncurses[abi_x86_32]
 	sys-libs/zlib[abi_x86_32]
 	x11-libs/gtk+:2[abi_x86_32]
-	egg? ( =games-util/dfhack-0.${PV}*[egg] )
+	egg? ( games-util/dfhack:${SLOT}[egg] )
 	"
-BLOCKDEPEND="!egg? (
-	!<${CATEGORY}/${PF}[-egg]
-	!>${CATEGORY}/${PF}[-egg]
-	)"
-RDEPEND="${LIBDEPEND}
-	${BLOCKDEPEND}
-	"
+RDEPEND="${LIBDEPEND}"
 DEPEND="${HDEPEND}
 	${LIBDEPEND}
 	"
@@ -51,7 +45,7 @@ pkg_setup() {
 	multilib_toolchain_setup x86
 	games_pkg_setup
 
-	df_LIBPATH=$(games_get_libdir)/dwarffortress-${PV}
+	df_LIBPATH=$(games_get_libdir)/dwarffortress-${SLOT}
 }
 
 src_prepare() {
@@ -74,14 +68,10 @@ src_compile() {
 }
 
 src_install() {
-	if use egg; then
-		exeinto "${df_LIBPATH}"
-		doexe "libs/libgraphics.so"
-		prepgamesdirs
-		# userpriv: portage user will need to link against libraries here.
-		fperms o+rx "${df_LIBPATH}"
-	else
-		dogameslib.so "libs/libgraphics.so"
-		prepgamesdirs
-	fi
+	# libgraphics lacks SONAME, so we keep it out of system libdir.
+	exeinto "${df_LIBPATH}"
+	doexe "libs/libgraphics.so"
+	prepgamesdirs
+	# userpriv: portage user will need to link against libraries here.
+	fperms o+rx "${df_LIBPATH}"
 }
