@@ -18,7 +18,7 @@ S=${WORKDIR}/df_linux
 
 # DF: allows unmodified redistribution free of charge
 # libgraphics: BSD
-LICENSE="all-rights-reserved BSD"
+LICENSE="all-rights-reserved !system-libgraphics? ( BSD )"
 SLOT=${PV}
 KEYWORDS="-* ~amd64" # ~x86
 IUSE="+system-libgraphics"
@@ -38,9 +38,7 @@ LIBGRAPHICS_RDEPEND="
 	x11-libs/gtk+:2[abi_x86_32]
 	"
 RDEPEND="
-	system-libgraphics? ( || ( >=dev-libs/libgraphics-40.05[-egg(-)]
-		~dev-libs/libgraphics-${PV}
-		) )
+	system-libgraphics? ( >=dev-libs/libgraphics-40.05:${PV} )
 	!system-libgraphics? ( ${LIBGRAPHICS_RDEPEND} )
 	=media-libs/libsdl-1*[abi_x86_32]
 	>=sys-devel/gcc-4.5
