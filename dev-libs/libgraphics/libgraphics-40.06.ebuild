@@ -22,16 +22,36 @@ IUSE="egg"
 
 HDEPEND="virtual/pkgconfig"
 LIBDEPEND="
-	media-libs/glew[abi_x86_32]
-	virtual/glu[abi_x86_32]
-	media-libs/libsdl[abi_x86_32]
-	media-libs/libsndfile[abi_x86_32]
-	media-libs/openal[abi_x86_32]
-	media-libs/sdl-image[abi_x86_32]
-	media-libs/sdl-ttf[abi_x86_32]
-	sys-libs/ncurses[abi_x86_32]
-	sys-libs/zlib[abi_x86_32]
-	x11-libs/gtk+:2[abi_x86_32]
+	|| ( media-libs/glew[abi_x86_32]
+		( media-libs/glew
+			app-emulation/emul-linux-x86-opengl ) )
+	|| ( virtual/glu[abi_x86_32]
+		( virtual/glu
+			app-emulation/emul-linux-x86-opengl ) )
+	|| ( media-libs/libsdl[abi_x86_32]
+		( media-libs/libsdl
+			app-emulation/emul-linux-x86-sdl ) )
+	|| ( media-libs/libsndfile[abi_x86_32]
+		( media-libs/libsndfile
+			app-emulation/emul-linux-x86-soundlibs ) )
+	|| ( media-libs/openal[abi_x86_32]
+		( media-libs/openal
+			app-emulation/emul-linux-x86-sdl ) )
+	|| ( media-libs/sdl-image[abi_x86_32]
+		( media-libs/sdl-image
+			app-emulation/emul-linux-x86-sdl ) )
+	|| ( media-libs/sdl-ttf[abi_x86_32]
+		( media-libs/sdl-ttf
+			app-emulation/emul-linux-x86-sdl ) )
+	|| ( sys-libs/ncurses[abi_x86_32]
+		( sys-libs/ncurses
+			app-emulation/emul-linux-x86-baselibs ) )
+	|| ( sys-libs/zlib[abi_x86_32]
+		( sys-libs/zlib
+			app-emulation/emul-linux-x86-baselibs ) )
+	|| ( x11-libs/gtk+:2[abi_x86_32]
+		( x11-libs/gtk+:2
+			app-emulation/emul-linux-x86-gtklibs ) )
 	egg? ( games-util/dfhack:${SLOT}[egg] )
 	"
 RDEPEND="${LIBDEPEND}"
