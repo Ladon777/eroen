@@ -36,7 +36,9 @@ HDEPEND="
 	doc? ( app-doc/doxygen )
 	"
 LIBRARY_DEPEND="
-	sys-libs/zlib[abi_x86_32]
+	|| ( sys-libs/zlib[abi_x86_32]
+		( sys-libs/zlib
+			app-emulation/emul-linux-x86-baselibs ) )
 	stonesense? ( media-libs/fontconfig[abi_x86_32]
 		app-emulation/emul-linux-x86-baselibs[development]
 		media-libs/freetype[abi_x86_32]
