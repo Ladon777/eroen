@@ -26,21 +26,32 @@ IUSE="+system-libgraphics"
 # libsndfile, openal, ncurses are dlopen()-ed.
 # zlib is missing from NEEDED.
 LIBGRAPHICS_RDEPEND="
-	dev-libs/glib[abi_x86_32]
-	virtual/glu[abi_x86_32]
-	=media-libs/libsdl-1*[abi_x86_32]
-	media-libs/libsndfile[abi_x86_32]
-	media-libs/openal[abi_x86_32]
-	media-libs/sdl-image[abi_x86_32]
-	media-libs/sdl-ttf[abi_x86_32]
-	sys-libs/ncurses[abi_x86_32]
-	sys-libs/zlib[abi_x86_32]
-	x11-libs/gtk+:2[abi_x86_32]
+	|| ( dev-libs/glib[abi_x86_32]
+		app-emulation/emul-linux-x86-baselibs )
+	|| ( virtual/glu[abi_x86_32]
+		app-emulation/emul-linux-x86-opengl )
+	|| ( =media-libs/libsdl-1*[abi_x86_32]
+		app-emulation/emul-linux-x86-sdl )
+	|| ( media-libs/libsndfile[abi_x86_32]
+		app-emulation/emul-linux-x86-soundlibs )
+	|| ( media-libs/openal[abi_x86_32]
+		app-emulation/emul-linux-x86-sdl )
+	|| ( media-libs/sdl-image[abi_x86_32]
+		app-emulation/emul-linux-x86-sdl )
+	|| ( media-libs/sdl-ttf[abi_x86_32]
+		app-emulation/emul-linux-x86-sdl )
+	|| ( sys-libs/ncurses[abi_x86_32]
+		app-emulation/emul-linux-x86-baselibs )
+	|| ( sys-libs/zlib[abi_x86_32]
+		app-emulation/emul-linux-x86-baselibs )
+	|| ( x11-libs/gtk+:2[abi_x86_32]
+		app-emulation/emul-linux-x86-gtklibs )
 	"
 RDEPEND="
 	system-libgraphics? ( >=dev-libs/libgraphics-40.05:${PV} )
 	!system-libgraphics? ( ${LIBGRAPHICS_RDEPEND} )
-	=media-libs/libsdl-1*[abi_x86_32]
+	|| ( =media-libs/libsdl-1*[abi_x86_32]
+		app-emulation/emul-linux-x86-sdl )
 	>=sys-devel/gcc-4.5
 	"
 DEPEND=""
