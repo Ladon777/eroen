@@ -25,7 +25,9 @@ RDEPEND="${LIBDEPEND}"
 [[ ${EAPI} == *-hdepend ]] || DEPEND+=" ${HDEPEND}"
 
 S=${WORKDIR}
-MY_PREFIX=/opt/${P}
+BINDIR=/opt/bin
+MY_PREFIX=/opt/${PN}/${MY_PV}
+MY_EXE=${PN}-${PV}
 INSTALL_KEY_VAR=MATLAB_${MY_PV}_FILE_INSTALLATION_KEY
 
 QA_PRESTRIPPED="${MY_PREFIX#/}/.*"
@@ -75,15 +77,30 @@ src_install() {
 		-tmpdir "${T}" \
 		-verbose \
 		|| die
+	rm "${ED%/}${MY_PREFIX}"/license.txt
+
+	einfo "Stripping RPATH from binaries ..."
 	find "${ED%/}${MY_PREFIX}"/bin/glnxa64 -type f -name '*.so*' -execdir chrpath -d {} + || die
+	einfo "Fixing broken png files ..."
+	cp "${FILESDIR}"/MatlabIcon.png "${ED%/}${MY_PREFIX}"/toolbox/shared/dastudio/resources/MatlabIcon.png || die
 
 	# User should be able to add a licence.
-	dodir "${MY_PREFIX}"/licences
-	fperms 1777 "${MY_PREFIX}"/licences
+	dodir "${MY_PREFIX}"/licenses
+	fperms 1777 "${MY_PREFIX}"/licenses
+
+	dosym "${MY_PREFIX}"/bin/matlab "${BINDIR}"/matlab-${PV}
+	dosym "${MY_PREFIX}"/bin/mex "${BINDIR}"/mex-${PV}
 }
 
 pkg_postinst() {
-	:
-	# x11-misc/wmname wmname LG3D
-	# first startup, key file/activation
+	elog "On first startup, you will be asked to provide a MATLAB ${MY_PV} licence"
+	elog "file. Alternatively, you can save your licence file as one of"
+	elog "    ~/.matlab/${MY_PV}_licenses/*.lic"
+	elog "    ${EPREFIX}${MY_PREFIX}/licenses/license.dat"
+	elog "    ${EPREFIX}${MY_PREFIX}/licenses/network.lic"
+	elog
+	elog "If you experience blank windows after launching ${MY_EXE}, try"
+	elog "installing x11-misc/wmname and running"
+	elog "    wmname LG3D"
+	elog "before launching ${MY_EXE} again."
 }
