@@ -5,7 +5,7 @@
 EAPI=5
 PYTHON_COMPAT=( python2_7 )
 
-inherit versionator autotools eutils gnome2 fdo-mime multilib python-single-r1
+inherit versionator virtualx autotools eutils gnome2 fdo-mime multilib python-single-r1
 
 DESCRIPTION="GNU Image Manipulation Program"
 HOMEPAGE="http://www.gimp.org/"
@@ -122,6 +122,10 @@ src_prepare() {
 	eautoreconf  # If you remove this: remove dev-util/gtk-doc-am from DEPEND, too
 
 	gnome2_src_prepare
+}
+
+src_test() {
+	Xemake check
 }
 
 _clean_up_locales() {
