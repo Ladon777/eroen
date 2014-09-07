@@ -336,6 +336,7 @@ multilib_src_configure() {
 		$(use_with osmesa)
 		$(use_with oss)
 		$(use_with png)
+		--without-pcap
 		$(use_with threads pthread)
 		$(use_with scanner sane)
 		$(use_enable test tests)
