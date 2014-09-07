@@ -48,7 +48,7 @@ LIBGRAPHICS_RDEPEND="
 		app-emulation/emul-linux-x86-gtklibs )
 	"
 RDEPEND="
-	system-libgraphics? ( >=dev-libs/libgraphics-40.05:${PV} )
+	system-libgraphics? ( dev-libs/libgraphics:${PV} )
 	!system-libgraphics? ( ${LIBGRAPHICS_RDEPEND} )
 	|| ( =media-libs/libsdl-1*[abi_x86_32]
 		app-emulation/emul-linux-x86-sdl )

@@ -1,1 +1,1 @@
-dwarffortress-40.03.ebuild
+dwarffortress-40.06.ebuild
