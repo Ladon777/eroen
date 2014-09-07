@@ -230,13 +230,6 @@ DEPEND="${COMMON_DEPEND}
 	virtual/yacc
 	sys-devel/flex"
 
-# These use a non-standard "Wine" category, which is provided by
-# /etc/xdg/applications-merged/wine.menu
-QA_DESKTOP_FILE="usr/share/applications/wine-browsedrive.desktop
-usr/share/applications/wine-notepad.desktop
-usr/share/applications/wine-uninstaller.desktop
-usr/share/applications/wine-winecfg.desktop"
-
 wine_build_environment_check() {
 	[[ ${MERGE_TYPE} = "binary" ]] && return 0
 
