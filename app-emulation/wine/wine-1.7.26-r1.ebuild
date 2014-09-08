@@ -294,6 +294,9 @@ src_prepare() {
 		sed -i '/^MimeType/d' tools/wine.desktop || die #117785
 	fi
 
+	sed -e "/^Exec=/s/wine /wine-${SLOT} /" \
+		-i tools/wine.desktop || die
+
 	l10n_get_locales > po/LINGUAS # otherwise wine doesn't respect LINGUAS
 }
 
