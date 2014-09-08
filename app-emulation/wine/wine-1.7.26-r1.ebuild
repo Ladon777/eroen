@@ -414,6 +414,10 @@ multilib_src_install_all() {
 		dosym "${MY_PREFIX}"/bin/wine{64,}-preloader
 	fi
 
+	for b in "${D%/}${MY_PREFIX}"/bin/*; do
+		make_wrapper ${b##*/}-${SLOT} "${MY_PREFIX}"/bin/${b##*/}
+	done
+
 	# respect LINGUAS when installing man pages, #469418
 	for l in de fr pl; do
 		use linguas_${l} || rm -r "${D%/}${MY_PREFIX}"/man/${l}*
