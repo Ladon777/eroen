@@ -25,5 +25,10 @@ src_install() {
 
 pkg_prerm() {
 	# Avoid conflicts with wine[-multislot] installed later
-	eselect wine remove || die
+	if [[ -z ${REPLACED_BY_VERSION} ]]; then
+		elog "${PN} is being uninstalled, removing symlinks"
+		eselect wine remove || die
+	else
+		elog "upgrade/reinstall"
+	fi
 }
