@@ -4,6 +4,8 @@
 
 EAPI=5
 
+inherit gnome2-utils
+
 DESCRIPTION="Menu items and icons for wine"
 HOMEPAGE="http://dev.gentoo.org/~tetromino/distfiles/wine"
 SRC_URI="http://dev.gentoo.org/~tetromino/distfiles/${PN}/${P}.tar.bz2"
@@ -24,4 +26,16 @@ usr/share/applications/wine-winecfg.desktop"
 
 src_install() {
 	emake install DESTDIR="${D}" EPREFIX="${EPREFIX}"
+}
+
+pkg_preinst() {
+	gnome2_icon_savelist
+}
+
+pkg_postinst() {
+	gnome2_icon_cache_update
+}
+
+pkg_postrm() {
+	gnome2_icon_cache_update
 }
