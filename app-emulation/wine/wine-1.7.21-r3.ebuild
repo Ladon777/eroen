@@ -467,6 +467,9 @@ multilib_src_test() {
 }
 
 multilib_src_install_all() {
+	# Prefixed installation double-installs libwine
+	use multislot && rm -rf "${D}"usr/lib{32,64} || die
+
 	local DOCS=( ANNOUNCE AUTHORS README )
 	local l
 	add_locale_docs() {
