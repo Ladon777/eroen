@@ -24,6 +24,7 @@ fi
 
 GV="2.24"
 MV="4.5.2"
+WINE_GENTOO="wine-gentoo-2013.06.24"
 DESCRIPTION="Free implementation of Windows(tm) on Unix"
 HOMEPAGE="http://www.winehq.org/"
 SRC_URI="${SRC_URI}
@@ -33,6 +34,7 @@ SRC_URI="${SRC_URI}
 	)
 	mono? ( mirror://sourceforge/${PN}/Wine%20Mono/${MV}/wine-mono-${MV}.msi )
 	pulseaudio? ( http://github.com/compholio/wine-compholio/archive/v${PV}.tar.gz -> wine-compholio-${PV}.tar.gz )
+	http://dev.gentoo.org/~tetromino/distfiles/${PN}/${WINE_GENTOO}.tar.bz2
 	"
 
 LICENSE="LGPL-2.1"
@@ -215,7 +217,8 @@ COMMON_DEPEND="
 	)"
 
 RDEPEND="${COMMON_DEPEND}
-	multislot? ( >=app-admin/eselect-wine-0.2 )
+	multislot? ( >=app-admin/eselect-wine-0.2
+		app-emulation/wine-gentoo )
 	!multislot? ( !<${CATEGORY}/${PF}
 		!>${CATEGORY}/${PF} )
 	dos? ( games-emulation/dosbox )
@@ -239,6 +242,13 @@ DEPEND="${COMMON_DEPEND}
 	virtual/pkgconfig
 	virtual/yacc
 	sys-devel/flex"
+
+# These use a non-standard "Wine" category, which is provided by
+# /etc/xdg/applications-merged/wine.menu
+QA_DESKTOP_FILE="usr/share/applications/wine-browsedrive.desktop
+usr/share/applications/wine-notepad.desktop
+usr/share/applications/wine-uninstaller.desktop
+usr/share/applications/wine-winecfg.desktop"
 
 wine_build_environment_check() {
 	[[ ${MERGE_TYPE} = "binary" ]] && return 0
@@ -282,6 +292,7 @@ src_unpack() {
 	if use pulseaudio; then
 		unpack wine-compholio-${PV}.tar.gz
 	fi
+	unpack "${WINE_GENTOO}.tar.bz2"
 
 	l10n_find_plocales_changes "${S}/po" "" ".po"
 }
@@ -322,6 +333,9 @@ src_prepare() {
 		sed -e "/^Exec=/s/wine /wine-${SLOT} /" \
 			-i tools/wine.desktop || die
 	fi
+
+	# hi-res default icon, #472990, http://bugs.winehq.org/show_bug.cgi?id=24652
+	cp "${WORKDIR}"/${WINE_GENTOO}/icons/oic_winlogo.ico dlls/user32/resources/ || die
 
 	l10n_get_locales > po/LINGUAS # otherwise wine doesn't respect LINGUAS
 }
@@ -429,6 +443,10 @@ multilib_src_install_all() {
 	einstalldocs
 	prune_libtool_files --all
 
+	# Moved to wine-gentoo for multislot
+	if ! use multislot; then
+		emake -C "../${WINE_GENTOO}" install DESTDIR="${D}" EPREFIX="${EPREFIX}"
+	fi
 	if use gecko ; then
 		insinto "${MY_DATADIR}"/wine/gecko
 		use abi_x86_32 && doins "${DISTDIR}"/wine_gecko-${GV}-x86.msi

@@ -235,7 +235,8 @@ COMMON_DEPEND="
 	)"
 
 RDEPEND="${COMMON_DEPEND}
-	multislot? ( >=app-admin/eselect-wine-0.2 )
+	multislot? ( >=app-admin/eselect-wine-0.2
+		app-emulation/wine-gentoo )
 	!multislot? ( !<${CATEGORY}/${PF}
 		!>${CATEGORY}/${PF} )
 	dos? ( games-emulation/dosbox )
@@ -481,7 +482,7 @@ multilib_src_install_all() {
 	einstalldocs
 	prune_libtool_files --all
 
-	# Broken for slotted install, dunno who is upstream
+	# Moved to wine-gentoo for multislot
 	if ! use multislot; then
 		emake -C "../${WINE_GENTOO}" install DESTDIR="${D}" EPREFIX="${EPREFIX}"
 	fi
