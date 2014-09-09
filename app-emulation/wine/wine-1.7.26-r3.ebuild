@@ -215,7 +215,7 @@ COMMON_DEPEND="
 	)"
 
 RDEPEND="${COMMON_DEPEND}
-	multislot? ( app-admin/eselect-wine )
+	multislot? ( >=app-admin/eselect-wine-0.2 )
 	!multislot? ( !<${CATEGORY}/${PF}
 		!>${CATEGORY}/${PF} )
 	dos? ( games-emulation/dosbox )
@@ -469,6 +469,7 @@ pkg_preinst() {
 pkg_postinst() {
 	gnome2_icon_cache_update
 	fdo-mime_desktop_database_update
+	use multislot && eselect wine update --if-unset
 }
 
 pkg_postrm() {
