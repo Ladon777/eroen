@@ -98,8 +98,7 @@ pkg_setup() {
 src_prepare() {
 	epatch "${FILESDIR}/${PN}-2.1-ldflags.patch" \
 		"${FILESDIR}/${PN}-2.0-arflags.patch" \
-		"${FILESDIR}/${PN}-2.1.3-pkgconfig-json.patch" \
-		"${FILESDIR}/${PN}-2.1-2723-failure-to-build-against.patch"
+		"${FILESDIR}/${PN}-2.1.4-pkgconfig-json.patch"
 
 	local AT_M4DIR="macros"
 	eautoreconf

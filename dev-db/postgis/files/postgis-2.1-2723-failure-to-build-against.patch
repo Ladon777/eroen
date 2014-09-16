@@ -1,0 +1,49 @@
+From 7e66c170c75a0db312e791547f7121f08faf86d5 Mon Sep 17 00:00:00 2001
+From: Paul Ramsey <pramsey@cleverelephant.ca>
+Date: Tue, 24 Jun 2014 21:59:47 +0000
+Subject: [PATCH] #2723 failure to build against external json-c 0.12
+
+git-svn-id: http://svn.osgeo.org/postgis/trunk@12647 b70326c6-7e19-0410-871a-916f4a2858ee
+---
+ configure.ac             | 18 +++++++-----------
+ liblwgeom/lwin_geojson.c | 16 +++++++++++-----
+ postgis_config.h.in      |  3 +++
+ 3 files changed, 21 insertions(+), 16 deletions(-)
+
+diff --git a/liblwgeom/lwin_geojson.c b/liblwgeom/lwin_geojson.c
+index 93f159a..ac1af7e 100644
+--- a/liblwgeom/lwin_geojson.c
++++ b/liblwgeom/lwin_geojson.c
+@@ -491,7 +497,7 @@ LWGEOM*
+ lwgeom_from_geojson(const char *geojson, char **srs)
+ {
+ #ifndef HAVE_LIBJSON
+-  *srs = NULL;
++	*srs = NULL;
+ 	lwerror("You need JSON-C for lwgeom_from_geojson");
+ 	return NULL;
+ #else /* HAVE_LIBJSON  */
+@@ -503,7 +509,7 @@ lwgeom_from_geojson(const char *geojson, char **srs)
+ 	json_tokener* jstok = NULL;
+ 	json_object* poObj = NULL;
+ 	json_object* poObjSrs = NULL;
+-  *srs = NULL;
++	*srs = NULL;
+ 
+ 	/* Begin to Parse json */
+ 	jstok = json_tokener_new();
+@@ -511,11 +517,11 @@ lwgeom_from_geojson(const char *geojson, char **srs)
+ 	if( jstok->err != json_tokener_success)
+ 	{
+ 		char err[256];
+-		snprintf(err, 256, "%s (at offset %d)", json_tokener_errors[jstok->err], jstok->char_offset);
++		snprintf(err, 256, "%s (at offset %d)", json_tokener_error_desc(jstok->err), jstok->char_offset);
+ 		json_tokener_free(jstok);
+-    json_object_put(poObj);
++		json_object_put(poObj);
+ 		geojson_lwerror(err, 1);
+-    return NULL;
++		return NULL;
+ 	}
+ 	json_tokener_free(jstok);
+ 
