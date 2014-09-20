@@ -342,7 +342,6 @@ src_prepare() {
 			$(find "${WORKDIR}"/wine-compholio-${PV}/patches/ -type f -name '*.patch' \
 				| sed \
 					-e '/fonts-Missing_Fonts/d' \
-					-e '/loader-Cmdline_Diagnostics/d' \
 					-e '/winepulse-PulseAudio_Support/d'
 			)
 		)
@@ -354,6 +353,13 @@ src_prepare() {
 		eend
 	fi
 	PATCHES+=($(for f in "${COMPHOLIO_PATCHES[@]}"; do echo "${f}"; done | sort))
+	for f in "${COMPHOLIO_PATCHES[@]}"; do
+			# echo '+    { "Miscellaneous", "Sebastian Lackner", "kernel32: Silence repeated CompareStringEx FIXME." },'; \
+			echo '+    { "Gentoo", "Compholio", "'${f}'" },'
+		done \
+		| "${WORKDIR}"/wine-compholio-${PV}/debian/tools/patchlist.sh \
+		> "${T}"/patchlist.patch
+	PATCHES+=("${T}"/patchlist.patch)
 
 	autotools-utils_src_prepare
 
