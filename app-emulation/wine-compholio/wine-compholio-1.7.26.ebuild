@@ -353,9 +353,9 @@ src_prepare() {
 		eend
 	fi
 	PATCHES+=($(for f in "${COMPHOLIO_PATCHES[@]}"; do echo "${f}"; done | sort))
-	for f in "${COMPHOLIO_PATCHES[@]}"; do
+	for f in "${PATCHES[@]}"; do
 			# echo '+    { "Miscellaneous", "Sebastian Lackner", "kernel32: Silence repeated CompareStringEx FIXME." },'; \
-			echo '+    { "Gentoo", "Compholio", "'${f}'" },'
+			echo '+    { "Gentoo", "'${PF}'", "'${f}'" },'
 		done \
 		| "${WORKDIR}"/wine-compholio-${PV}/debian/tools/patchlist.sh \
 		> "${T}"/patchlist.patch
