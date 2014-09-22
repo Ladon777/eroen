@@ -42,7 +42,7 @@ HDEPEND=""
 LIBDEPEND="${OPENMW_LIBS}
 	launcher? ( ${LAUNCHER_LIBS} )
 	opencs? ( ${OPENCS_LIBS} )
-	dev-games/ogre[boost,cg,freeimage,opengl,threads,zip]
+	>=dev-games/ogre-1.9.0[boost,cg,freeimage,opengl,threads,zip]
 	dev-libs/boost:=[threads]
 	media-libs/libsdl2[-directfb(-)]"
 DEPEND="${LIBDEPEND}
@@ -73,11 +73,14 @@ src_configure() {
 		-DSYSCONFDIR="${GAMES_SYSCONFDIR}"/${PN}
 		-DMORROWIND_DATA_FILES="${GAMES_DATADIR}/${PN}/data"
 		-DOPENMW_RESOURCE_FILES="${GAMES_DATADIR}/${PN}/resources"
+		-DGLOBAL_CONFIG_PATH=/etc/ # Compatibility with old commits
+		-DGLOBAL_DATA_PATH="${GAMES_DATADIR}"/
 		$(cmake-utils_use_build launcher LAUNCHER)
 		$(cmake-utils_use_build opencs OPENCS)
 		$(cmake-utils_use_build !minimal BSATOOL)
 		$(cmake-utils_use_build !minimal ESMTOOL)
 		$(cmake-utils_use_build !minimal MWINIIMPORTER)
+		$(cmake-utils_use_build !minimal MYGUI_PLUGIN)
 		$(cmake-utils_use_build !minimal NIFTEST)
 		$(cmake-utils_use_with profile CODE_COVERAGE)
 		-DUSE_SYSTEM_TINYXML=ON
@@ -99,6 +102,7 @@ src_install() {
 		-i "${D}/${GAMES_SYSCONFDIR}"/${PN}/openmw.cfg || die
 	prepgamesdirs
 	# /etc/openmw/ is hardcoded, but we set SYSCONFDIR for games.eclass
+	# Compatibility with old commits
 	mv -t "${D}"/etc "${D}/${GAMES_SYSCONFDIR}"/${PN} || die
 	rmdir "${D}/${GAMES_SYSCONFDIR}" || die
 }
