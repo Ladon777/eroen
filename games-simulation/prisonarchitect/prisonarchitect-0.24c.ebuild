@@ -58,4 +58,12 @@ src_install() {
 
 	# Provided wrapper is broken
 	games_make_wrapper ${PN} ./PrisonArchitect.${MY_ARCH} "${MY_PREFIX}"
+
+	if use unpack-resources; then
+		make_desktop_entry ${PN} "Prison Architect" "${MY_PREFIX}"/data/PAlogo.png
+		# /opt/prisonarchitect-0.24c/data/PAlogo.png
+		# /opt/prisonarchitect-0.24c/data/introversionlogo.png
+	else
+		make_desktop_entry ${PN} "Prison Architect"
+	fi
 }
