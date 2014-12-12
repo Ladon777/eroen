@@ -17,13 +17,20 @@ HOMEPAGE="http://www.unepicgame.com/en/game.html"
 # 940824c4de6e48522845f63423e87783
 SRC_URI="${P}-bin-installer-32.run"
 S=${WORKDIR}
+RESTRICT="mirror fetch bindist"
 
 LICENSE="all-rights-reserved"
 SLOT="0"
 KEYWORDS="~amd64" # ~x86
-IUSE="linguas_en linguas_es"
+IUSE="bundled-libs linguas_en linguas_es"
+
+LIBDEPEND_BUNDLED="
+	media-libs/libsdl2[X,alsa,joystick,opengl,sound,threads,video]
+	media-libs/sdl2-mixer[vorbis]
+	"
 
 LIBDEPEND="
+	!bundled-libs? ( ${LIBDEPEND_BUNDLED} )
 	sys-libs/zlib
 	virtual/opengl
 	sys-devel/gcc[cxx]
@@ -66,6 +73,8 @@ src_prepare() {
 
 	chrpath -d "${S}"/data/unepic${bitness} || die
 	chrpath -d "${S}"/data/lib${bitness}/libSDL2-2.0.so.0 || die
+
+	use !bundled-libs && rm -rf "${S}"/data/lib*
 
 	use linguas_en || rm -rf data/voices/english
 	use linguas_es || rm -rf data/voices/spanish
