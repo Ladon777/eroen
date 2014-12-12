@@ -21,7 +21,7 @@ S=${WORKDIR}
 LICENSE="all-rights-reserved"
 SLOT="0"
 KEYWORDS="~amd64" # ~x86
-IUSE=""
+IUSE="linguas_en linguas_es"
 
 LIBDEPEND="
 	sys-libs/zlib
@@ -66,6 +66,9 @@ src_prepare() {
 
 	chrpath -d "${S}"/data/unepic${bitness} || die
 	chrpath -d "${S}"/data/lib${bitness}/libSDL2-2.0.so.0 || die
+
+	use linguas_en || rm -rf data/voices/english
+	use linguas_es || rm -rf data/voices/spanish
 }
 
 src_install() {
