@@ -14,7 +14,7 @@ SRC_URI="http://distfiles.audacious-media-player.org/${MY_P}.tar.bz2"
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd ~x86-freebsd ~x86-interix ~amd64-linux ~x86-linux"
-IUSE="aac adplug alsa bs2b cdda cue ffmpeg flac fluidsynth gnome jack
+IUSE="aac adplug alsa bs2b cdda cue ffmpeg flac gnome jack
 lame libnotify libsamplerate lirc midi mms mp3 nls pulseaudio scrobbler sdl sid sndfile vorbis wavpack"
 
 RDEPEND="app-arch/unzip
@@ -35,7 +35,7 @@ RDEPEND="app-arch/unzip
 	ffmpeg? ( >=virtual/ffmpeg-0.7.3 )
 	flac? ( >=media-libs/libvorbis-1.0
 		>=media-libs/flac-1.2.1-r1 )
-	fluidsynth? ( media-sound/fluidsynth )
+	midi? ( media-sound/fluidsynth )
 	jack? ( >=media-libs/bio2jack-0.4
 		media-sound/jack-audio-connection-kit )
 	lame? ( media-sound/lame )
@@ -99,7 +99,6 @@ src_configure() {
 		$(use_enable cdda cdaudio) \
 		$(use_enable cue) \
 		$(use_enable flac flacng) \
-		$(use_enable fluidsynth amidiplug) \
 		$(use_enable flac filewriter_flac) \
 		$(use_enable jack) \
 		$(use_enable gnome gnomeshortcuts) \
@@ -107,9 +106,9 @@ src_configure() {
 		$(use_enable libnotify notify) \
 		$(use_enable libsamplerate resample) \
 		$(use_enable lirc) \
+		$(use_enable midi amidiplug) \
 		$(use_enable mms) \
 		$(use_enable mp3) \
-		$(use_enable midi amidiplug) \
 		$(use_enable nls) \
 		$(use_enable pulseaudio pulse) \
 		$(use_enable scrobbler scrobbler2) \
