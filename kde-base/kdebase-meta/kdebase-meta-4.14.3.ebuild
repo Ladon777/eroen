@@ -7,7 +7,7 @@ inherit kde4-meta-pkg
 
 DESCRIPTION="Merge this to pull in all kdebase-derived packages"
 KEYWORDS="~amd64 ~arm ~ppc ~ppc64 ~x86 ~amd64-linux ~x86-linux"
-IUSE="+display-manager minimal +wallpapers"
+IUSE="consolekit +display-manager minimal +wallpapers"
 
 RDEPEND="
 	$(add_kdebase_dep dolphin)
@@ -40,7 +40,6 @@ RDEPEND="
 		$(add_kdebase_dep kcminit '' 4.11)
 		$(add_kdebase_dep kdebase-cursors '' 4.11)
 		$(add_kdebase_dep kdebase-startkde '' 4.11)
-		$(add_kdebase_dep kdepasswd)
 		$(add_kdebase_dep khotkeys '' 4.11)
 		$(add_kdebase_dep kinfocenter '' 4.11)
 		$(add_kdebase_dep klipper '' 4.11)
@@ -58,6 +57,7 @@ RDEPEND="
 		$(add_kdebase_dep powerdevil '' 4.11)
 		$(add_kdebase_dep solid-actions-kcm '' 4.11)
 		$(add_kdebase_dep systemsettings '' 4.11)
+		consolekit? ( $(add_kdebase_dep kdepasswd) )
 		!prefix? ( display-manager? ( || ( $(add_kdebase_dep kdm '' 4.11) x11-misc/lightdm x11-misc/sddm ) ) )
 	)
 "

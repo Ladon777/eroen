@@ -4,5 +4,6 @@
 	<use>
 		<flag name="display-manager">Pull in a graphical display manager</flag>
 		<flag name="wallpapers">Install the KDE wallpapers</flag>
+		<flag name="consolekit">Install components that require <pkg>sys-auth/consolekit</pkg></flag>
 	</use>
 </pkgmetadata>
