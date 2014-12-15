@@ -310,7 +310,8 @@ fi
 RDEPEND="${DEPEND}
 	!minimal? ( !prefix? ( dev-db/mysql-init-scripts ) )
 	selinux? ( sec-policy/selinux-mysql )
-	abi_x86_32? ( !app-emulation/emul-linux-x86-db[-abi_x86_32(-)] )
+	abi_x86_32? ( !app-emulation/emul-linux-x86-db[-abi_x86_32(-)]
+		!<app-emulation/emul-linux-x86-db-20140508-r2 )
 "
 
 if [[ ${PN} == "mariadb" || ${PN} == "mariadb-galera" ]] ; then
