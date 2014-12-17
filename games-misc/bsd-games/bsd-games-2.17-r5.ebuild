@@ -33,6 +33,12 @@ dab dm factor fish gomoku hack hangman hunt mille monop morse
 number phantasia pig pom ppt primes quiz rain random robots sail snake
 tetris trek wargames worm worms wtf}
 
+pkg_setup() {
+	games_pkg_setup
+	# Used by gentoo config.params. See bug 531200
+	export GAMES_BINDIR GAMES_DATADIR GAMES_STATEDIR
+}
+
 src_prepare() {
 	local d="${WORKDIR}"/debian/patches
 	EPATCH_SOURCE="${d}" epatch $(<"${d}"/series)
