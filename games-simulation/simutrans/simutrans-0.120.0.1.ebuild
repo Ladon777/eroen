@@ -16,12 +16,19 @@ SRC_URI="mirror://sourceforge/simutrans/simutrans-src-${MY_PV}.zip
 LICENSE="Artistic MIT"
 SLOT="0"
 KEYWORDS="-* ~amd64 ~x86"
-IUSE=""
+IUSE="sdl2"
 
-RDEPEND="media-libs/libsdl[sound,video]
+RDEPEND="
+	sdl2? (
+		media-libs/libsdl2[opengl,sound,video]
+		)
+	!sdl2? (
+		media-libs/libsdl[sound,video]
+		media-libs/sdl-mixer
+		)
 	sys-libs/zlib
 	app-arch/bzip2
-	media-libs/sdl-mixer"
+	"
 DEPEND="${RDEPEND}
 	app-arch/unzip"
 
@@ -29,10 +36,6 @@ S=${WORKDIR}
 
 src_prepare() {
 	strip-flags # bug #293927
-
-#	if use !x86 ; then
-#		echo "FLAGS+= -DUSE_C" >> config.default || die
-#	fi
 
 	# make it look in the install location for the data
 	sed -i \
@@ -48,11 +51,16 @@ src_prepare() {
 src_configure() {
 	sh configure.sh || die
 
-	local backend=mixer_sdl
+	local backend
+	if use sdl2; then
+		backend=sdl2
+	else
+		backend=mixer_sdl
+	fi
 	sed -e '/^DEBUG/d' \
 		-e '/^OPTIMISE/d' \
 		-e '/^BACKEND/s/=.*$/= '"${backend}"'/' \
-		-i config.default
+		-i config.default || die
 	echo 'VERBOSE = 1' >> config.default
 }
 
