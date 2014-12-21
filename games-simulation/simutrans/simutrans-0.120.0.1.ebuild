@@ -16,15 +16,21 @@ SRC_URI="mirror://sourceforge/simutrans/simutrans-src-${MY_PV}.zip
 LICENSE="Artistic MIT"
 SLOT="0"
 KEYWORDS="-* ~amd64 ~x86"
-IUSE="sdl2"
+IUSE="sdl2 sound"
 
 RDEPEND="
 	sdl2? (
-		media-libs/libsdl2[opengl,sound,video]
+		media-libs/libsdl2[opengl,video]
+		sound? (
+			media-libs/libsdl2[opengl,sound,threads,video]
+			)
 		)
 	!sdl2? (
 		media-libs/libsdl[sound,video]
-		media-libs/sdl-mixer
+		sound? (
+			media-libs/libsdl[sound,video]
+			media-libs/sdl-mixer[midi]
+			)
 		)
 	sys-libs/zlib
 	app-arch/bzip2
@@ -35,8 +41,6 @@ DEPEND="${RDEPEND}
 S=${WORKDIR}
 
 src_prepare() {
-	strip-flags # bug #293927
-
 	# make it look in the install location for the data
 	sed -i \
 		-e "s:argv\[0\]:\"${GAMES_DATADIR}/${PN}/\":" \
@@ -54,8 +58,10 @@ src_configure() {
 	local backend
 	if use sdl2; then
 		backend=sdl2
-	else
+	elif use sound; then
 		backend=mixer_sdl
+	else
+		backend=sdl
 	fi
 	sed -e '/^DEBUG/d' \
 		-e '/^OPTIMISE/d' \
@@ -83,6 +89,12 @@ pkg_preinst() {
 pkg_postinst() {
 	games_pkg_postinst
 	gnome2_icon_cache_update
+
+	if use sound && use sdl2; then
+		ewarn
+		ewarn "You have selected the sdl2 backend for ${PN}."
+		ewarn "This backend does not support playing midi background music."
+	fi
 }
 
 pkg_postrm() {
