@@ -16,9 +16,13 @@ SRC_URI="mirror://sourceforge/simutrans/simutrans-src-${MY_PV}.zip
 LICENSE="Artistic MIT"
 SLOT="0"
 KEYWORDS="-* ~amd64 ~x86"
-IUSE="sdl2 sound"
+IUSE="freetype sdl2 +sound"
 
 RDEPEND="
+	freetype? (
+		virtual/pkgconfig
+		media-libs/freetype:2
+		)
 	sdl2? (
 		media-libs/libsdl2[opengl,video]
 		sound? (
@@ -63,9 +67,20 @@ src_configure() {
 	else
 		backend=sdl
 	fi
+	sed -e '/^BACKEND/s/=.*$/= '"${backend}"'/' \
+		-i config.default || die
+
+	if use freetype; then
+		cat >> config.default <<-EOF
+			FLAGS += -DUSE_FREETYPE
+			CFLAGS += \$(shell pkg-config freetype2 --cflags)
+			CXXFLAGS += \$(shell pkg-config freetype2 --cflags)
+			LIBS += \$(shell pkg-config freetype2 --libs)
+			EOF
+	fi
+
 	sed -e '/^DEBUG/d' \
 		-e '/^OPTIMISE/d' \
-		-e '/^BACKEND/s/=.*$/= '"${backend}"'/' \
 		-i config.default || die
 	echo 'VERBOSE = 1' >> config.default
 }
@@ -78,6 +93,7 @@ src_install() {
 	dodoc documentation/*
 	doicon simutrans.ico
 	make_desktop_entry simutrans Simutrans simutrans.ico
+
 	prepgamesdirs
 }
 
