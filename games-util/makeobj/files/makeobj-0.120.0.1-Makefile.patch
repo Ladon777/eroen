@@ -1,0 +1,46 @@
+From 88bcaa8210453d142cb2974b82869b5fb75c084b Mon Sep 17 00:00:00 2001
+From: eroen <eroen@occam.eroen.eu>
+Date: Tue, 23 Dec 2014 19:46:21 +0100
+Subject: [PATCH 2/3] fix makeobj Makefile
+
+---
+ makeobj/Makefile | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/makeobj/Makefile b/makeobj/Makefile
+index 10dd957..3e654a8 100644
+--- a/makeobj/Makefile
++++ b/makeobj/Makefile
+@@ -15,7 +15,9 @@ ifneq ($(PNG_CONFIG),)
+ endif
+ 
+ CFLAGS  += $(PNG_CFLAGS)
++CXXFLAGS  += $(PNG_CFLAGS)
+ LDFLAGS += $(PNG_LDFLAGS)
++LIBS += $(PNG_LDFLAGS)
+ 
+ # Absolutely essential
+ CFLAGS += -DMAKEOBJ
+@@ -48,9 +50,6 @@ ifneq ($(OPTIMISE),)
+   ifneq ($(OSTYPE),mac)
+     CFLAGS  += -minline-all-stringops
+   endif
+-else
+-  CFLAGS   += -O
+-  CXXFLAGS += -O
+ endif
+ 
+ ifdef DEBUG
+@@ -134,7 +133,8 @@ ifeq ($(origin MAKEOBJ_PROGDIR), undefined)
+ endif
+ 
+ BUILDDIR := ../$(BUILDDIR)
++PROGDIR ?= $(BUILDDIR)
+ 
+ TOOL_PROGDIR = $(MAKEOBJ_PROGDIR)
+ 
+-include ../uncommon.mk
++include ../common.mk
+-- 
+2.1.2
+
