@@ -20,7 +20,6 @@ IUSE="freetype sdl2 +sound"
 
 RDEPEND="
 	freetype? (
-		virtual/pkgconfig
 		media-libs/freetype:2
 		)
 	sdl2? (
@@ -40,6 +39,9 @@ RDEPEND="
 	app-arch/bzip2
 	"
 DEPEND="${RDEPEND}
+	freetype? (
+		virtual/pkgconfig
+		)
 	app-arch/unzip"
 
 S=${WORKDIR}

@@ -2,6 +2,7 @@
 <!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
 <pkgmetadata>
 	<use>
+		<flag name="freetype">Use <pkg>media-libs/freetype</pkg> for font rendering</flag>
 		<flag name="sdl2">Use <pkg>media-libs/libsdl2</pkg></flag>
 	</use>
 </pkgmetadata>
