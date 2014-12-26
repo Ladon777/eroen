@@ -52,6 +52,7 @@ src_prepare() {
 		-e "s:argv\[0\]:\"${GAMES_DATADIR}/${PN}/\":" \
 		simmain.cc || die
 
+	edos2unix Makefile makeobj/Makefile
 	epatch \
 		"${FILESDIR}"/${P}-Makefile.patch
 	rm -f simutrans/{simutrans,*.txt}
