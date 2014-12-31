@@ -21,6 +21,7 @@ RDEPEND="virtual/libffi
 	dev-python/pycparser[${PYTHON_USEDEP}]
 	dev-python/pytest[${PYTHON_USEDEP}]"
 DEPEND="${RDEPEND}"
+DOCS=""
 
 python_compile_all() {
 	use doc && emake -C doc html
