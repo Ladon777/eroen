@@ -6,7 +6,7 @@ EAPI="4"
 
 PYTHON_COMPAT=( python2_7 )
 
-inherit libtool multilib-minimal python-any-r1
+inherit flag-o-matic libtool multilib-minimal python-any-r1
 
 DESCRIPTION="Google's C++ mocking framework"
 HOMEPAGE="http://code.google.com/p/googlemock/"
@@ -15,9 +15,9 @@ SRC_URI="http://googlemock.googlecode.com/files/${P}.zip"
 LICENSE="BSD"
 SLOT="0"
 KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86"
-IUSE="static-libs"
+IUSE="static-libs +tr1"
 
-RDEPEND="=dev-cpp/gtest-${PV}*[${MULTILIB_USEDEP}]"
+RDEPEND="=dev-cpp/gtest-${PV}*[${MULTILIB_USEDEP},tr1(+)?]"
 DEPEND="${RDEPEND}
 	test? ( ${PYTHON_DEPS} )
 	app-arch/unzip"
@@ -26,6 +26,10 @@ pkg_setup() {
 	# Stub to disable python_setup running when USE=-test.
 	# We'll handle it down in src_test ourselves.
 	:
+	if ! use tr1; then
+		append-cflags -DGTEST_USE_OWN_TR1_TUPLE=1
+		append-cxxflags -DGTEST_USE_OWN_TR1_TUPLE=1
+	fi
 }
 
 src_unpack() {
