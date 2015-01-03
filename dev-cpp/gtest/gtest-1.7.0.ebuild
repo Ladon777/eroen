@@ -9,7 +9,7 @@ AUTOTOOLS_IN_SOURCE_BUILD=1
 # Python is required for tests and some build tasks.
 PYTHON_COMPAT=( python{2_6,2_7} )
 
-inherit eutils python-any-r1 autotools-multilib
+inherit eutils flag-o-matic python-any-r1 autotools-multilib
 
 DESCRIPTION="Google C++ Testing Framework"
 HOMEPAGE="http://code.google.com/p/googletest/"
@@ -18,7 +18,7 @@ SRC_URI="http://googletest.googlecode.com/files/${P}.zip"
 LICENSE="BSD"
 SLOT="0"
 KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~x86-linux ~ppc-macos"
-IUSE="examples static-libs"
+IUSE="examples static-libs +tr1"
 
 DEPEND="app-arch/unzip
 	${PYTHON_DEPS}"
@@ -27,6 +27,13 @@ RDEPEND=""
 PATCHES=(
 	"${FILESDIR}/configure-fix-pthread-linking.patch" #371647
 )
+
+pkg_setup() {
+	if ! use tr1; then
+		append-cflags -DGTEST_USE_OWN_TR1_TUPLE=1
+		append-cxxflags -DGTEST_USE_OWN_TR1_TUPLE=1
+	fi
+}
 
 src_prepare() {
 	sed -i -e "s|/tmp|${T}|g" test/gtest-filepath_test.cc || die
