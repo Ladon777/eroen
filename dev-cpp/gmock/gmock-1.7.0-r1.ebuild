@@ -22,6 +22,8 @@ DEPEND="${RDEPEND}
 	test? ( ${PYTHON_DEPS} )
 	app-arch/unzip"
 
+DOCS=""
+
 pkg_setup() {
 	# Stub to disable python_setup running when USE=-test.
 	# We'll handle it down in src_test ourselves.
@@ -55,7 +57,7 @@ multilib_src_test() {
 }
 
 multilib_src_install() {
-	default
+	DOCS="" default
 	dobin scripts/gmock-config
 }
 
