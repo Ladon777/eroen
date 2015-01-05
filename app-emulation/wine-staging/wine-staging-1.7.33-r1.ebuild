@@ -11,6 +11,7 @@ PLOCALE_BACKUP="en"
 inherit autotools-utils eutils fdo-mime flag-o-matic gnome2-utils l10n multilib multilib-minimal pax-utils toolchain-funcs virtualx
 
 MY_PN=${PN%%-*}
+MY_PN_VARIANT=${PN#${MY_PN}}
 
 if [[ ${PV} == "9999" ]] ; then
 	EGIT_REPO_URI="git://source.winehq.org/git/wine.git"
@@ -21,7 +22,7 @@ if [[ ${PV} == "9999" ]] ; then
 else
 	MY_P="${MY_PN}-${PV/_/-}"
 	SRC_URI="mirror://sourceforge/${MY_PN}/Source/${MY_P}.tar.bz2"
-	KEYWORDS="-* ~amd64 ~x86 ~x86-fbsd"
+	KEYWORDS="-* ~amd64" # ~x86 ~x86-fbsd
 	S=${WORKDIR}/${MY_P}
 fi
 
@@ -50,8 +51,8 @@ else
 fi
 
 LICENSE="LGPL-2.1"
-SLOT="0"
-IUSE="+abi_x86_32 +abi_x86_64 +alsa capi cups custom-cflags dos elibc_glibc +fontconfig +gecko gphoto2 gsm gstreamer +jpeg lcms ldap +mono mp3 ncurses netapi nls odbc openal opencl +opengl osmesa oss +perl pcap pipelight +png +prelink pulseaudio +realtime +run-exes samba scanner selinux +ssl staging test +threads +truetype txc_dxtn +udisks v4l +X xcomposite xinerama +xml"
+SLOT="${PV}"
+IUSE="+abi_x86_32 +abi_x86_64 +alsa capi cups custom-cflags dos elibc_glibc +fontconfig +gecko gphoto2 gsm gstreamer +jpeg lcms ldap +mono mp3 +multislot ncurses netapi nls odbc openal opencl +opengl osmesa oss +perl pcap pipelight +png +prelink pulseaudio +realtime +run-exes samba scanner selinux +ssl staging test +threads +truetype txc_dxtn +udisks v4l +X xcomposite xinerama +xml"
 REQUIRED_USE="|| ( abi_x86_32 abi_x86_64 )
 	test? ( abi_x86_32 )
 	elibc_glibc? ( threads )
@@ -248,7 +249,16 @@ COMMON_DEPEND="
 	)"
 
 RDEPEND="${COMMON_DEPEND}
-	!app-admin/eselect-wine
+	multislot? (
+		>=app-admin/eselect-wine-0.2
+		app-emulation/wine-gentoo
+		)
+	!multislot? (
+		!<${CATEGORY}/${PF}
+		!>${CATEGORY}/${PF}
+		!app-emulation/wine
+		!app-emulation/wine-compholio
+		)
 	dos? ( games-emulation/dosbox )
 	perl? ( dev-lang/perl dev-perl/XML-Simple )
 	samba? ( >=net-fs/samba-3.0.25 )
@@ -299,6 +309,13 @@ pkg_pretend() {
 }
 
 pkg_setup() {
+	if use multislot; then
+		MY_PREFIX=/usr/lib/wine${MY_PN_VARIANT}-${PV}
+		MY_DATADIR=${MY_PREFIX}
+	else
+		MY_PREFIX=/usr
+		MY_DATADIR=${MY_PREFIX}/share
+	fi
 	wine_build_environment_check || die
 }
 
@@ -376,6 +393,11 @@ src_prepare() {
 		sed -i '/^MimeType/d' tools/wine.desktop || die #117785
 	fi
 
+	if use multislot; then
+		sed -e "/^Exec=/s/wine /wine${MY_PN_VARIANT}-${PV} /" \
+			-i tools/wine.desktop || die
+	fi
+
 	# hi-res default icon, #472990, http://bugs.winehq.org/show_bug.cgi?id=24652
 	cp "${WORKDIR}"/${WINE_GENTOO}/icons/oic_winlogo.ico dlls/user32/resources/ || die
 
@@ -390,7 +412,15 @@ src_configure() {
 }
 
 multilib_src_configure() {
-	local myconf=(
+	local myconf=()
+	if use multislot; then
+		myconf+=(
+			--prefix="${MY_PREFIX}"
+			--datadir="${MY_DATADIR}"
+			--mandir="${MY_DATADIR}"/man
+			)
+	fi
+	myconf+=(
 		--sysconfdir=/etc/wine
 		$(use_with alsa)
 		$(use_with capi)
@@ -458,7 +488,7 @@ multilib_src_test() {
 	if [[ ${ABI} == x86 ]]; then
 		if [[ $(id -u) == 0 ]]; then
 			ewarn "Skipping tests since they cannot be run under the root user."
-			ewarn "To run the test ${PN} suite, add userpriv to FEATURES in make.conf"
+			ewarn "To run the test ${MY_PN} suite, add userpriv to FEATURES in make.conf"
 			return
 		fi
 
@@ -479,44 +509,55 @@ multilib_src_install_all() {
 	einstalldocs
 	prune_libtool_files --all
 
-	emake -C "../${WINE_GENTOO}" install DESTDIR="${D}" EPREFIX="${EPREFIX}"
+	# Moved to wine-gentoo for multislot
+	if ! use multislot; then
+		emake -C "../${WINE_GENTOO}" install DESTDIR="${D}" EPREFIX="${EPREFIX}"
+	fi
 	if use gecko ; then
-		insinto /usr/share/wine/gecko
+		insinto "${MY_DATADIR}"/wine/gecko
 		use abi_x86_32 && doins "${DISTDIR}"/wine_gecko-${GV}-x86.msi
 		use abi_x86_64 && doins "${DISTDIR}"/wine_gecko-${GV}-x86_64.msi
 	fi
 	if use mono ; then
-		insinto /usr/share/wine/mono
+		insinto "${MY_DATADIR}"/wine/mono
 		doins "${DISTDIR}"/wine-mono-${MV}.msi
 	fi
 	if ! use perl ; then
-		rm "${D}"usr/bin/{wine{dump,maker},function_grep.pl} "${D}"usr/share/man/man1/wine{dump,maker}.1 || die
+		rm "${D%/}${MY_PREFIX}"/bin/{wine{dump,maker},function_grep.pl} "${D%/}${MY_DATADIR}"/man/man1/wine{dump,maker}.1 || die
 	fi
 
-	use abi_x86_32 && pax-mark psmr "${D}"usr/bin/wine{,-preloader} #255055
-	use abi_x86_64 && pax-mark psmr "${D}"usr/bin/wine64{,-preloader}
+	use abi_x86_32 && pax-mark psmr "${D%/}${MY_PREFIX}"/bin/wine{,-preloader} #255055
+	use abi_x86_64 && pax-mark psmr "${D%/}${MY_PREFIX}"/bin/wine64{,-preloader}
 
 	if use abi_x86_64 && ! use abi_x86_32; then
-		dosym /usr/bin/wine{64,} # 404331
-		dosym /usr/bin/wine{64,}-preloader
+		dosym "${MY_PREFIX}"/bin/wine{64,} # 404331
+		dosym "${MY_PREFIX}"/bin/wine{64,}-preloader
+	fi
+
+	if use multislot; then
+		for b in "${D%/}${MY_PREFIX}"/bin/*; do
+			make_wrapper ${b##*/}${MY_PN_VARIANT}-${PV} "${MY_PREFIX}"/bin/${b##*/}
+		done
 	fi
 
 	# respect LINGUAS when installing man pages, #469418
 	for l in de fr pl; do
-		use linguas_${l} || rm -r "${D}"usr/share/man/${l}*
+		use linguas_${l} || rm -r "${D%/}${MY_DATADIR}"/man/${l}*
 	done
 }
 
 pkg_preinst() {
-	gnome2_icon_savelist
+	! use multislot && gnome2_icon_savelist
 }
 
 pkg_postinst() {
-	gnome2_icon_cache_update
+	! use multislot && gnome2_icon_cache_update
 	fdo-mime_desktop_database_update
+	use multislot && eselect wine update --if-unset
 }
 
 pkg_postrm() {
-	gnome2_icon_cache_update
+	! use multislot && gnome2_icon_cache_update
 	fdo-mime_desktop_database_update
+	use multislot && eselect wine update --if-unset
 }
