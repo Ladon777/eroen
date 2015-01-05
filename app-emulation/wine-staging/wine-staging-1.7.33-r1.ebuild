@@ -10,6 +10,8 @@ PLOCALE_BACKUP="en"
 
 inherit autotools-utils eutils fdo-mime flag-o-matic gnome2-utils l10n multilib multilib-minimal pax-utils toolchain-funcs virtualx
 
+MY_PN=${PN%%-*}
+
 if [[ ${PV} == "9999" ]] ; then
 	EGIT_REPO_URI="git://source.winehq.org/git/wine.git"
 	EGIT_BRANCH="master"
@@ -17,8 +19,8 @@ if [[ ${PV} == "9999" ]] ; then
 	SRC_URI=""
 	#KEYWORDS=""
 else
-	MY_P="${PN}-${PV/_/-}"
-	SRC_URI="mirror://sourceforge/${PN}/Source/${MY_P}.tar.bz2"
+	MY_P="${MY_PN}-${PV/_/-}"
+	SRC_URI="mirror://sourceforge/${MY_PN}/Source/${MY_P}.tar.bz2"
 	KEYWORDS="-* ~amd64 ~x86 ~x86-fbsd"
 	S=${WORKDIR}/${MY_P}
 fi
@@ -27,15 +29,17 @@ GV="2.34"
 MV="4.5.4"
 STAGING_P="wine-staging-${PV}"
 WINE_GENTOO="wine-gentoo-2013.06.24"
-DESCRIPTION="Free implementation of Windows(tm) on Unix"
-HOMEPAGE="http://www.winehq.org/"
+DESCRIPTION="Wine package with wine-staging patchset applied"
+HOMEPAGE="http://www.winehq.org/
+	pulseaudio? ( http://www.wine-staging.com/ )
+	staging? ( http://www.wine-staging.com/ )"
 SRC_URI="${SRC_URI}
 	gecko? (
-		abi_x86_32? ( mirror://sourceforge/${PN}/Wine%20Gecko/${GV}/wine_gecko-${GV}-x86.msi )
-		abi_x86_64? ( mirror://sourceforge/${PN}/Wine%20Gecko/${GV}/wine_gecko-${GV}-x86_64.msi )
+		abi_x86_32? ( mirror://sourceforge/${MY_PN}/Wine%20Gecko/${GV}/wine_gecko-${GV}-x86.msi )
+		abi_x86_64? ( mirror://sourceforge/${MY_PN}/Wine%20Gecko/${GV}/wine_gecko-${GV}-x86_64.msi )
 	)
-	mono? ( mirror://sourceforge/${PN}/Wine%20Mono/${MV}/wine-mono-${MV}.msi )
-	http://dev.gentoo.org/~tetromino/distfiles/${PN}/${WINE_GENTOO}.tar.bz2"
+	mono? ( mirror://sourceforge/${MY_PN}/Wine%20Mono/${MV}/wine-mono-${MV}.msi )
+	http://dev.gentoo.org/~tetromino/distfiles/${MY_PN}/${WINE_GENTOO}.tar.bz2"
 
 if [[ ${PV} == "9999" ]] ; then
 	use staging || use pulseaudio && MY_GIT_SRC_URI="git://github.com/wine-compholio/wine-staging.git"
@@ -244,6 +248,7 @@ COMMON_DEPEND="
 	)"
 
 RDEPEND="${COMMON_DEPEND}
+	!app-admin/eselect-wine
 	dos? ( games-emulation/dosbox )
 	perl? ( dev-lang/perl dev-perl/XML-Simple )
 	samba? ( >=net-fs/samba-3.0.25 )
@@ -320,10 +325,10 @@ src_prepare() {
 	local md5="$(md5sum server/protocol.def)"
 	local f
 	local PATCHES=(
-		"${FILESDIR}"/${PN}-1.5.26-winegcc.patch #260726
-		"${FILESDIR}"/${PN}-1.4_rc2-multilib-portage.patch #395615
-		"${FILESDIR}"/${PN}-1.7.12-osmesa-check.patch #429386
-		"${FILESDIR}"/${PN}-1.6-memset-O3.patch #480508
+		"${FILESDIR}"/${MY_PN}-1.5.26-winegcc.patch #260726
+		"${FILESDIR}"/${MY_PN}-1.4_rc2-multilib-portage.patch #395615
+		"${FILESDIR}"/${MY_PN}-1.7.12-osmesa-check.patch #429386
+		"${FILESDIR}"/${MY_PN}-1.6-memset-O3.patch #480508
 	)
 	local STAGING_MAKE_ARGS="-W fonts-Missing_Fonts.ok"
 
@@ -335,7 +340,7 @@ src_prepare() {
 		ewarn "Applying experimental patch to fix GStreamer support. Note that"
 		ewarn "this patch has been reported to cause crashes in certain games."
 
-		PATCHES+=( "${FILESDIR}/${PN}-1.7.28-gstreamer-v4.patch" )
+		PATCHES+=( "${FILESDIR}/${MY_PN}-1.7.28-gstreamer-v4.patch" )
 	fi
 	if use staging; then
 		ewarn "Applying the unofficial Wine-Staging patchset which is unsupported"
