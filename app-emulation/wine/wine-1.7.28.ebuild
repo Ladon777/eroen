@@ -40,7 +40,7 @@ SRC_URI="${SRC_URI}
 
 LICENSE="LGPL-2.1"
 SLOT=${PV}
-IUSE="+abi_x86_32 +abi_x86_64 +alsa capi cups custom-cflags dos elibc_glibc +fontconfig +gecko gphoto2 gsm gstreamer +jpeg lcms ldap +mono mp3 +multislot ncurses netapi nls odbc openal opencl +opengl osmesa oss +perl pipelight +png +prelink pulseaudio +realtime +run-exes samba scanner selinux +ssl test +threads +truetype +udisks v4l +X xcomposite xinerama +xml"
+IUSE="+abi_x86_32 +abi_x86_64 +alsa capi cups custom-cflags dos elibc_glibc +fontconfig +gecko gphoto2 gsm gstreamer +jpeg lcms ldap +mono mp3 +multislot ncurses netapi nls odbc openal opencl +opengl osmesa oss pcap +perl pipelight +png +prelink pulseaudio +realtime +run-exes samba scanner selinux +ssl test +threads +truetype +udisks v4l +X xcomposite xinerama +xml"
 REQUIRED_USE="|| ( abi_x86_32 abi_x86_64 )
 	test? ( abi_x86_32 )
 	elibc_glibc? ( threads )
@@ -85,6 +85,7 @@ NATIVE_DEPEND="
 	nls? ( sys-devel/gettext )
 	odbc? ( dev-db/unixODBC:= )
 	osmesa? ( media-libs/mesa[osmesa] )
+	pcap? ( net-libs/libpcap )
 	pipelight? ( sys-apps/attr )
 	pulseaudio? ( media-sound/pulseaudio )
 	xml? ( dev-libs/libxml2 dev-libs/libxslt )
@@ -193,6 +194,7 @@ COMMON_DEPEND="
 				>=app-emulation/emul-linux-x86-opengl-20121028[development,-abi_x86_32(-)]
 				>=media-libs/mesa-9.1.6[osmesa,abi_x86_32(-)]
 			) )
+			pcap? ( net-libs/libpcap[abi_x86_32(-)] )
 			pipelight? ( || (
 				app-emulation/emul-linux-x86-baselibs[development,-abi_x86_32(-)]
 				>=sys-apps/attr-2.4.47-r1[abi_x86_32(-)]
@@ -414,7 +416,7 @@ multilib_src_configure() {
 		$(use_with opengl)
 		$(use_with osmesa)
 		$(use_with oss)
-		--without-pcap
+		$(use_with pcap)
 		$(use_with png)
 		$(use_with threads pthread)
 		$(use_with scanner sane)
