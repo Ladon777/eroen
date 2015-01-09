@@ -222,6 +222,7 @@ src_configure() {
 		"-DDF_EXECUTABLE=${df_executable}"
 		"-DDL_RUBY=OFF"
 		"-DRUBYLIB=${WORKDIR}/libruby.so"
+		"-DINSTALL_NEW_LIBSTDCXX=OFF"
 		)
 	#	"-DSSENSE_ALLEGRO_DESTINATION=${dfhack_libdir}"
 	#	"-DSSENSE_RES_DESTINATION=${dfhack_datadir}/stonesense"
