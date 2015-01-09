@@ -1,3 +1,18 @@
+# 40.24
+Minor changes
+
+# 40.23
+No changes
+
+# 40.22
+No changes
+
+# 40.21
+No significant changes
+
+# 40.20
+Keybindings change
+
 # 40.19
 Lots of changes since 40.13
 
