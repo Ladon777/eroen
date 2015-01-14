@@ -11,7 +11,7 @@ DESCRIPTION="Unofficial open source engine reimplementation of the game Morrowin
 HOMEPAGE="http://openmw.org/"
 LICENSE="GPL-3 MIT BitstreamVera"
 SLOT="0"
-KEYWORDS=""
+KEYWORDS="~amd64 ~x86"
 IUSE="installer +launcher minimal +opencs profile test +tr1"
 
 if [[ ${PV} == *999? ]]; then
@@ -69,7 +69,6 @@ src_prepare() {
 
 src_configure() {
 	mycmakeargs=(
-		-DDPKG_PROGRAM=""
 		-DCMAKE_INSTALL_PREFIX="${GAMES_PREFIX}"
 		-DDATAROOTDIR="${GAMES_DATADIR_BASE}"
 		-DGLOBAL_DATA_PATH="${GAMES_DATADIR}"
@@ -77,7 +76,6 @@ src_configure() {
 		-DSYSCONFDIR="${GAMES_SYSCONFDIR}"/${PN}
 		-DMORROWIND_DATA_FILES="${GAMES_DATADIR}/${PN}/data"
 		-DOPENMW_RESOURCE_FILES="${GAMES_DATADIR}/${PN}/resources"
-		-DGLOBAL_CONFIG_PATH=/etc/ # Compatibility with old commits
 		$(cmake-utils_use_build installer WIZARD)
 		$(cmake-utils_use_build launcher LAUNCHER)
 		$(cmake-utils_use_build opencs OPENCS)
@@ -105,8 +103,15 @@ src_install() {
 	sed -e "s:resources=resources:resources=${GAMES_DATADIR}/${PN}/resources:" \
 		-i "${D}/${GAMES_SYSCONFDIR}"/${PN}/openmw.cfg || die
 	prepgamesdirs
-	# /etc/openmw/ is hardcoded, but we set SYSCONFDIR for games.eclass
-	# Compatibility with old commits
-	mv -t "${D}"/etc "${D}/${GAMES_SYSCONFDIR}"/${PN} || die
 	rmdir "${D}/${GAMES_SYSCONFDIR}" || die
+}
+
+pkg_postinst() {
+	games_pkg_postinst
+
+	if [[ -d ${ROOT%/}/etc/openmw ]]; then
+		ewarn
+		ewarn "Systemwide configuration was moved from /etc/openmw to ${GAMES_SYSCONFDIR}/${PN}"
+		ewarn "Please take any steps necessary to accomodate this."
+	fi
 }
