@@ -76,7 +76,6 @@ src_configure() {
 		-DSYSCONFDIR="${GAMES_SYSCONFDIR}"/${PN}
 		-DMORROWIND_DATA_FILES="${GAMES_DATADIR}/${PN}/data"
 		-DOPENMW_RESOURCE_FILES="${GAMES_DATADIR}/${PN}/resources"
-		-DGLOBAL_CONFIG_PATH=/etc/ # Compatibility with old commits
 		$(cmake-utils_use_build installer WIZARD)
 		$(cmake-utils_use_build launcher LAUNCHER)
 		$(cmake-utils_use_build opencs OPENCS)
@@ -89,6 +88,8 @@ src_configure() {
 		-DUSE_SYSTEM_TINYXML=ON
 		$(cmake-utils_use_build test UNITTESTS)
 		)
+	# Compatibility with commits pre 0738e862cb
+	mycmakeargs+=(-DGLOBAL_CONFIG_PATH=/etc/)
 	cmake-utils_src_configure
 }
 
@@ -105,7 +106,7 @@ src_install() {
 		-i "${D}/${GAMES_SYSCONFDIR}"/${PN}/openmw.cfg || die
 	prepgamesdirs
 	# /etc/openmw/ is hardcoded, but we set SYSCONFDIR for games.eclass
-	# Compatibility with old commits
+	# Compatibility with commits pre 0738e862cb
 	mv -t "${D}"/etc "${D}/${GAMES_SYSCONFDIR}"/${PN} || die
 	rmdir "${D}/${GAMES_SYSCONFDIR}" || die
 }
