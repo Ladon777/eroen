@@ -7,6 +7,7 @@ EAPI=5
 inherit eutils gnome2-utils java-pkg-2 games
 
 MY_PN=FarSky
+# PV is taken from version.html
 
 DESCRIPTION="Gather resources and protect yourself in the Ocean depths"
 HOMEPAGE="http://www.farskygame.com"
@@ -53,12 +54,21 @@ pkg_setup() {
 src_unpack() {
 	default
 	( set +x ; while true ; do echo n || break ; done ) | \
-		unzip -qo "$S"/FarSky/FarSky.jar || die "failed to unzip FarSky.jar"
+		unzip -qo "$S"/FarSky/FarSky.jar \
+		installFiles/farsky.jar \
+		installFiles/libraries.zip \
+		installFiles/version.html \
+		|| die "failed to unzip FarSky.jar"
 	( set +x ; while true ; do echo n || break ; done ) | \
-		unzip -qo  "$S"/installFiles/libraries.zip || die "failed to unzip libraries.zip"
+		unzip -qo  "$S"/installFiles/libraries.zip \
+		native/linux/\* \
+		lib/\* \
+		|| die "failed to unzip libraries.zip"
 	# for icon
 	( set +x ; while true ; do echo n || break ; done ) | \
-		unzip -qo  "$S"/installFiles/farsky.jar res/textures/gui/icon.png || die "failed to unzip libraries.zip"
+		unzip -qo  "$S"/installFiles/farsky.jar \
+		res/textures/gui/icon.png \
+		|| die "failed to unzip libraries.zip"
 }
 
 src_prepare() {
