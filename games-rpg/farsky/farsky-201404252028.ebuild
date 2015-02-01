@@ -4,7 +4,7 @@
 
 EAPI=5
 
-inherit eutils java-pkg-2 games
+inherit eutils gnome2-utils java-pkg-2 games
 
 MY_PN=FarSky
 
@@ -56,6 +56,9 @@ src_unpack() {
 		unzip -qo "$S"/FarSky/FarSky.jar || die "failed to unzip FarSky.jar"
 	( set +x ; while true ; do echo n || break ; done ) | \
 		unzip -qo  "$S"/installFiles/libraries.zip || die "failed to unzip libraries.zip"
+	# for icon
+	( set +x ; while true ; do echo n || break ; done ) | \
+		unzip -qo  "$S"/installFiles/farsky.jar res/textures/gui/icon.png || die "failed to unzip libraries.zip"
 }
 
 src_prepare() {
@@ -86,11 +89,22 @@ src_install() {
 		--pkg_args "-param -path:\${HOME}/.FarSky/ -logPath:\${HOME}/.FarSky/log" \
 		--jar farsky.jar \
 		--main game.Main
-	make_desktop_entry $PN FarSky
+	newicon res/textures/gui/icon.png ${PN}.png
+	make_desktop_entry $PN FarSky ${PN}
 	prepgamesdirs
 }
 
 pkg_preinst() {
+	gnome2_icon_savelist
 	java-pkg-2_pkg_preinst
 	games_pkg_preinst
+}
+
+pkg_postinst() {
+	gnome2_icon_cache_update
+	games_pkg_postinst
+}
+
+pkg_postrm() {
+	gnome2_icon_cache_update
 }
