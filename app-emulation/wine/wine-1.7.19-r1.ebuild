@@ -42,7 +42,7 @@ SRC_URI="${SRC_URI}
 
 LICENSE="LGPL-2.1"
 SLOT="0"
-IUSE="+abi_x86_32 +abi_x86_64 +alsa capi cups custom-cflags dos elibc_glibc +fontconfig +gecko gphoto2 gsm gstreamer +jpeg lcms ldap +mono mp3 ncurses netapi nls odbc openal opencl +opengl osmesa oss +perl +png pipelight +prelink pulseaudio +realtime +run-exes samba scanner selinux +ssl swtor test +threads +truetype +udisks v4l +X xcomposite xinerama +xml"
+IUSE="+abi_x86_32 +abi_x86_64 +alsa capi cups custom-cflags dos elibc_glibc +fontconfig +gecko gphoto2 gsm gstreamer +jpeg lcms ldap +mono mp3 ncurses netapi nls odbc openal opencl +opengl osmesa oss +perl +png pipelight +prelink pulseaudio +realtime +run-exes samba scanner selinux +ssl swtor teso test +threads +truetype +udisks v4l +X xcomposite xinerama +xml"
 REQUIRED_USE="|| ( abi_x86_32 abi_x86_64 )
 	test? ( abi_x86_32 )
 	elibc_glibc? ( threads )
@@ -313,6 +313,10 @@ src_prepare() {
 	# http://bugs.winehq.org/show_bug.cgi?id=29168
 	use swtor && PATCHES+=(
 		"${FILESDIR}"/${PN}-1.7.1-KUSER_SHARED_DATA_18.patch
+	)
+	# http://bugs.winehq.org/show_bug.cgi?id=34388
+	use teso && PATCHES+=(
+		"${FILESDIR}"/${PN}-1.7.2-crypt32-Skip-unknown-item-when.patch
 	)
 	autotools-utils_src_prepare
 
