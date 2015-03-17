@@ -1,0 +1,24 @@
+fix lua
+
+From: eroen <eroen@occam.eroen.eu>
+
+
+---
+ library/lua/dfhack.lua |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/library/lua/dfhack.lua b/library/lua/dfhack.lua
+index 37cb463..f364efb 100644
+--- a/library/lua/dfhack.lua
++++ b/library/lua/dfhack.lua
+@@ -394,8 +394,8 @@ function dfhack.findScript(name)
+             return file
+         end
+     end
+-    local path = dfhack.getDFPath()
+-    file = path..'/raw/scripts/' .. name .. '.lua'
++    local path = dfhack.getHackPath()
++    file = path..'/scripts/' .. name .. '.lua'
+     if dfhack.filesystem.exists(file) then
+         return file
+     end
