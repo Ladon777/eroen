@@ -1,0 +1,10 @@
+## ${P}
+Imported from gentoo wine with multislot added
+
+## ${P}-r1
+Drop unupstreamed patchsets, deferred to separate package 'wine-compholio'
+
+## ${P}-r2
+Add patches for specific issues controlled by useflags
+
+<!-- vim: set ft=markdown: -->

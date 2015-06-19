@@ -1,0 +1,37 @@
+don't segfault if logfile is unwritable
+
+From: eroen <eroen@occam.eroen.eu>
+
+
+---
+ main.cpp |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/main.cpp b/main.cpp
+index 32fd9b9..9fa513d 100644
+--- a/main.cpp
++++ b/main.cpp
+@@ -91,10 +91,10 @@ void LogError(const char* msg, ...)
+     FILE* fp = fopen( "Stonesense.log", "a");
+     if(fp) {
+         vfprintf( fp, msg, arglist );
++        fclose(fp);
+     }
+ //	Core::printerr(msg, arglist);
+     va_end(arglist);
+-    fclose(fp);
+ }
+ 
+ 
+@@ -121,10 +121,10 @@ void LogVerbose(const char* msg, ...)
+     FILE* fp = fopen( "Stonesense.log", "a");
+     if(fp) {
+         vfprintf( fp, msg, arglist );
++        fclose(fp);
+     }
+ //	Core::printerr(msg, arglist);
+     va_end(arglist);
+-    fclose(fp);
+ }
+ 
+ void SetTitle(const char *format, ...)

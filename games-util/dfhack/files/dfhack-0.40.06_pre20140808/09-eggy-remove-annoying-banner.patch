@@ -1,0 +1,22 @@
+eggy - remove annoying banner
+
+From: eroen <eroen@occam.eroen.eu>
+
+
+---
+ library/Core.cpp |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/library/Core.cpp b/library/Core.cpp
+index 386b89b..8906f85 100644
+--- a/library/Core.cpp
++++ b/library/Core.cpp
+@@ -1111,7 +1111,7 @@ bool Core::Init()
+     // set up hotkey capture
+     thread * HK = new thread(fHKthread, (void *) temp);
+     screen_window = new Windows::top_level_window();
+-    screen_window->addChild(new Windows::dfhack_dummy(5,10));
++    //screen_window->addChild(new Windows::dfhack_dummy(5,10));
+     started = true;
+ 
+     cerr << "Starting the TCP listener.\n";

@@ -1,0 +1,27 @@
+Unbreak egg
+
+From: eroen <eroen@occam.eroen.eu>
+
+See:
+    commit fc24d24ccc2147fff61e309bcb2167b9709249b6
+    Merge Console-linux and Console-darwin into Console-posix
+---
+ library/CMakeLists.txt |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/library/CMakeLists.txt b/library/CMakeLists.txt
+index a08ef3a..c1db87a 100644
+--- a/library/CMakeLists.txt
++++ b/library/CMakeLists.txt
+@@ -99,9 +99,9 @@ Process-darwin.cpp
+ )
+ 
+ SET(MAIN_SOURCES_LINUX_EGGY
+-Console-linux.cpp
++Console-posix.cpp
+ Hooks-egg.cpp
+-PlugLoad-linux.cpp
++PlugLoad-posix.cpp
+ Process-linux.cpp
+ )
+ 

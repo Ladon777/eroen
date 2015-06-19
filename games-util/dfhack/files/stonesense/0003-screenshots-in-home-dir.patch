@@ -1,0 +1,74 @@
+From de537311f86f4a15a3cfe4b99786d8c53801c7ba Mon Sep 17 00:00:00 2001
+From: eroen <eroen@occam.eroen.eu>
+Date: Sat, 20 Oct 2012 23:38:28 +0200
+Subject: [PATCH 3/4] screenshots in home dir
+
+---
+ GUI.cpp | 25 ++++++++++++++++---------
+ 1 file changed, 16 insertions(+), 9 deletions(-)
+
+diff --git a/GUI.cpp b/GUI.cpp
+index 0469b12..031b239 100644
+--- a/GUI.cpp
++++ b/GUI.cpp
+@@ -1286,12 +1286,14 @@ void saveScreenshot(){
+ 	al_clear_to_color(al_map_rgb(config.backr,config.backg,config.backb));
+ 	paintboard();
+ 	//get filename
+-	char filename[20] ={0};
++	char* filepath = getenv("HOME");
++	size_t filenamelength = 20 + 8 + strlen(filepath);
++	char* filename = new char[filenamelength];
+ 	FILE* fp;
+ 	int index = 1;
+ 	//search for the first screenshot# that does not exist already
+-	while(true){
+-		sprintf(filename, "screenshot%i.png", index);
++	while(index <= 99999){
++		snprintf(filename, filenamelength, "%s/ssense-screenshot%i.png", filepath, index);
+ 
+ 		fp = fopen(filename, "r");
+ 		if( fp != 0)
+@@ -1313,15 +1315,18 @@ void saveScreenshot(){
+ 	al_set_target_bitmap(al_get_backbuffer(al_get_current_display()));
+ 	al_destroy_bitmap(temp);
+ 	//al_set_new_bitmap_format(ALLEGRO_PIXEL_FORMAT_ANY);
++	delete[] filename;
+ }
+ void saveImage(ALLEGRO_BITMAP* image){
+ 	//get filename
+-	char filename[20] ={0};
++	char* filepath = getenv("HOME");
++	size_t filenamelength = 20 + 8 + strlen(filepath);
++	char* filename = new char[filenamelength];
+ 	FILE* fp;
+ 	int index = 1;
+ 	//search for the first screenshot# that does not exist already
+-	while(true){
+-		sprintf(filename, "Image%i.png", index);
++	while(index < INT_MAX ){
++		snprintf(filename, filenamelength, "%s-Image%i.png", filepath, index);
+ 
+ 		fp = fopen(filename, "r");
+ 		if( fp != 0)
+@@ -1420,12 +1425,14 @@ void saveMegashot(bool tall)
+ 
+ 	draw_textf_border(font, al_map_rgb(255,255,255), al_get_bitmap_width(al_get_target_bitmap())/2, al_get_bitmap_height(al_get_target_bitmap())/2, ALLEGRO_ALIGN_CENTRE, "saving large screenshot...");
+ 	al_flip_display();
+-	char filename[20] ={0};
++	char* filepath = getenv("HOME");
++	size_t filenamelength = 20 + 8 + strlen(filepath);
++	char* filename = new char[filenamelength];
+ 	FILE* fp;
+ 	int index = 1;
+ 	//search for the first screenshot# that does not exist already
+-	while(true){
+-		sprintf(filename, "screenshot%i.png", index);
++	while(index <= 99999){
++		snprintf(filename, filenamelength, "%s/ssense-screenshot%i.png", filepath, index);
+ 		fp = fopen(filename, "r");
+ 		if( fp != 0)
+ 			fclose(fp);
+-- 
+1.7.12.4
+

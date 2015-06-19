@@ -1,0 +1,38 @@
+configurable install paths
+
+From: eroen <eroen@occam.eroen.eu>
+
+
+---
+ CMakeLists.txt |    9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index ad5796a..dabd741 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -93,8 +93,9 @@ IF(UNIX)
+ 				${include_directories}
+ 				${stonesense_SOURCE_DIR}/allegro/include
+ 			)
++			SET(SSENSE_ALLEGRO_DESTINATION "hack/libs" CACHE PATH "SSENSE_ALLEGRO_DESTINATION")
+ 			install(DIRECTORY allegro/lib/
+-					DESTINATION "hack/libs"
++					DESTINATION ${SSENSE_ALLEGRO_DESTINATION}
+ 					PATTERN "CVS" EXCLUDE
+ 					PATTERN ".svn" EXCLUDE)
+ 		ELSE()
+@@ -155,9 +156,11 @@ IF(APPLE)
+ 	add_custom_command(TARGET stonesense POST_BUILD COMMAND ${stonesense_SOURCE_DIR}/fix-libs-stonesense.sh WORKING_DIRECTORY . COMMENT "Fixing Stonesense library dependencies...")
+ ENDIF(APPLE)
+ #install resources into DF/stonesense
++SET(SSENSE_RES_DESTINATION "stonesense" CACHE PATH "SSENSE_RES_DESTINATION")
+ install(DIRECTORY resources/
+-        DESTINATION "stonesense"
++	DESTINATION ${SSENSE_RES_DESTINATION}
+         PATTERN "CVS" EXCLUDE
+         PATTERN ".svn" EXCLUDE)
+ # install readme
+-install(FILES README.txt DESTINATION stonesense)
++SET(SSENSE_DOC_DESTINATION "stonesense" CACHE PATH "SSENSE_DOC_DESTINATION")
++install(FILES README.txt DESTINATION ${SSENSE_DOC_DESTINATION})

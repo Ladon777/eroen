@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<longdescription lang="en">
+		User configuration goes in '~/.local/share/Unepic/unepic'.
+	</longdescription>
+	<use>
+		<flag name="bundled-libs">Use the bundled SDL2 libraries</flag>
+	</use>
+</pkgmetadata>

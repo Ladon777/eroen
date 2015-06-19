@@ -1,0 +1,18 @@
+http://sourceforge.net/p/opalvoip/code/30645/
+
+Index: opal/trunk/plugins/video/common/ffmpeg.h
+===================================================================
+--- opal/trunk/plugins/video/common/ffmpeg.h	(revision 30644)
++++ opal/trunk/plugins/video/common/ffmpeg.h	(revision 30645)
+@@ -65,7 +65,11 @@
+   #include "libavformat/avformat.h"
+ #endif
+ 
++#if LIBAVCODEC_VERSION_INT <= AV_VERSION_INT(52, 123, 0)
++  typedef CodecID AVCodecID;
++#endif
+ 
++
+ /////////////////////////////////////////////////////////////////
+ 
+ class FFMPEGCodec

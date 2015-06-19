@@ -1,0 +1,142 @@
+compile-time configurable paths
+
+From: eroen <eroen@occam.eroen.eu>
+
+./hack/symbols.xml
+-   Breaks startup
+
+./hack/lua
+./hack/ruby
+-   Make noise on startup
+---
+ CMakeLists.txt                |    4 ++++
+ depends/lua/include/luaconf.h |    8 ++++++++
+ library/Core.cpp              |    6 +++++-
+ plugins/ruby/ruby.cpp         |    8 ++++++++
+ plugins/sort.cpp              |    8 ++++++++
+ 5 files changed, 33 insertions(+), 1 deletion(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index e8e21cd..99e8e09 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -69,6 +69,7 @@ add_definitions(-DDFHACK_VERSION="${DFHACK_VERSION}")
+ IF(UNIX)
+     # put the lib into DF/hack
+     SET(DFHACK_LIBRARY_DESTINATION hack CACHE PATH "DFHACK_LIBRARY_DESTINATION")
++    ADD_DEFINITIONS(-DDFHACK_LIBRARY_DESTINATION="${DFHACK_LIBRARY_DESTINATION}")
+     SET(DFHACK_EGGY_DESTINATION libs CACHE PATH "DFHACK_EGGY_DESTINATION")
+ ELSE()
+     # windows is crap, therefore we can't do nice things with it. leave the libs on a nasty pile...
+@@ -79,14 +80,17 @@ ENDIF()
+ SET(DFHACK_BINARY_DESTINATION . CACHE PATH "DFHACK_BINARY_DESTINATION")
+ # dfhack data goes here:
+ SET(DFHACK_DATA_DESTINATION hack CACHE PATH "DFHACK_DATA_DESTINATION")
++ADD_DEFINITIONS(-DDFHACK_DATA_DESTINATION="${DFHACK_DATA_DESTINATION}")
+ # plugin libs go here:
+ SET(DFHACK_PLUGIN_DESTINATION hack/plugins CACHE PATH "DFHACK_PLUGIN_DESTINATION")
+ # dfhack header files go here:
+ SET(DFHACK_INCLUDES_DESTINATION hack/include CACHE PATH "DFHACK_INCLUDES_DESTINATION")
+ # dfhack lua files go here:
+ SET(DFHACK_LUA_DESTINATION hack/lua CACHE PATH "DFHACK_LUA_DESTINATION")
++ADD_DEFINITIONS(-DDFHACK_LUA_DESTINATION="${DFHACK_LUA_DESTINATION}")
+ # dfhack ruby files go here:
+ SET(DFHACK_RUBY_DESTINATION hack/ruby CACHE PATH "DFHACK_RUBY_DESTINATION")
++ADD_DEFINITIONS(-DDFHACK_RUBY_DESTINATION="${DFHACK_RUBY_DESTINATION}")
+ # the windows .lib file goes here:
+ SET(DFHACK_DEVLIB_DESTINATION hack)
+ 
+diff --git a/depends/lua/include/luaconf.h b/depends/lua/include/luaconf.h
+index af09ffb..b0e8a8a 100644
+--- a/depends/lua/include/luaconf.h
++++ b/depends/lua/include/luaconf.h
+@@ -98,8 +98,16 @@
+ 
+ #else			/* }{ */
+ 
++#ifdef DFHACK_LUA_DESTINATION
++#define LUA_LDIR	DFHACK_LUA_DESTINATION "/"
++#else
+ #define LUA_LDIR	"./hack/lua/"
++#endif
++#ifdef DFHACK_DATA_DESTINATION
++#define LUA_CDIR	DFHACK_DATA_DESTINATION "/"
++#else
+ #define LUA_CDIR	"./hack/"
++#endif
+ #define LUA_PATH_DEFAULT  \
+ 		LUA_LDIR"?.lua;"  LUA_LDIR"?/init.lua;" "./?.lua"
+ #define LUA_CPATH_DEFAULT \
+diff --git a/library/Core.cpp b/library/Core.cpp
+index 6ffeea7..2a69a9c 100644
+--- a/library/Core.cpp
++++ b/library/Core.cpp
+@@ -1006,7 +1006,11 @@ bool Core::Init()
+ 
+     // find out what we are...
+     #ifdef LINUX_BUILD
+-        const char * path = "hack/symbols.xml";
++        #ifdef DFHACK_DATA_DESTINATION
++            const char * path = DFHACK_DATA_DESTINATION "/symbols.xml";
++        #else
++            const char * path = "hack/symbols.xml";
++	#endif
+     #else
+         const char * path = "hack\\symbols.xml";
+     #endif
+diff --git a/plugins/ruby/ruby.cpp b/plugins/ruby/ruby.cpp
+index 93d6501..789a031 100644
+--- a/plugins/ruby/ruby.cpp
++++ b/plugins/ruby/ruby.cpp
+@@ -326,7 +326,11 @@ static int df_loadruby(void)
+ #elif defined(__APPLE__)
+         "/System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/lib/libruby.1.dylib";
+ #else
++	#ifdef DFHACK_LIBRARY_DESTINATION
++        DFHACK_LIBRARY_DESTINATION "/libruby.so";
++	#else
+         "hack/libruby.so";
++	#endif
+ #endif
+ 
+     libruby_handle = OpenPlugin(libpath);
+@@ -434,7 +438,11 @@ static void df_rubythread(void *p)
+ 
+     // load the default ruby-level definitions in the background
+     state=0;
++    #ifdef DFHACK_RUBY_DESTINATION
++    rb_eval_string_protect("require '" DFHACK_RUBY_DESTINATION "/ruby'", &state);
++    #else
+     rb_eval_string_protect("require './hack/ruby/ruby'", &state);
++    #endif
+     if (state)
+         dump_rb_error();
+ 
+diff --git a/plugins/sort.cpp b/plugins/sort.cpp
+index 7d80b4a..f7b4bce 100644
+--- a/plugins/sort.cpp
++++ b/plugins/sort.cpp
+@@ -63,7 +63,11 @@ DFhackCExport command_result plugin_init (color_ostream &out, std::vector <Plugi
+         "    The '>' prefix reverses the sort order for defined values.\n"
+         "  Unit order examples:\n"
+         "    name, age, arrival, squad, squad_position, profession\n"
++        #ifdef DFHACK_LUA_DESTINATION
++        "The orderings are defined in " DFHACK_LUA_DESTINATION "/plugins/sort/*.lua\n"
++        #else
+         "The orderings are defined in hack/lua/plugins/sort/*.lua\n"
++        #endif
+     ));
+     commands.push_back(PluginCommand(
+         "sort-items", "Sort the visible item list.", sort_items, item_list_hotkey,
+@@ -73,7 +77,11 @@ DFhackCExport command_result plugin_init (color_ostream &out, std::vector <Plugi
+         "    The '>' prefix reverses the sort order for defined values.\n"
+         "  Item order examples:\n"
+         "    description, material, wear, type, quality\n"
++        #ifdef DFHACK_LUA_DESTINATION
++        "The orderings are defined in " DFHACK_LUA_DESTINATION "/plugins/sort/*.lua\n"
++        #else
+         "The orderings are defined in hack/lua/plugins/sort/*.lua\n"
++        #endif
+     ));
+     return CR_OK;
+ }

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<longdescription lang="en">
+	</longdescription>
+	<use>
+		<flag name="libgraphics">Install bundled, binary libgraphics.so</flag>
+		<flag name="system-libgraphics">Do not install and use bundled libgraphics.so</flag>
+	</use>
+</pkgmetadata>
+

@@ -1,0 +1,22 @@
+eggy - remove annoying banner
+
+From: eroen <eroen@occam.eroen.eu>
+
+
+---
+ library/Core.cpp |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/library/Core.cpp b/library/Core.cpp
+index 3bfaaea..4c6cded 100644
+--- a/library/Core.cpp
++++ b/library/Core.cpp
+@@ -1113,7 +1113,7 @@ bool Core::Init()
+     // set up hotkey capture
+     thread * HK = new thread(fHKthread, (void *) temp);
+     screen_window = new Windows::top_level_window();
+-    screen_window->addChild(new Windows::dfhack_dummy(5,10));
++    //screen_window->addChild(new Windows::dfhack_dummy(5,10));
+     started = true;
+     modstate = 0;
+ 

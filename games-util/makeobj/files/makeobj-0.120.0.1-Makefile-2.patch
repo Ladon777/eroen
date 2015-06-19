@@ -1,0 +1,22 @@
+From aeaa1b5c2f42c62b8ccfad28e490ddee5380767e Mon Sep 17 00:00:00 2001
+From: eroen <eroen@occam.eroen.eu>
+Date: Fri, 26 Dec 2014 12:27:40 +0100
+Subject: [PATCH 3/3] makeobj - use make variables
+
+---
+ Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Makefile b/Makefile
+index a68f4a5..0531a45 100644
+--- a/Makefile
++++ b/Makefile
+@@ -610,4 +610,4 @@ endif
+ .PHONY: makeobj
+ 
+ makeobj:
+-	$(Q)$(MAKE) -e -C makeobj FLAGS="$(FLAGS)"
++	$(Q)$(MAKE) -C makeobj FLAGS="$(FLAGS)"
+-- 
+2.1.2
+

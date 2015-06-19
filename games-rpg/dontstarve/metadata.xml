@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<longdescription lang="en">
+		An Uncompromising Wilderness Survival Game Full of Science &amp; Magic!
+	</longdescription>
+	<use>
+		<flag name="system-fmod">Use system <pkg>media-libs/fmod</pkg> in stead of the bundled version.</flag>
+	</use>
+</pkgmetadata>

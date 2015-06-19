@@ -1,0 +1,46 @@
+From ccbcbeebb96ae10bfed161c3697ea8adb7452836 Mon Sep 17 00:00:00 2001
+From: eroen <eroen@occam.eroen.eu>
+Date: Sun, 21 Oct 2012 04:06:19 +0200
+Subject: [PATCH 1/4] dont segfault if logfile is unwritable
+
+---
+ main.cpp | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/main.cpp b/main.cpp
+index be421cd..4808b89 100644
+--- a/main.cpp
++++ b/main.cpp
+@@ -86,11 +86,12 @@ void LogError(const char* msg, ...){
+ 	vsprintf(buf, msg, arglist);
+ 	Core::printerr(buf);
+ 	FILE* fp = fopen( "Stonesense.log", "a");
+-	if(fp)
++	if(fp) {
+ 		vfprintf( fp, msg, arglist );
++		fclose(fp);
++	}
+ //	Core::printerr(msg, arglist);
+ 	va_end(arglist);
+-	fclose(fp);
+ }
+ 
+ 
+@@ -112,11 +113,12 @@ void LogVerbose(const char* msg, ...){
+ 	vsprintf(buf, msg, arglist);
+ 	Core::printerr(buf);
+ 	FILE* fp = fopen( "Stonesense.log", "a");
+-	if(fp)
++	if(fp) {
+ 		vfprintf( fp, msg, arglist );
++		fclose(fp);
++	}
+ //	Core::printerr(msg, arglist);
+ 	va_end(arglist);
+-	fclose(fp);
+ }
+ 
+ void SetTitle(const char *format, ...)
+-- 
+1.7.12.4
+

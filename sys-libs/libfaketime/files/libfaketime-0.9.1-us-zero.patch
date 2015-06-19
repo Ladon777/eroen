@@ -1,0 +1,29 @@
+zero all us parts of calls, to avoid jitter.
+
+From: eroen <eroen@occam.eroen.eu>
+
+
+---
+ src/faketime.c |    2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/src/faketime.c b/src/faketime.c
+index a20a2ff..5e3bcaa 100644
+--- a/src/faketime.c
++++ b/src/faketime.c
+@@ -887,6 +887,7 @@ int fake_gettimeofday(struct timeval *tv, void *tz) {
+     time_t temp_tt = tv->tv_sec;
+ 
+     tv->tv_sec = fake_time(&temp_tt);
++    tv->tv_usec = 0u;
+ 
+     return 0;
+ }
+@@ -898,6 +899,7 @@ int fake_clock_gettime(clockid_t clk_id, struct timespec *tp) {
+     /* Fake only if the call is realtime clock related */
+     if (clk_id == CLOCK_REALTIME) {
+         tp->tv_sec = fake_time(&temp_tt);
++	tp->tv_nsec = 0l;
+     }
+ 
+     return 0;

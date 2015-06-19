@@ -1,0 +1,66 @@
+compile-time configurable paths
+
+From: eroen <eroen@occam.eroen.eu>
+
+hack/
+./
+---
+ library/Core.cpp |   12 ++++++++++++
+ plugins/zone.cpp |    2 ++
+ 2 files changed, 14 insertions(+)
+
+diff --git a/library/Core.cpp b/library/Core.cpp
+index 7a45bf2..4d714b6 100644
+--- a/library/Core.cpp
++++ b/library/Core.cpp
+@@ -323,7 +323,11 @@ static command_result runRubyScript(color_ostream &out, PluginManager *plug_mgr,
+         rbcmd += "'" + args[i] + "', ";
+     rbcmd += "]\n";
+ 
++#ifdef DFHACK_DATA_DESTINATION
++    rbcmd += "catch(:script_finished) { load '" DFHACK_DATA_DESTINATION "/scripts/" + name + ".rb' }";
++#else
+     rbcmd += "catch(:script_finished) { load './hack/scripts/" + name + ".rb' }";
++#endif
+ 
+     return plug_mgr->ruby->eval_ruby(out, rbcmd.c_str());
+ }
+@@ -411,7 +415,11 @@ string findScript(string path, string name) {
+     if (fileExists(file)) {
+         return file;
+     }
++    #ifdef DFHACK_DATA_DESTINATION
++    file = string(DFHACK_DATA_DESTINATION) + "/scripts/" + name;
++    #else
+     file = path + "/hack/scripts/" + name;
++    #endif
+     if (fileExists(file)) {
+         return file;
+     }
+@@ -974,7 +982,11 @@ void Core::fatal (std::string output, bool deactivate)
+ std::string Core::getHackPath()
+ {
+ #ifdef LINUX_BUILD
++    #ifdef DFHACK_DATA_DESTINATION
++    return DFHACK_DATA_DESTINATION "/";
++    #else
+     return p->getPath() + "/hack/";
++    #endif
+ #else
+     return p->getPath() + "\\hack\\";
+ #endif
+diff --git a/plugins/zone.cpp b/plugins/zone.cpp
+index c88e821..0ea0ec4 100644
+--- a/plugins/zone.cpp
++++ b/plugins/zone.cpp
+@@ -3194,8 +3194,10 @@ command_result df_autobutcher(color_ostream &out, vector <string> & parameters)
+     {
+         string run = "dfhack-run autobutcher ";
+ #ifdef LINUX_BUILD
++#ifndef DFHACK_DATA_DESTINATION
+         run = "./dfhack-run autobutcher ";
+ #endif
++#endif
+         // force creation of config
+         out << run << "start" << endl;
+ 

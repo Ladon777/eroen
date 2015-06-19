@@ -1,0 +1,12 @@
+# This series applies on GIT commit 10fa55570ec46de0bb9b958b940887072531f65f
+01-compile-static-libraries-as.patch
+02-drop-strange-build-options.patch
+03-configurable-install-paths.patch
+04-compile-time-configurable.patch
+05-compile-time-configurable-0.patch
+06-compile-time-configurable-1.patch
+07-startup-scripts-configurable.patch
+08-ruby-plugin-configurable-paths.patch
+09-eggy-remove-annoying-banner.patch
+10-unbreak-egg.patch
+11-dfhack-init-example.patch

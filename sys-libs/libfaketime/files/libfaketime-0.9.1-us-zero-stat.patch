@@ -1,0 +1,93 @@
+make sub-second parts all zero for stat calls, to avoid jitter
+
+From: eroen <eroen@occam.eroen.eu>
+
+
+---
+ src/faketime.c |   24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
+
+diff --git a/src/faketime.c b/src/faketime.c
+index 5e3bcaa..e80a6f9 100644
+--- a/src/faketime.c
++++ b/src/faketime.c
+@@ -126,6 +126,9 @@ int __xstat (int ver, const char *path, struct stat *buf) {
+        buf->st_ctime = fake_time(&(buf->st_ctime));
+        buf->st_atime = fake_time(&(buf->st_atime));
+        buf->st_mtime = fake_time(&(buf->st_mtime)); 
++       buf->st_ctim.tv_nsec = 0;
++       buf->st_atim.tv_nsec = 0;
++       buf->st_mtim.tv_nsec = 0;
+      }
+    }
+ 
+@@ -161,6 +164,9 @@ int __fxstat (int ver, int fildes, struct stat *buf) {
+       buf->st_ctime = fake_time(&(buf->st_ctime));
+       buf->st_atime = fake_time(&(buf->st_atime));
+       buf->st_mtime = fake_time(&(buf->st_mtime));
++      buf->st_ctim.tv_nsec = 0;
++      buf->st_atim.tv_nsec = 0;
++      buf->st_mtim.tv_nsec = 0;
+     }
+   }
+   return result;
+@@ -196,6 +202,9 @@ int __fxstatat(int ver, int fildes, const char *filename, struct stat *buf, int
+       buf->st_ctime = fake_time(&(buf->st_ctime));
+       buf->st_atime = fake_time(&(buf->st_atime));
+       buf->st_mtime = fake_time(&(buf->st_mtime));
++      buf->st_ctim.tv_nsec = 0;
++      buf->st_atim.tv_nsec = 0;
++      buf->st_mtim.tv_nsec = 0;
+     }
+   }
+   return result;
+@@ -231,6 +240,9 @@ int __lxstat (int ver, const char *path, struct stat *buf) {
+       buf->st_ctime = fake_time(&(buf->st_ctime)); 
+       buf->st_atime = fake_time(&(buf->st_atime));
+       buf->st_mtime = fake_time(&(buf->st_mtime));
++      buf->st_ctim.tv_nsec = 0;
++      buf->st_atim.tv_nsec = 0;
++      buf->st_mtim.tv_nsec = 0;
+     }
+   }
+   return result;
+@@ -265,6 +277,9 @@ int __xstat64 (int ver, const char *path, struct stat64 *buf) {
+       buf->st_ctime = fake_time(&(buf->st_ctime));
+       buf->st_atime = fake_time(&(buf->st_atime));
+       buf->st_mtime = fake_time(&(buf->st_mtime));
++      buf->st_ctim.tv_nsec = 0;
++      buf->st_atim.tv_nsec = 0;
++      buf->st_mtim.tv_nsec = 0;
+     }
+   }
+   return result;
+@@ -299,6 +314,9 @@ int __fxstat64 (int ver, int fildes, struct stat64 *buf) {
+       buf->st_ctime = fake_time(&(buf->st_ctime)); 
+       buf->st_atime = fake_time(&(buf->st_atime)); 
+       buf->st_mtime = fake_time(&(buf->st_mtime)); 
++      buf->st_ctim.tv_nsec = 0;
++      buf->st_atim.tv_nsec = 0;
++      buf->st_mtim.tv_nsec = 0;
+     }
+   }
+   return result;
+@@ -334,6 +352,9 @@ int __fxstatat64 (int ver, int fildes, const char *filename, struct stat64 *buf,
+       buf->st_ctime = fake_time(&(buf->st_ctime)); 
+       buf->st_atime = fake_time(&(buf->st_atime)); 
+       buf->st_mtime = fake_time(&(buf->st_mtime)); 
++      buf->st_ctim.tv_nsec = 0;
++      buf->st_atim.tv_nsec = 0;
++      buf->st_mtim.tv_nsec = 0;
+     }
+   }
+   return result;
+@@ -369,6 +390,9 @@ int __lxstat64 (int ver, const char *path, struct stat64 *buf){
+       buf->st_ctime = fake_time(&(buf->st_ctime));
+       buf->st_atime = fake_time(&(buf->st_atime));
+       buf->st_mtime = fake_time(&(buf->st_mtime));
++      buf->st_ctim.tv_nsec = 0;
++      buf->st_atim.tv_nsec = 0;
++      buf->st_mtim.tv_nsec = 0;
+     }
+   }
+   return result;

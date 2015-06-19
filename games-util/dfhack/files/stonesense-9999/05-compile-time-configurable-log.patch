@@ -1,0 +1,37 @@
+compile-time configurable log file destination
+
+From: eroen <eroen@occam.eroen.eu>
+
+
+---
+ main.cpp |    8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/main.cpp b/main.cpp
+index 090c0d2..54a45e8 100644
+--- a/main.cpp
++++ b/main.cpp
+@@ -88,7 +88,11 @@ void LogError(const char* msg, ...)
+     char buf[512] = {0};
+     vsprintf(buf, msg, arglist);
+     Core::printerr(buf);
++    #ifdef DFHACK_STATEDIR
++    FILE* fp = fopen( DFHACK_STATEDIR "/Stonesense.log", "a");
++    #else
+     FILE* fp = fopen( "Stonesense.log", "a");
++    #endif
+     if(fp) {
+         vfprintf( fp, msg, arglist );
+         fclose(fp);
+@@ -118,7 +122,11 @@ void LogVerbose(const char* msg, ...)
+     char buf[512] = {0};
+     vsprintf(buf, msg, arglist);
+     Core::printerr(buf);
++    #ifdef DFHACK_STATEDIR
++    FILE* fp = fopen( DFHACK_STATEDIR "/Stonesense.log", "a");
++    #else
+     FILE* fp = fopen( "Stonesense.log", "a");
++    #endif
+     if(fp) {
+         vfprintf( fp, msg, arglist );
+         fclose(fp);

@@ -1,0 +1,8 @@
+dev-libs/libgraphics:40.22 egg
+dev-libs/libgraphics:40.21 egg
+dev-libs/libgraphics:40.20 egg
+dev-libs/libgraphics:40.18 egg
+dev-libs/libgraphics:40.17 egg
+dev-libs/libgraphics:40.16 egg
+dev-libs/libgraphics:40.15 egg
+dev-libs/libgraphics:40.14 egg

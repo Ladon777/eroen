@@ -1,0 +1,82 @@
+--- libfaketime-0.9/src/faketime.c.orig	2012-09-09 21:04:37.225292279 +0200
++++ libfaketime-0.9/src/faketime.c	2012-09-09 21:03:12.239293978 +0200
+@@ -126,6 +126,9 @@
+        buf->st_ctime = fake_time(&(buf->st_ctime));
+        buf->st_atime = fake_time(&(buf->st_atime));
+        buf->st_mtime = fake_time(&(buf->st_mtime)); 
++       buf->st_ctim.tv_nsec = 0;
++       buf->st_atim.tv_nsec = 0;
++       buf->st_mtim.tv_nsec = 0;
+      }
+    }
+ 
+@@ -161,6 +164,9 @@
+       buf->st_ctime = fake_time(&(buf->st_ctime));
+       buf->st_atime = fake_time(&(buf->st_atime));
+       buf->st_mtime = fake_time(&(buf->st_mtime));
++      buf->st_ctim.tv_nsec = 0;
++      buf->st_atim.tv_nsec = 0;
++      buf->st_mtim.tv_nsec = 0;
+     }
+   }
+   return result;
+@@ -196,6 +202,9 @@
+       buf->st_ctime = fake_time(&(buf->st_ctime));
+       buf->st_atime = fake_time(&(buf->st_atime));
+       buf->st_mtime = fake_time(&(buf->st_mtime));
++      buf->st_ctim.tv_nsec = 0;
++      buf->st_atim.tv_nsec = 0;
++      buf->st_mtim.tv_nsec = 0;
+     }
+   }
+   return result;
+@@ -231,6 +240,9 @@
+       buf->st_ctime = fake_time(&(buf->st_ctime)); 
+       buf->st_atime = fake_time(&(buf->st_atime));
+       buf->st_mtime = fake_time(&(buf->st_mtime));
++      buf->st_ctim.tv_nsec = 0;
++      buf->st_atim.tv_nsec = 0;
++      buf->st_mtim.tv_nsec = 0;
+     }
+   }
+   return result;
+@@ -265,6 +277,9 @@
+       buf->st_ctime = fake_time(&(buf->st_ctime));
+       buf->st_atime = fake_time(&(buf->st_atime));
+       buf->st_mtime = fake_time(&(buf->st_mtime));
++      buf->st_ctim.tv_nsec = 0;
++      buf->st_atim.tv_nsec = 0;
++      buf->st_mtim.tv_nsec = 0;
+     }
+   }
+   return result;
+@@ -299,6 +314,9 @@
+       buf->st_ctime = fake_time(&(buf->st_ctime)); 
+       buf->st_atime = fake_time(&(buf->st_atime)); 
+       buf->st_mtime = fake_time(&(buf->st_mtime)); 
++      buf->st_ctim.tv_nsec = 0;
++      buf->st_atim.tv_nsec = 0;
++      buf->st_mtim.tv_nsec = 0;
+     }
+   }
+   return result;
+@@ -334,6 +352,9 @@
+       buf->st_ctime = fake_time(&(buf->st_ctime)); 
+       buf->st_atime = fake_time(&(buf->st_atime)); 
+       buf->st_mtime = fake_time(&(buf->st_mtime)); 
++      buf->st_ctim.tv_nsec = 0;
++      buf->st_atim.tv_nsec = 0;
++      buf->st_mtim.tv_nsec = 0;
+     }
+   }
+   return result;
+@@ -369,6 +390,9 @@
+       buf->st_ctime = fake_time(&(buf->st_ctime));
+       buf->st_atime = fake_time(&(buf->st_atime));
+       buf->st_mtime = fake_time(&(buf->st_mtime));
++      buf->st_ctim.tv_nsec = 0;
++      buf->st_atim.tv_nsec = 0;
++      buf->st_mtim.tv_nsec = 0;
+     }
+   }
+   return result;

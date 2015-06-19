@@ -1,0 +1,23 @@
+fix bind-to-interface build failure
+
+From: eroen <eroen@occam.eroen.eu>
+
+bind-to-interface patch introduces a build failure in the transmission-qt.
+The qt project file does not link against netlink.
+---
+ qt/qtr.pro |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/qt/qtr.pro b/qt/qtr.pro
+index 419968c..0de496d 100644
+--- a/qt/qtr.pro
++++ b/qt/qtr.pro
+@@ -26,7 +26,7 @@ LIBS += $${LIBUTP_LIBS}
+ LIBS += $${TRANSMISSION_TOP}/third-party/dht/libdht.a
+ LIBS += $${LIBUPNP_LIBS}
+ LIBS += $${LIBNATPMP_LIBS}
+-unix: LIBS += -L$${EVENT_TOP}/lib -lz -lrt
++unix: LIBS += -L$${EVENT_TOP}/lib -lz -lrt -lnetlink
+ win32:DEFINES += QT_DBUS
+ win32:LIBS += -levent-2.0 -lws2_32 -lintl
+ win32:LIBS += -lidn -liconv -lwldap32 -liphlpapi

@@ -1,0 +1,44 @@
+From 7afa951daa7bdcccee90ca263bd5b3d3ef96a593 Mon Sep 17 00:00:00 2001
+From: eroen <eroen@occam.eroen.eu>
+Date: Mon, 22 Oct 2012 13:48:54 +0200
+Subject: [PATCH 5/5] remove annoying banner
+
+---
+ library/Core.cpp                  | 2 +-
+ library/include/modules/Windows.h | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/library/Core.cpp b/library/Core.cpp
+index 60c5904..ad0d2bd 100644
+--- a/library/Core.cpp
++++ b/library/Core.cpp
+@@ -915,7 +915,7 @@ bool Core::Init()
+     HotkeyCond = new condition_variable();
+     thread * HK = new thread(fHKthread, (void *) temp);
+     screen_window = new Windows::top_level_window();
+-    screen_window->addChild(new Windows::dfhack_dummy(5,10));
++    //screen_window->addChild(new Windows::dfhack_dummy(5,10));
+     started = true;
+ 
+     cerr << "Starting the TCP listener.\n";
+diff --git a/library/include/modules/Windows.h b/library/include/modules/Windows.h
+index 700b888..f8898f9 100644
+--- a/library/include/modules/Windows.h
++++ b/library/include/modules/Windows.h
+@@ -261,10 +261,10 @@ namespace Windows
+             p->bright(true);
+             p->background(black);
+             p->foreground(white);
+-            std::string dfhack = "DFHack";
++            std::string dfhack = "";
+             p->printStr(dfhack);
+             blit_to_parent();
+         }
+     };
+ }
+-}
+\ No newline at end of file
++}
+-- 
+1.7.12.4
+

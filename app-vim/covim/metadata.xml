@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<herd>vim</herd>
+	<longdescription lang="en">
+CoVim is a Vim Plugin that adds real-time collaboration to your favorite text editor. Think Google Docs for Vim.
+	</longdescription>
+</pkgmetadata>

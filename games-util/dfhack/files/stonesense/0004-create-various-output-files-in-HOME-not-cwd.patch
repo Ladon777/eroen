@@ -1,0 +1,160 @@
+From 7df1773ce3cfc77a83b24ca134bff4ae147c8ff9 Mon Sep 17 00:00:00 2001
+From: eroen <eroen@occam.eroen.eu>
+Date: Sun, 21 Oct 2012 05:29:56 +0200
+Subject: [PATCH 4/4] create various output files in $HOME, not cwd.
+
+This is necessary, since Dwarf Fortress demands to control the cwd.
+---
+ ContentLoader.cpp               |  8 +++++++-
+ CreatureConfiguration.cpp       |  7 ++++++-
+ GroundMaterialConfiguration.cpp |  7 ++++++-
+ common.h                        |  1 +
+ main.cpp                        | 21 ++++++++++++++++++---
+ 5 files changed, 38 insertions(+), 6 deletions(-)
+
+diff --git a/ContentLoader.cpp b/ContentLoader.cpp
+index 7becd44..65d07df 100644
+--- a/ContentLoader.cpp
++++ b/ContentLoader.cpp
+@@ -197,11 +197,17 @@ bool ContentLoader::Load(){
+ 	}
+ 	*/
+ 
++	char* filepath = getenv("HOME");
+ 	//DumpPrefessionNamesToDisk(professionStrings, "priofessiondump.txt");
+ 	//DumpPrefessionNamesToDisk(classIdStrings, "buildingdump.txt");
+ 	//DumpMaterialNamesToDisk(inorganicMaterials, "DUMPSES.txt");
+ 	//DumpMaterialNamesToDisk(Mats->race, "creaturedump.txt");
+-	DumpItemNamesToDisk("itemdump.txt");
++	char filebasename[] = "itemdump.txt";
++	size_t filenamelen = strlen(filepath) + strlen(filebasename) + 2;
++	char* filename = new char[filenamelen];
++	snprintf(filename, filenamelen, "%s/%s", filepath, filebasename);
++	DumpItemNamesToDisk(filename);
++	delete[] filename;
+ 	//DF.Resume();
+ 
+ 	//Find what is obsidian
+diff --git a/CreatureConfiguration.cpp b/CreatureConfiguration.cpp
+index 4d75b4c..9136f75 100644
+--- a/CreatureConfiguration.cpp
++++ b/CreatureConfiguration.cpp
+@@ -39,13 +39,18 @@ void DumpCreatureNamesToDisk(){
+ 	fclose(fp);*/
+ }
+ void DumpProfessionsToDisk(){
+-	FILE* fp = fopen("dump.txt", "w");
++	char* filepath = getenv("HOME");
++	size_t filenamelength = 9 + 8 + strlen(filepath);
++	char* filename = new char[filenamelength];
++	snprintf(filename, filenamelength, "%s/ssense-dump.txt", filepath);
++	FILE* fp = fopen(filename, "w");
+ 	if(!fp) return;
+ 	string proffStr;
+ 	for(int j=0; (proffStr = contentLoader->professionStrings[j]) != "" ; j++){
+ 		fprintf(fp, "%i:%s\n",j, proffStr.c_str());
+ 	}
+ 	fclose(fp);
++	delete[] filename;
+ }
+ 
+ int translateProfession(const char* currentProf)
+diff --git a/GroundMaterialConfiguration.cpp b/GroundMaterialConfiguration.cpp
+index 84c26b1..f5ffc06 100644
+--- a/GroundMaterialConfiguration.cpp
++++ b/GroundMaterialConfiguration.cpp
+@@ -43,12 +43,17 @@ TerrainConfiguration::~TerrainConfiguration()
+ }
+ 
+ void DumpInorganicMaterialNamesToDisk(){
+-	FILE* fp = fopen("dump.txt", "w");
++	char* filepath = getenv("HOME");
++	size_t filenamelen = 9 + 8 + strlen(filepath);
++	char* filename = new char[filenamelen];
++	snprintf(filename, filenamelen, "%s/ssense-dump.txt", filepath);
++	FILE* fp = fopen(filename, "w");
+ 	if(!fp) return;
+ 	for(uint32_t j=0; j < contentLoader->inorganic.size(); j++){
+ 		fprintf(fp, "%i:%s\n",j, contentLoader->inorganic[j].id.c_str());
+ 	}
+ 	fclose(fp);
++	delete[] filename;
+ }
+ 
+ void parseWallFloorSpriteElement( TiXmlElement* elemWallFloorSprite, vector<TerrainConfiguration*>& configTable ,int basefile, bool floor)
+diff --git a/common.h b/common.h
+index 118ed47..7c19af7 100644
+--- a/common.h
++++ b/common.h
+@@ -38,6 +38,7 @@ using namespace df::enums;
+ #include "Block.h"
+ #include <stdio.h>
+ #include <stdarg.h>
++#include <limits.h>
+ 
+ #define RELEASE
+ 
+diff --git a/main.cpp b/main.cpp
+index 77917e0..d66fdce 100644
+--- a/main.cpp
++++ b/main.cpp
+@@ -85,13 +85,18 @@ void LogError(const char* msg, ...){
+ 	char buf[512] = {0};
+ 	vsprintf(buf, msg, arglist);
+ 	Core::printerr(buf);
+-	FILE* fp = fopen( "Stonesense.log", "a");
++	char* filepath = getenv("HOME");
++	size_t filenamelength = 16 + strlen(filepath);
++	char* filename = new char[filenamelength];
++	snprintf(filename, filenamelength, "%s/Stonesense.log", filepath);
++	FILE* fp = fopen( filename, "a");
+ 	if(fp) {
+ 		vfprintf( fp, msg, arglist );
+ 		fclose(fp);
+ 	}
+ //	Core::printerr(msg, arglist);
+ 	va_end(arglist);
++	delete[] filename;
+ }
+ 
+ 
+@@ -112,13 +117,18 @@ void LogVerbose(const char* msg, ...){
+ 	char buf[512] = {0};
+ 	vsprintf(buf, msg, arglist);
+ 	Core::printerr(buf);
+-	FILE* fp = fopen( "Stonesense.log", "a");
++	char* filepath = getenv("HOME");
++	size_t filenamelength = 16 + strlen(filepath);
++	char* filename = new char[filenamelength];
++	snprintf(filename, filenamelength, "%s/Stonesense.log", filepath);
++	FILE* fp = fopen( filename, "a");
+ 	if(fp) {
+ 		vfprintf( fp, msg, arglist );
+ 		fclose(fp);
+ 	}
+ //	Core::printerr(msg, arglist);
+ 	va_end(arglist);
++	delete[] filename;
+ }
+ 
+ void SetTitle(const char *format, ...)
+@@ -179,10 +189,15 @@ void benchmark(){
+ 	while(i--)
+ 		reloadDisplayedSegment();
+ 
+-	FILE* fp = fopen("benchmark.txt", "w" );
++	char* filepath = getenv("HOME");
++	size_t filenamelength = 15 + strlen(filepath);
++	char* filename = new char[filenamelength];
++	snprintf(filename, filenamelength, "%s/benchmark.txt", filepath);
++	FILE* fp = fopen( filename, "w");
+ 	if(!fp) return;
+ 	fprintf( fp, "%lims", clock() - startTime);
+ 	fclose(fp);
++	delete[] filepath;
+ }
+ 
+ void animUpdateProc()
+-- 
+1.7.12.4
+

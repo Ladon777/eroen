@@ -1,0 +1,111 @@
+From cadb789929d234b2c1ee91166c205be0911ccdef Mon Sep 17 00:00:00 2001
+From: eroen <eroen@occam.eroen.eu>
+Date: Fri, 26 Dec 2014 12:48:23 +0100
+Subject: [PATCH 1/3] Gentoo Makefile patch
+
+---
+ Makefile | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 974627e..a68f4a5 100644
+--- a/Makefile
++++ b/Makefile
+@@ -81,8 +81,6 @@ ifneq ($(OPTIMISE),)
+   ifeq ($(findstring $(OSTYPE), amiga haiku mac),)
+     CFLAGS += -minline-all-stringops
+   endif
+-else
+-  CFLAGS += -O
+ endif
+ 
+ ifdef DEBUG
+@@ -101,6 +99,7 @@ ifdef DEBUG
+   endif
+ else
+   CFLAGS += -DNDEBUG
++  CXXFLAGS += -DNDEBUG
+ endif
+ 
+ ifneq ($(PROFILE),)
+@@ -114,6 +113,7 @@ endif
+ ifneq ($(MULTI_THREAD),)
+   ifeq ($(shell expr $(MULTI_THREAD) \>= 1), 1)
+     CFLAGS += -DMULTI_THREAD
++    CXXFLAGS += -DMULTI_THREAD
+     ifeq ($(OSTYPE),mingw)
+ #use lpthreadGC2d for debug alternatively
+       LDFLAGS += -lpthreadGC2
+@@ -132,11 +132,13 @@ ifneq ($(WITH_REVISION),)
+     endif
+     ifneq ($(REV),)
+       CFLAGS  += -DREVISION="$(REV)"
++      CXXFLAGS  += -DREVISION="$(REV)"
+     endif
+   endif
+ endif
+ 
+ CFLAGS   += -Wall -W -Wcast-qual -Wpointer-arith -Wcast-align $(FLAGS)
++CXXFLAGS   += -Wall -W -Wcast-qual -Wpointer-arith -Wcast-align $(FLAGS)
+ CCFLAGS  += -Wstrict-prototypes
+ 
+ 
+@@ -455,6 +457,7 @@ ifeq ($(BACKEND),allegro)
+     ALLEGRO_LDFLAGS := $(shell $(ALLEGRO_CONFIG) --libs)
+   endif
+   CFLAGS += $(ALLEGRO_CFLAGS) -DUSE_SOFTPOINTER
++  CXXFLAGS += $(ALLEGRO_CFLAGS) -DUSE_SOFTPOINTER
+   LIBS   += $(ALLEGRO_LDFLAGS)
+ endif
+ 
+@@ -492,6 +495,7 @@ ifeq ($(BACKEND),sdl)
+     SDL_LDFLAGS := $(shell $(SDL_CONFIG) --libs)
+   endif
+   CFLAGS += $(SDL_CFLAGS)
++  CXXFLAGS += $(SDL_CFLAGS)
+   LIBS   += $(SDL_LDFLAGS)
+ endif
+ 
+@@ -523,6 +527,7 @@ ifeq ($(BACKEND),sdl2)
+     SDL_LDFLAGS := $(shell $(SDL2_CONFIG) --libs)
+   endif
+   CFLAGS += $(SDL_CFLAGS)
++  CXXFLAGS += $(SDL_CFLAGS)
+   LIBS   += $(SDL_LDFLAGS)
+ endif
+ 
+@@ -538,6 +543,7 @@ ifeq ($(BACKEND),mixer_sdl)
+     SDL_LDFLAGS := $(shell $(SDL_CONFIG) --libs)
+   endif
+   CFLAGS += $(SDL_CFLAGS)
++  CXXFLAGS += $(SDL_CFLAGS)
+   LIBS   += $(SDL_LDFLAGS) -lSDL_mixer
+ endif
+ 
+@@ -564,6 +570,7 @@ ifeq ($(BACKEND),opengl)
+     SDL_LDFLAGS := $(shell $(SDL_CONFIG) --libs)
+   endif
+   CFLAGS += $(SDL_CFLAGS)
++  CXXFLAGS += $(SDL_CFLAGS)
+   LIBS   += $(SDL_LDFLAGS) -lglew32
+   ifeq ($(OSTYPE),mingw)
+     LIBS += -lopengl32
+@@ -579,6 +586,7 @@ ifeq ($(BACKEND),posix)
+ endif
+ 
+ CFLAGS += -DCOLOUR_DEPTH=$(COLOUR_DEPTH)
++CXXFLAGS += -DCOLOUR_DEPTH=$(COLOUR_DEPTH)
+ 
+ ifneq ($(findstring $(OSTYPE), cygwin mingw),)
+   SOURCES += simres.rc
+@@ -586,7 +594,6 @@ ifneq ($(findstring $(OSTYPE), cygwin mingw),)
+ endif
+ 
+ CCFLAGS  += $(CFLAGS)
+-CXXFLAGS += $(CFLAGS)
+ 
+ BUILDDIR ?= build/$(CFG)
+ PROGDIR  ?= $(BUILDDIR)
+-- 
+2.1.2
+

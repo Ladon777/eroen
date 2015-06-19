@@ -1,0 +1,58 @@
+http://sourceforge.net/p/opalvoip/code/30644/
+
+Index: opal/trunk/plugins/video/H.264/h264-x264.cxx
+===================================================================
+--- opal/trunk/plugins/video/H.264/h264-x264.cxx	(revision 30643)
++++ opal/trunk/plugins/video/H.264/h264-x264.cxx	(revision 30644)
+@@ -789,9 +789,13 @@
+       if (!InitDecoder(CODEC_ID_H264))
+         return false;
+ 
++#ifdef FF_IDCT_H264
+       m_context->idct_algo = FF_IDCT_H264;
++#else
++      m_context->idct_algo = FF_IDCT_AUTO;
++#endif
+       m_context->flags = CODEC_FLAG_INPUT_PRESERVED | CODEC_FLAG_EMU_EDGE;
+-      m_context->flags2 = CODEC_FLAG2_SKIP_RD |
++      m_context->flags2 =
+ #ifdef CODEC_FLAG2_DROP_FRAME_TIMECODE
+                           CODEC_FLAG2_DROP_FRAME_TIMECODE |
+ #endif
+Index: opal/trunk/plugins/video/common/ffmpeg.cxx
+===================================================================
+--- opal/trunk/plugins/video/common/ffmpeg.cxx	(revision 30643)
++++ opal/trunk/plugins/video/common/ffmpeg.cxx	(revision 30644)
+@@ -179,7 +179,7 @@
+   static_cast<FFMPEGCodec *>(ctx->opaque)->GetEncodedFrame()->RTPCallBack(data, size, numMB);
+ }
+ 
+-bool FFMPEGCodec::InitEncoder(CodecID codecId)
++bool FFMPEGCodec::InitEncoder(AVCodecID codecId)
+ {
+   PTRACE(5, m_prefix, "Opening encoder");
+ 
+@@ -214,7 +214,7 @@
+ }
+ 
+ 
+-bool FFMPEGCodec::InitDecoder(CodecID codecId)
++bool FFMPEGCodec::InitDecoder(AVCodecID codecId)
+ {
+   if ((m_codec = avcodec_find_decoder(codecId)) == NULL) {
+     PTRACE(1, m_prefix, "Codec not found for decoder");
+Index: opal/trunk/plugins/video/common/ffmpeg.h
+===================================================================
+--- opal/trunk/plugins/video/common/ffmpeg.h	(revision 30643)
++++ opal/trunk/plugins/video/common/ffmpeg.h	(revision 30644)
+@@ -120,8 +120,8 @@
+     FFMPEGCodec(const char * prefix, EncodedFrame * fullFrame);
+     ~FFMPEGCodec();
+ 
+-    virtual bool InitEncoder(CodecID codecId);
+-    virtual bool InitDecoder(CodecID codecId);
++    virtual bool InitEncoder(AVCodecID codecId);
++    virtual bool InitDecoder(AVCodecID codecId);
+ 
+     bool SetResolution(unsigned width, unsigned height);
+     void SetEncoderOptions(

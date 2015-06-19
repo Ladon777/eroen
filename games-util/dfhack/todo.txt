@@ -1,0 +1,71 @@
+	# Fix up the startup scripts
+	sed -f - -i "package/linux/dfhack" "package/linux/dfhack-run" <<- EOF || die
+		s%"\./stonesense/deplibs"%"${datadir}/stonesense/deplibs"%
+		s%"\./hack"%"${dfhack_libdir}"%
+		s%\./hack/libdfhack.so%"${dfhack_libdir}/libdfhack.so"%
+		s%\./libs/Dwarf_Fortress%"df-34.11"%
+		s%hack/dfhack-run%"${dfhack_libdir}/dfhack-run"%
+		EOF
+
+	sed -i "s:\./hack/ruby/:${GAMES_DATADIR}/${P}/ruby/:" \
+		"./plugins/ruby/ruby.rb" || die
+	if use dfusion; then
+	sed -f - -i plugins/Dfusion/luafiles/{init.lua,friendship/{init.lua,plugin.lua,install.lua},triggers/{plugin.lua,functions_menu.lua},friendship_civ/init.lua,common.lua,embark/{init.lua,plugin.lua},migrants/{init.lua,plugin.lua},xml_struct.lua,xml_types.lua} <<- EOF || die
+		s:("dfusion/:("${datadir}/dfusion/:
+		s:('dfusion/:('${datadir}/dfusion/:
+		EOF
+		sed -i "s:libs/Dwarf_Fortress:Dwarf_Fortress:" plugins/Dfusion/luafiles/common.lua
+	fi
+
+	if use egg; then
+	sed -f - -i ./library/Hooks-egg.cpp <<- EOF || die
+		s/SDL_Event\* event/SDL::Event\* event/
+		EOF
+	fi
+
+# Issues
+ - /plugins/df2mc/source/df2minecraft.cpp # Also abandoned
+ - dfusion is strange. It's always been that, though.
+ - prebuilt ruby
+ - prebuilt allegro for stonesense.
+ - ssense fails when reloaded, does not in old setup. Well, sometimes it
+ does. I don't know anymore. I'll ignore it for now.
+ - Have cmake do something with the scripts so we can stop seding
+ - stonesense conf file: /usr/share/games/dfhack-9999/stonesense/init.txt
+ Set in ./Config.cpp, installed together with the rest of the directory.
+ - - Current symlink works well, editing the source would work better.
+ - egg
+
+# Ssense functions that fopen filenames:
+ - DumpMaterialNamesToDisk - No users
+ - DumpItemNamesToDisk - 1 user, called on start
+ - DumpPrefessionNamesToDisk - No users
+
+    $ find . -type f -cmin -20 | xargs ls -l 
+    -rw-r--r-- 1 eroen users      11 Oct 21 06:40 ./df_linux/dfhack.history
+    # -rw-r--r-- 1 eroen users 7805320 Oct 21 06:38 ./df_linux/gamelog.txt #
+    # -rw-r--r-- 1 eroen users    1436 Oct 21 06:40 ./df_linux/itemdump.txt #
+    -rw-r--r-- 1 eroen users    1826 Oct 21 06:40 ./df_linux/stderr.log
+    -rw-r--r-- 1 eroen users   14922 Oct 21 06:40 ./df_linux/stdout.log
+    # -rw-r--r-- 1 eroen users    1044 Oct 21 06:40 ./df_linux/Stonesense.log #
+
+
+
+2013-05
+paths:
+- hack
+
+library/Core.cpp - getHackPath
+    library/Process*.cpp - getPath
+    -    not sure if state or resource.
+
+- ./
+./plugins/zone.cpp
+
+library/Core.cpp:
+core->loadScriptFile(con, "dfhack.init", true);
+
+#later:
+ssense
+isoworld
+./plugins/df2mc/source/df2minecraft.cpp
