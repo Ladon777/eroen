@@ -1,0 +1,185 @@
+# This file is deprecated as per GLEP 56 in favor of metadata.xml. Please add
+# your descriptions to your package's metadata.xml ONLY.
+# * generated automatically using pmaint *
+
+app-cdr/k3b:emovix - Enable burning support for eMoviX images
+app-emulation/emul-linux-x86-wxGTK:development - Install pkgconfig files
+app-emulation/lxc:man - Build and install man pages.
+app-emulation/lxc:vanilla - Avoid adding Gentoo Linux-specific modifications, which include the custom init script. This is present as a flag to avoid forcing dependencies over users that might not want have them around as they use LXC in contexts where the init script is not useful.
+app-emulation/wine:capi - Enable ISDN support via CAPI
+app-emulation/wine:custom-cflags - Bypass strip-flags; use at your own peril
+app-emulation/wine:dos - Pull in games-emulation/dosbox to run DOS applications
+app-emulation/wine:gecko - Add support for the Gecko engine when using iexplore
+app-emulation/wine:mono - Add support for .NET using Wine's Mono add-on
+app-emulation/wine:multislot - Allow concurrent installation of multiple versions
+app-emulation/wine:netapi - Use libnetapi from net-fs/samba to support Windows networks in netapi32.dll
+app-emulation/wine:opencl - Enable OpenCL support
+app-emulation/wine:osmesa - Add support for OpenGL in bitmaps using libOSMesa
+app-emulation/wine:pathofexile - Enable patch to fix slow installation of Path of Exile
+app-emulation/wine:pcap - Support packet capture software (e.g. wireshark)
+app-emulation/wine:perl - Install helpers written in perl (winedump/winemaker)
+app-emulation/wine:pipelight - Apply unofficial Compholio patches for Pipelight/Silverlight support; use at your own peril
+app-emulation/wine:prelink - Run prelink on DLLs during build -- do not disable if you do not know what this means as it can break things at runtime
+app-emulation/wine:realtime - Pull in sys-auth/rtkit for low-latency pulseaudio support
+app-emulation/wine:run-exes - Use Wine to open and run .EXE and .MSI files
+app-emulation/wine:samba - Add support for NTLM auth. see http://wiki.winehq.org/NtlmAuthSetupGuide and http://wiki.winehq.org/NtlmSigningAndSealing
+app-emulation/wine:swtor - Enable patch to run SWTOR
+app-emulation/wine:teso - Enable patch to run The Elder Scrolls Online
+app-emulation/wine:udisks - Support dynamic storage devices using sys-fs/udisks
+app-emulation/wine:win32 - Build a 32bit version of Wine (won't run Win64 binaries)
+app-emulation/wine:win64 - Build a 64bit version of Wine (won't run Win32 binaries)
+app-emulation/wine-compholio:capi - Enable ISDN support via CAPI
+app-emulation/wine-compholio:custom-cflags - Bypass strip-flags; use at your own peril
+app-emulation/wine-compholio:dos - Pull in games-emulation/dosbox to run DOS applications
+app-emulation/wine-compholio:gecko - Add support for the Gecko engine when using iexplore
+app-emulation/wine-compholio:mono - Add support for .NET using Wine's Mono add-on
+app-emulation/wine-compholio:multislot - Allow concurrent installation of multiple versions
+app-emulation/wine-compholio:netapi - Use libnetapi from net-fs/samba to support Windows networks in netapi32.dll
+app-emulation/wine-compholio:opencl - Enable OpenCL support
+app-emulation/wine-compholio:osmesa - Add support for OpenGL in bitmaps using libOSMesa
+app-emulation/wine-compholio:perl - Install helpers written in perl (winedump/winemaker)
+app-emulation/wine-compholio:pipelight - Apply unofficial Compholio patches for Pipelight/Silverlight support; use at your own peril
+app-emulation/wine-compholio:prelink - Run prelink on DLLs during build -- do not disable if you do not know what this means as it can break things at runtime
+app-emulation/wine-compholio:realtime - Pull in sys-auth/rtkit for low-latency pulseaudio support
+app-emulation/wine-compholio:run-exes - Use Wine to open and run .EXE and .MSI files
+app-emulation/wine-compholio:samba - Add support for NTLM auth. see http://wiki.winehq.org/NtlmAuthSetupGuide and http://wiki.winehq.org/NtlmSigningAndSealing
+app-emulation/wine-compholio:swtor - Enable patch to run SWTOR
+app-emulation/wine-compholio:teso - Enable patch to run The Elder Scrolls Online
+app-emulation/wine-compholio:udisks - Support dynamic storage devices using sys-fs/udisks
+app-emulation/wine-staging:capi - Enable ISDN support via CAPI
+app-emulation/wine-staging:custom-cflags - Bypass strip-flags; use at your own peril
+app-emulation/wine-staging:dos - Pull in games-emulation/dosbox to run DOS applications
+app-emulation/wine-staging:gecko - Add support for the Gecko engine when using iexplore
+app-emulation/wine-staging:mono - Add support for .NET using Wine's Mono add-on
+app-emulation/wine-staging:multislot - Allow concurrent installation of multiple versions
+app-emulation/wine-staging:netapi - Use libnetapi from net-fs/samba to support Windows networks in netapi32.dll
+app-emulation/wine-staging:opencl - Enable OpenCL support
+app-emulation/wine-staging:osmesa - Add support for OpenGL in bitmaps using libOSMesa
+app-emulation/wine-staging:pcap - Support packet capture software (e.g. wireshark)
+app-emulation/wine-staging:perl - Install helpers written in perl (winedump/winemaker)
+app-emulation/wine-staging:pipelight - Apply unofficial Wine-Staging patches for Pipelight/Silverlight support; use at your own peril
+app-emulation/wine-staging:prelink - Run prelink on DLLs during build -- do not disable if you do not know what this means as it can break things at runtime
+app-emulation/wine-staging:realtime - Pull in sys-auth/rtkit for low-latency pulseaudio support
+app-emulation/wine-staging:run-exes - Use Wine to open and run .EXE and .MSI files
+app-emulation/wine-staging:samba - Add support for NTLM auth. see http://wiki.winehq.org/NtlmAuthSetupGuide and http://wiki.winehq.org/NtlmSigningAndSealing
+app-emulation/wine-staging:staging - Apply unofficial Wine-Staging patches for advanced feature support that hasn't made it into upstream Wine yet; use at your own peril
+app-emulation/wine-staging:txc_dxtn - Apply unofficial Wine-Staging patches for DXTn encoding/decoding support
+app-office/libreoffice:gtk3 - Enable highly experimental gtk3 frontend
+app-office/libreoffice:jemalloc - Use dev-libs/jemalloc for allocations
+app-office/libreoffice:libcxx - Apply patches to build against sys-libs/libcxx
+app-office/libreoffice:odk - Build the Office Development Kit
+app-office/libreoffice:telepathy - Enable document colaboration features using telepathy communication framework.
+app-office/libreoffice:vba - Enable support for VBA compatibility and ActiveX embedding
+app-office/libreoffice:vlc - Use media-video/vlc for video embedding
+app-office/libreoffice:webdav - Adds support for HTTP content adding via net-libs/neon
+dev-cpp/gmock:tr1 - Use TR1 libraries
+dev-cpp/gtest:tr1 - Use TR1 libraries
+dev-db/mysql:big-tables - Make tables contain up to 1.844E+19 rows
+dev-db/mysql:cluster - Add support for NDB clustering (deprecated)
+dev-db/mysql:community - Enables the community features from upstream.
+dev-db/mysql:embedded - Build embedded server (libmysqld)
+dev-db/mysql:extraengine - Add support for alternative storage engines (Archive, CSV, Blackhole, Federated(X), Partition)
+dev-db/mysql:jemalloc - Use dev-libs/jemalloc for allocations.
+dev-db/mysql:latin1 - Use LATIN1 encoding instead of UTF8
+dev-db/mysql:max-idx-128 - Raise the max index per table limit from 64 to 128
+dev-db/mysql:minimal - Install client programs only, no server
+dev-db/mysql:pbxt - Add experimental support for PBXT storage engine
+dev-db/mysql:profiling - Add support for statement profiling (requires USE=community).
+dev-db/mysql:systemtap - Build support for profiling and tracing using dev-util/systemtap
+dev-db/mysql:test - Install upstream testsuites for end use.
+dev-db/mysql:xtradb - Add experimental support for Percona's InnoDB replacement: XtraDB
+dev-db/postgis:gtk - Build shp2pgsql-gui a graphical interface to shp2pgsql
+dev-lang/lci:memtest - Perform memory tests with dev-util/valgrind. Takes a while.
+dev-lang/lua:deprecated - make deprecated data structures/routines available
+dev-lang/ruby:libedit - Use the dev-libs/libedit library to provide the readline extension, used for instance by the irb tool. This flag will take precedence over the readline USE flag. If neither libedit nor readline USE flags are enabled, the readline extension will not be built (and irb will lose line editing functionality).
+dev-lang/ruby:rdoc - Install dev-ruby/rdoc after installing Ruby.
+dev-lang/ruby:readline - Use the sys-libs/readline library to provide the readline extension, used for instance by the irb tool. This flag is meaningful only if the libedit USE flag is disabled. If neither libedit nor readline USE flags are enabled, the readline extension will not be built (and irb will lose line editing functionality).
+dev-lang/ruby:rubytests - Install ruby tests that can only be run after ruby is installed
+dev-lang/ruby:yaml - Use the dev-libs/libyaml library to build the psych extension, available since Ruby 1.9.2_rc2, in alternative to the bundled syck-based parser.
+dev-libs/libgraphics:egg - Enable hooks for and link against libegg from games-util/dfhack.
+dev-python/mako:cache - Add dev-python/beaker dependency for caching.
+games-action/unepic:bundled-libs - Use the bundled SDL2 libraries
+games-engines/fs2_open:doxygen - Generate developer documentation
+games-engines/fs2_open:inferno - Build with enhanced limits
+games-engines/fs2_open:speech - Support for text-to-speach
+games-engines/openmw:installer - Build installer for copying game data from CDROM
+games-engines/openmw:launcher - Build launcher
+games-engines/openmw:minimal - Don't build utilities that don't require extra dependencies
+games-engines/openmw:opencs - Build OpenMW Construction Set
+games-engines/openmw:profile - Enable code coverage with gconv
+games-engines/openmw:tr1 - Use TR1 libraries
+games-roguelike/FTL:bundled-libs - Use bundled libraries.
+games-rpg/dontstarve:system-fmod - Use system media-libs/fmod in stead of the bundled version.
+games-simulation/dwarffortress:libgraphics - Install bundled, binary libgraphics.so
+games-simulation/dwarffortress:system-libgraphics - Do not install and use bundled libgraphics.so
+games-simulation/prisonarchitect:unpack-resources - Install game resources as flat files rather than rar bundles
+games-simulation/simutrans:freetype - Use media-libs/freetype for font rendering
+games-simulation/simutrans:sdl2 - Use media-libs/libsdl2
+games-strategy/unityofcommand:bundled-libs - Use the upstream provided bundled libraries.
+games-util/dfhack:api - Install development headers. This breaks slotting.
+games-util/dfhack:dfusion - Build the Dfusion plugin. This does not work properly.
+games-util/dfhack:egg - Build libegg in stead of the libsdl overriding library for interfacing with games-simulation/dwarffortress. Requires a patched dev-libs/libgraphics.
+games-util/dfhack:isoworld - Build the isoworld plugin.
+games-util/dfhack:ssense - Build the Stonesense plugin. This installs pre-built allegro libraries.
+games-util/dfhack:stonesense - Build the Stonesense plugin. This installs pre-built allegro libraries.
+kde-base/kdebase-meta:consolekit - Install components that require sys-auth/consolekit
+kde-base/kdebase-meta:display-manager - Pull in a graphical display manager
+kde-base/kdebase-meta:wallpapers - Install the KDE wallpapers
+lxde-base/lxde-meta:udisks - Pull in dependendcy on udisks (and consolekit)
+media-gfx/blender:3dmouse - Adds support for space navigator devices through package dev-libs/libspnav.
+media-gfx/blender:blender-game - Adds Game Engine support to Blender.
+media-gfx/blender:collada - Add support for Collada interchange format through media-libs/opencollada.
+media-gfx/blender:cycles - Build cycles renderer (requires media-libs/openimageio and dev-libs/boost).
+media-gfx/blender:dds - Adds DDS textures support to Blender.
+media-gfx/blender:doc - Build C and Python API documentation directly from the source code.
+media-gfx/blender:elbeem - Adds surface fluid simulation to Blender using El'Beem library.
+media-gfx/blender:game-engine - Adds Game Engine support to Blender.
+media-gfx/blender:player - Build the Blender Player. THis requires the Game engine.
+media-gfx/blender:redcode - This flag add support for RED CODE camera digital format (5K HD images *.r3d) - EXPERIMENTAL.
+media-gfx/blender:tweak-mode - This flag allows you to model without confirming each translation, in particular it lets you grab with left mouse button (LMB) and not having to confirm by another click. Blender 'Tweak Mode' is similar to the 'Tweak Mode' of the Wings modeller (media-gfx/wings).
+media-gfx/blender:verse - Adds verse clustering features to Blender.
+media-gfx/gimp:smp - Enable support for multiprocessors
+media-plugins/audacious-plugins:adplug - Build with AdPlug (Adlib sound card emulation) support
+media-plugins/audacious-plugins:bs2b - Enable Bauer Bauer stereophonic-to-binaural headphone filter
+media-plugins/audacious-plugins:cue - Support CUE sheets using the libcue library
+media-plugins/audacious-plugins:midi - Build with amidi-plug (MIDI synth using FluidSynth) support
+media-plugins/audacious-plugins:scrobbler - Build with scrobbler/LastFM submission support
+media-plugins/audacious-plugins:sid - Build with SID (Commodore 64 Audio) support
+net-libs/opal:capi - Enable CAPI support
+net-libs/opal:celt - Enable CELT ultra-low delay audio codec
+net-libs/opal:dtmf - Enable DTMF encoding/decoding support
+net-libs/opal:fax - Enable T.38 FAX protocol
+net-libs/opal:h224 - Enable H.224 real time control protocol
+net-libs/opal:h281 - Enable H.281 Far-End Camera Control protocol
+net-libs/opal:h323 - Enable H.323 protocol
+net-libs/opal:iax - Enable Inter-Asterisk eXchange protocol
+net-libs/opal:ilbc - Enable iLBC (RFC 3951) speech codec
+net-libs/opal:ivr - Enable Interactive Voice Response
+net-libs/opal:ixj - Enable xJack cards support
+net-libs/opal:lid - Enable Line Interface Device
+net-libs/opal:plugins - Enable plugins support
+net-libs/opal:sbc - Enable the Bluetooth low-complexity, SubBand Codec
+net-libs/opal:sip - Enable Session Initiation Protocol
+net-libs/opal:sipim - Enable SIP Instant Messages session
+net-libs/opal:srtp - Enable Secure Real-time Transport Protocol
+net-libs/opal:stats - Enable statistic reporting
+net-libs/opal:swig - Use swig to generate bindings
+net-libs/opal:video - Enable video support
+net-libs/opal:vpb - Enable Voicetronics VPB card support
+net-libs/opal:vxml - Enable VXML support
+net-libs/opal:wav - Enable WAVFILE support
+net-libs/opal:x264-static - Install x264 plugin statically linked with x264
+net-p2p/transmission:bindtointerface - Apply unsupported patch to enable bind-to-interface functionality.
+net-p2p/transmission:lightweight - Optimize transmission for low-resource systems (smaller cache size, prefer unencrypted peer connections, etc.)
+net-p2p/transmission:xfs - Enable XFS filesystem capabilities by using sys-fs/xfsprogs headers (in building of fdlimit(.c))
+sys-fs/bedup:interactive - Pull in dependencies for running an interactive shell (useful for prototyping).
+sys-fs/bedup:xdg - Use dev-python/pyxdg to place database in $HOME.
+www-apps/nikola:assets - Support web asset management through dev-python/assets
+www-apps/nikola:charts - Support chart generation through dev-python/pygal
+www-apps/nikola:hyphenation - Add hyphenation support through dev-python/pyphen
+www-apps/nikola:ipython - Add IPython notebook compilation and LESS support
+www-apps/nikola:jinja - Add support for dev-python/jinja as alternative templating engine to Mako
+www-apps/nikola:markdown - Add support for Markdown as alternative markup language to reStructuredText
+x11-libs/vte:glade - Provide integration with dev-util/glade.
+x11-libs/vte:introspection - Use dev-libs/gobject-introspection for introspection
+x11-libs/vte:termite-patch - Apply patch for x11-terms/termite
