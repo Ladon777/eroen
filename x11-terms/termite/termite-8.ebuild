@@ -15,7 +15,7 @@ fi
 
 LICENSE="LGPL-2+ MIT"
 SLOT="0"
-KEYWORDS=""
+KEYWORDS="~amd64 ~x86"
 IUSE=""
 
 HDEPEND=""
