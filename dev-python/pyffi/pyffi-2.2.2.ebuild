@@ -8,7 +8,8 @@ myPN=PyFFI
 myP=${myPN}-${PV}
 S="${WORKDIR}"/${myP}
 
-PYTHON_COMPAT="python3_2"
+# officially 3.0 - 3.2
+PYTHON_COMPAT=(python3_2 python3_3 python3_4)
 
 inherit eutils distutils-r1
 
