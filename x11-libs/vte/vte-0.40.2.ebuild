@@ -44,7 +44,11 @@ RDEPEND="${RDEPEND}
 "
 
 src_prepare() {
-	use termite-patch && epatch "${FILESDIR}"/${PN}-0.32.2-expose_select_text.patch
+	if use termite-patch; then
+		for i in $(seq 5); do
+			epatch  "${FILESDIR}"/vte-ng-${PV}.a-${i}.patch
+		done
+	fi
 
 	vala_src_prepare
 	gnome2_src_prepare
