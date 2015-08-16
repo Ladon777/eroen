@@ -1,4 +1,4 @@
-# By eroen, 2013
+# By eroen, 2013-2015
 # Distributed under the terms of the ISC licence
 # $Header: $
 
@@ -20,7 +20,8 @@ IUSE=""
 
 HDEPEND=""
 LIBDEPEND=">=x11-libs/gtk+-3.0
-	>=x11-libs/vte-0.34:2.90[termite-patch(-)]"
+	>=x11-libs/vte-0.38:2.91[termite-patch(-)]
+	"
 DEPEND="${LIBDEPEND}"
 RDEPEND="${LIBDEPEND}"
 [[ ${EAPI} == *-hdepend ]] || DEPEND+=" ${HDEPEND}"
@@ -32,16 +33,18 @@ pkg_pretend() {
 	fi
 }
 
-src_prepare() {
-	sed -e '/PREFIX/s:/usr/local:/usr:' \
-		-e 's/-O3//g' \
-		-e '/LDFLAGS/s/-s//' \
-		-i Makefile || die
+pkg_setup() {
+	# Makefile prepends -O3
+	CXXFLAGS="-O0 ${CXXFLAGS}"
+}
+
+src_compile() {
+	emake LDFLAGS="${LDFLAGS}"
 }
 
 src_install() {
-	default
-	dodoc config
+	emake DESTDIR="${D}" PREFIX=/usr install
+	dodoc README* config
 }
 
 pkg_postinst() {

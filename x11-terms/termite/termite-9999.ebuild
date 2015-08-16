@@ -1,4 +1,4 @@
-# By eroen, 2013
+# By eroen, 2013-2015
 # Distributed under the terms of the ISC licence
 # $Header: $
 
@@ -20,7 +20,8 @@ IUSE=""
 
 HDEPEND=""
 LIBDEPEND=">=x11-libs/gtk+-3.0
-	>=x11-libs/vte-0.34[termite-patch]"
+	>=x11-libs/vte-0.38:2.91[termite-patch(-)]
+	"
 DEPEND="${LIBDEPEND}"
 RDEPEND="${LIBDEPEND}"
 [[ ${EAPI} == *-hdepend ]] || DEPEND+=" ${HDEPEND}"
@@ -47,8 +48,6 @@ src_install() {
 }
 
 pkg_postinst() {
-	ewarn
-	ewarn "After termite-7 transparency functionality was dropped."
 	elog
 	elog "Termite looks for a config file ~/.config/termite/config"
 	elog "An example config can be found in ${ROOT}usr/share/doc/${PF}/"
