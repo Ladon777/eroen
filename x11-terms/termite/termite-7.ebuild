@@ -20,7 +20,8 @@ IUSE=""
 
 HDEPEND=""
 LIBDEPEND=">=x11-libs/gtk+-3.0
-	>=x11-libs/vte-0.34[termite-patch]"
+	>=x11-libs/vte-0.34:2.90[termite-patch(-)]
+	"
 DEPEND="${LIBDEPEND}"
 RDEPEND="${LIBDEPEND}"
 [[ ${EAPI} == *-hdepend ]] || DEPEND+=" ${HDEPEND}"
