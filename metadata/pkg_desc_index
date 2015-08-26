@@ -28,6 +28,7 @@ dev-python/pyffi 2.2.2: Python File Format Interface
 dev-python/python-elementary 9999: Python bindings for elementary library
 dev-python/python-evas 9999: Python bindings for EVAS library
 dev-python/uncompyle 0.0.2: converts Python byte-code back into equivalent Python source
+dev-util/patchelf 0.8_p20150724: Small utility to modify the dynamic linker and RPATH of ELF executables
 games-action/unepic 15005: Combination of platforming and role playing game with many hilarious references
 games-emulation/psemu-padjoy 0.82: PSEmu plugin to use joysticks/gamepads in PSX-emulators
 games-engines/fs2_open 3.6.14: Opensourced engine from Freespace 2
