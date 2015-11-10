@@ -1,9 +1,9 @@
-# By eroen, 2013
+# By eroen, 2013 - 2015
 # Distributed under the terms of the ISC licence
 # $Header: $
 
 EAPI=5
-PYTHON_COMPAT="python2_7"
+PYTHON_COMPAT=(python2_7)
 
 #VIM_PLUGIN_VIM_VERSION="7.0"
 inherit python-single-r1 vim-plugin git-2
