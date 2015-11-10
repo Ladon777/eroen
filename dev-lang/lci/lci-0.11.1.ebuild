@@ -1,10 +1,10 @@
-# By eroen, 2013
+# By eroen, 2013 - 2015
 # Distributed under the terms of the ISC licence
 # $Header: $
 
 EAPI=5
 
-PYTHON_COMPAT="python2_7"
+PYTHON_COMPAT=(python2_7)
 inherit eutils python-single-r1 cmake-utils
 
 DESCRIPTION="LOLCODE interpreter written in C"
