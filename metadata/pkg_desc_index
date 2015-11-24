@@ -1,80 +1,82 @@
-app-admin/eselect-wine 0.1 0.2: Manage active wine version
-app-arch/lld 9999: The LLVM Linker
-app-cdr/k3b 2.0.2_p20140225: The CD/DVD Kreator for KDE
-app-emulation/emul-linux-x86-wxGTK 20130224: Provides precompiled 32bit libraries
-app-emulation/lxc 0.8.0-r1 0.8.0-r2: LinuX Containers userspace utilities
-app-emulation/wine 1.5.19 1.5.20 1.5.21 1.5.22 1.5.28 1.7.8 1.7.13 1.7.14 1.7.15 1.7.16 1.7.17 1.7.18 1.7.19-r1 1.7.21 1.7.21-r1 1.7.21-r2 1.7.21-r3 1.7.26 1.7.26-r1 1.7.26-r2 1.7.26-r3 1.7.27 1.7.28 1.7.28-r1 1.7.28-r2 1.7.29 1.7.29-r1 1.7.29-r2 1.7.33-r1 1.7.33-r2 1.7.34-r1 1.7.34-r2: Free implementation of Windows(tm) on Unix
-app-emulation/wine-compholio 1.7.26 1.7.27: Special build of wine with patches to make a variety of Windows applications work out of the box
-app-emulation/wine-gentoo 2013.06.24: Menu items and icons for wine
-app-emulation/wine-staging 1.7.33-r1: Wine package with wine-staging patchset applied
-app-office/libreoffice 4.0.4.2 4.1.2.2-r1 4.1.2.3: LibreOffice, a full office productivity suite.
-app-vim/covim 20130619 99999999: Collaborative Editing for Vim
-dev-cpp/clucene 2.3.3.4-r5: High-performance, full-featured text search engine based off of lucene in C++
+app-admin/eselect-wine 0.1 0.2: 
+app-arch/lld 9999: 
+app-cdr/k3b 2.0.2_p20140225: 
+app-emulation/emul-linux-x86-wxGTK 20130224: 
+app-emulation/lxc 0.8.0-r1 0.8.0-r2: 
+app-emulation/wine 1.5.19 1.5.20 1.5.21 1.5.22 1.5.28 1.7.8 1.7.13 1.7.14 1.7.15 1.7.16 1.7.17 1.7.18 1.7.19-r1 1.7.21 1.7.21-r1 1.7.21-r2 1.7.21-r3 1.7.26 1.7.26-r1 1.7.26-r2 1.7.26-r3 1.7.27 1.7.28 1.7.28-r1 1.7.28-r2 1.7.29 1.7.29-r1 1.7.29-r2 1.7.33-r1 1.7.33-r2 1.7.34-r1 1.7.34-r2: 
+app-emulation/wine-compholio 1.7.26 1.7.27: 
+app-emulation/wine-gentoo 2013.06.24: 
+app-emulation/wine-staging 1.7.33-r1: 
+app-office/libreoffice 4.0.4.2 4.1.2.2-r1 4.1.2.3: 
+app-vim/covim 20130619 99999999: 
+dev-cpp/clucene 2.3.3.4-r5: 
 dev-cpp/gmock 1.6.0 1.7.0-r1: Google's C++ mocking framework
-dev-cpp/gtest 1.6.0-r2 1.7.0: Google C++ Testing Framework
-dev-db/mysql 5.6.21-r1: A fast, multi-threaded, multi-user SQL database server
-dev-db/postgis 2.1.1 2.1.4: Geographic Objects for PostgreSQL
-dev-lang/lci 0.11.1 9999: LOLCODE interpreter written in C
+dev-cpp/gtest 1.6.0-r2 1.7.0: 
+dev-db/mysql 5.6.21-r1: 
+dev-db/postgis 2.1.1 2.1.4: 
+dev-lang/lci 0.11.1 9999: 
 dev-lang/lua 5.2.1: A powerful light-weight programming language designed for extending applications
-dev-lang/ruby 1.8.7_p371: An object-oriented scripting language
-dev-libs/libgraphics 34.11 40.06 40.07 40.08 40.09 40.10 40.11 40.12 40.13 40.19 40.20 40.21 40.22 40.23 40.24: General purpose library used by dwarffortress
-dev-libs/oocairo 9999: Lua bindings to the cairo library
-dev-python/awkwardduet 1.1_pre4: Lib3to2 maintenance fork
-dev-python/beaker 9999: A Session and Caching library with WSGI Middleware
-dev-python/cffi 0.8.6: Foreign Function Interface for Python calling C code
-dev-python/m3u8 0.1.6 9999: m3u8 parser
-dev-python/mako 0.9.0 0.9.1: A Python templating language
-dev-python/pyffi 2.2.2: Python File Format Interface
-dev-python/python-elementary 9999: Python bindings for elementary library
-dev-python/python-evas 9999: Python bindings for EVAS library
-dev-util/patchelf 0.8_p20150724: Small utility to modify the dynamic linker and RPATH of ELF executables
-games-action/unepic 15005: Combination of platforming and role playing game with many hilarious references
+dev-lang/ruby 1.8.7_p371: 
+dev-libs/libgraphics 34.11 40.06 40.07 40.08 40.09 40.10 40.11 40.12 40.13 40.19 40.20 40.21 40.22 40.23 40.24: 
+dev-libs/oocairo 9999: 
+dev-python/awkwardduet 1.1_pre4: 
+dev-python/beaker 9999: 
+dev-python/cffi 0.8.6: 
+dev-python/m3u8 0.1.6 9999: 
+dev-python/mako 0.9.0 0.9.1: 
+dev-python/pyffi 2.2.2: 
+dev-python/python-elementary 9999: 
+dev-python/python-evas 9999: 
+dev-python/uncompyle 0.0.2: 
+dev-util/patchelf 0.8_p20150724: 
+games-action/unepic 15005: 
 games-emulation/psemu-padjoy 0.82: PSEmu plugin to use joysticks/gamepads in PSX-emulators
-games-engines/fs2_open 3.6.14: Opensourced engine from Freespace 2
-games-engines/openmw 0.20.0 0.21.0 0.23.0 0.24.0 0.26.0 0.27.0-r1 0.28.0 0.29.0 0.30.0 0.31.0 0.32.0 0.33.0 0.33.1 0.34.0 9999: Unofficial open source engine reimplementation of the game Morrowind
+games-engines/fs2_open 3.6.14: 
+games-engines/openmw 0.20.0 0.21.0 0.23.0 0.24.0 0.26.0 0.27.0-r1 0.28.0 0.29.0 0.30.0 0.31.0 0.32.0 0.33.0 0.33.1 0.34.0 9999: 
 games-misc/bsd-games 2.17-r5: collection of games from NetBSD
-games-puzzle/typerider 1395097265: Platform game with two dots travelling through time and typography
-games-roguelike/FTL 1.5.4 1.5.13: Faster Than Light: A spaceship simulation real-time roguelike-like game
-games-roguelike/roguelegacy 20131228: A genealogical rogue-LITE where anyone can be a hero.
-games-rpg/dontstarve 0 1377999049 1377999049_p9999: An uncompromising wilderness survival game full of science and magic.
-games-rpg/farsky 2.01.00: Gather resources and protect yourself in the Ocean depths
-games-simulation/dwarffortress 34.11 40.03 40.04 40.05 40.06 40.07 40.08 40.09 40.10 40.11 40.12 40.13 40.19 40.20 40.21 40.22 40.23 40.24: Part roguelike, part city-building game set in a procedurally generated high fantasy universe.
-games-simulation/hearthlands 0.6.5: Medieval/fantasy real time city building/strategy game
-games-simulation/lincity-ng 2.0 2.9_beta 9999: City/country simulation game for X and opengl
+games-puzzle/typerider 1395097265: 
+games-roguelike/FTL 1.5.4 1.5.13: 
+games-roguelike/roguelegacy 20131228: 
+games-rpg/dontstarve 0 1377999049 1377999049_p9999: 
+games-rpg/farsky 2.01.00: 
+games-simulation/dwarffortress 34.11 40.03 40.04 40.05 40.06 40.07 40.08 40.09 40.10 40.11 40.12 40.13 40.19 40.20 40.21 40.22 40.23 40.24: 
+games-simulation/hearthlands 0.6.5: 
+games-simulation/lincity-ng 2.0 2.9_beta 9999: 
 games-simulation/prisonarchitect 0.24c: 
-games-simulation/simutrans 0.112.3 0.120.0.1 0.120.0.1-r1: A free Transport Tycoon clone
-games-simulation/simutrans-pak128 2.5.2_rc120 9999: Simutrans pakset featuring a complex economy and a wide variety of objects
-games-simulation/simutrans-pak64 0.120.0.1 9999: Official Simutrans pakset
-games-strategy/unityofcommand 104d: Operational-level wargame covering the 1942/43 Stalingrad campaign
-games-util/dfhack 0.34.11.2 0.34.11.3_p20130302 0.40.06_pre20140808 0.40.07_pre20140811 0.40.08.2 0.40.09_pre20140827 0.40.10.1 0.40.11.1 0.40.12.1 0.40.13.1 0.40.13.9999 0.40.19.1 0.40.23.1 0.40.24.0 0.40.24.1 0.40.24.2: Memory hacking library for Dwarf Fortress and a set of tools that use it
-games-util/dontstarve-updater 18: extracted updater from Don't Starve
-games-util/dwarftherapist 0.6.13_p20120616 0.6.13_p20120616-r1 0.6.13_p20120616-r2: Management tool designed to run side-by-side with games-simulation/dwarffortress
-games-util/irpgstats 0.2: IdleRPG db parser and pretty-printer
-games-util/makeobj 0.120.0.1: Tool for creating Simutrans paksets.
-kde-base/kdebase-meta 4.14.3: Merge this to pull in all kdebase-derived packages
-kde-base/kdebase-runtime-meta 4.13.0: Merge this to pull in all kdebase-runtime-derived packages
-kde-base/kwalletd 4.13.0: KDE Password Server
+games-simulation/simutrans 0.112.3 0.120.0.1 0.120.0.1-r1: 
+games-simulation/simutrans-pak128 2.5.2_rc120 9999: 
+games-simulation/simutrans-pak64 0.120.0.1 9999: 
+games-strategy/unityofcommand 104d: 
+games-util/dfhack 0.34.11.2 0.34.11.3_p20130302 0.40.06_pre20140808 0.40.07_pre20140811 0.40.08.2 0.40.09_pre20140827 0.40.10.1 0.40.11.1 0.40.12.1 0.40.13.1 0.40.13.9999 0.40.19.1 0.40.23.1 0.40.24.0 0.40.24.1 0.40.24.2: 
+games-util/dontstarve-updater 18: 
+games-util/dwarftherapist 0.6.13_p20120616 0.6.13_p20120616-r1 0.6.13_p20120616-r2: 
+games-util/irpgstats 0.2: 
+games-util/makeobj 0.120.0.1: 
+kde-base/kdebase-meta 4.14.3: 
+kde-base/kdebase-runtime-meta 4.13.0: 
+kde-base/kwalletd 4.13.0: 
 lxde-base/lxde-meta 0.5.5-r3: Meta ebuild for LXDE, the Lightweight X11 Desktop Environment
 media-gfx/blender 2.49b-r2: 3D Creation/Animation/Publishing System
-media-gfx/blender_nif_scripts 2.5.9: Blender NIF plugin
-media-gfx/gimp 2.8.10-r1 2.8.14: GNU Image Manipulation Program
-media-gfx/pqiv 2.0: Modern rewrite of Quick Image Viewer
+media-gfx/blender_nif_scripts 2.5.9: 
+media-gfx/gimp 2.8.10-r1 2.8.14: 
+media-gfx/pqiv 2.0: 
 media-libs/fmod 4.38.02 4.44.04: music and sound effects library, and a sound processing system
-media-plugins/audacious-plugins 3.5.1: Audacious Player - Your music, your way, no exceptions
-net-dialup/slirp 1.0.17.7: SLIP/PPP emulator using a dial up shell account
-net-libs/opal 3.12.4: C++ class library normalising numerous telephony protocols
-net-misc/ga_wrapper 0.0.1 9999: wrapper for using git-annex for distfiles with portage
-net-misc/sendspace-cli 0.1.0: For uploading files to SendSpace from command line.
-net-p2p/transmission 2.73 2.76: A Fast, Easy and Free BitTorrent client
+media-plugins/audacious-plugins 3.5.1: 
+net-dialup/slirp 1.0.17.7: 
+net-libs/opal 3.12.4: 
+net-misc/ga_wrapper 0.0.1 9999: 
+net-misc/sendspace-cli 0.1.0: 
+net-misc/wssh 9999: 
+net-p2p/transmission 2.73 2.76: 
 net-print/foo2zjs 99999999: Support for printing to ZjStream-based printers
-sci-mathematics/matlab 2014a: High-level language and interactive environment
-sys-fs/bedup 0.0.8 0.9.0 0.9.0_p20130806 0.9.0_p20140412 0.9.0_p20140413: Btrfs deduplication
-sys-fs/libeatmydata 65 82: LD_PRELOAD hack to convert sync()/msync() and the like to NO-OP
-sys-libs/libfaketime 0.9-r1 0.9.1 0.9.5 0.9.6-r1: Report faked system time to programs
-sys-process/ftop 1.0: Show progress of open files and file systems.
-www-apps/nikola 6.4.0: A static website and blog generator
-x11-libs/vte 0.34.2 0.34.9 0.36.2 0.36.3 0.36.4 0.40.2: Library providing a virtual terminal emulator widget
+sci-mathematics/matlab 2014a: 
+sys-fs/bedup 0.0.8 0.9.0 0.9.0_p20130806 0.9.0_p20140412 0.9.0_p20140413: 
+sys-fs/libeatmydata 65 82: 
+sys-libs/libfaketime 0.9-r1 0.9.1 0.9.5 0.9.6-r1: 
+sys-process/ftop 1.0: 
+www-apps/nikola 6.4.0: 
+x11-libs/vte 0.34.2 0.34.9 0.36.2 0.36.3 0.36.4 0.40.2: 
 x11-misc/xautolock 2.2: An automatic X screen-locker/screen-saver.
-x11-terms/terminology 0.3.50.9999 9999: Simple EFL based terminal emulator
-x11-terms/termite 6 7 8 9 10 9999: A keyboard-centric VTE-based terminal
+x11-terms/terminology 0.3.50.9999 9999: 
+x11-terms/termite 6 7 8 9 10 9999: 
 x11-wm/dwm 6.0: a dynamic window manager for X11
