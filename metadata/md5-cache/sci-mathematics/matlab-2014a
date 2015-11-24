@@ -1,0 +1,13 @@
+DEFINED_PHASES=configure install postinst pretend unpack
+DEPEND=app-admin/chrpath
+DESCRIPTION=High-level language and interactive environment
+EAPI=5
+HOMEPAGE=http://www.mathworks.com/products/matlab/
+KEYWORDS=-* ~amd64
+LICENSE=MATLAB
+PROPERTIES=interactive
+RESTRICT=bindist
+SLOT=R2014a
+_eclass_exported_funcs=pkg_pretend:- pkg_postinst:- src_unpack:- src_configure:- src_install:-
+_eclasses_=cdrom	d59e7a8a50d875e095c60654bbe22273	portability	3a50b3ec310b86914f98babecc8f89c6
+_md5_=219226908163dd01df3c383777ef5f9e

@@ -1,0 +1,12 @@
+DEFINED_PHASES=compile configure install prepare unpack
+DEPEND=>=dev-libs/ecore-1.7.0[evas] >=dev-libs/eet-1.7.0 >=dev-libs/efreet-1.7.0 >=dev-libs/eina-1.7.0 >=dev-libs/eio-1.7.0 >=dev-libs/embryo-1.7.0 >=media-libs/elementary-1.7.0 >=media-libs/evas-1.7.0 >=media-libs/edje-1.7.0 >=media-libs/emotion-1.7.0 media-libs/freetype:2 dev-vcs/git !<sys-devel/gettext-0.18.1.1-r3 || ( >=sys-devel/automake-1.15:1.15 ) >=sys-devel/autoconf-2.69 >=sys-devel/libtool-2.4 doc? ( app-doc/doxygen )
+DESCRIPTION=Simple EFL based terminal emulator
+EAPI=5
+HOMEPAGE=http://www.enlightenment.org/
+IUSE=nls doc
+LICENSE=BSD
+RDEPEND=>=dev-libs/ecore-1.7.0[evas] >=dev-libs/eet-1.7.0 >=dev-libs/efreet-1.7.0 >=dev-libs/eina-1.7.0 >=dev-libs/eio-1.7.0 >=dev-libs/embryo-1.7.0 >=media-libs/elementary-1.7.0 >=media-libs/evas-1.7.0 >=media-libs/edje-1.7.0 >=media-libs/emotion-1.7.0 media-libs/freetype:2 nls? ( sys-devel/gettext )
+SLOT=0
+_eclass_exported_funcs=src_unpack:enlightenment src_prepare:enlightenment src_configure:enlightenment src_compile:enlightenment src_install:enlightenment
+_eclasses_=autotools	07e71b3b5690738ef7e8bc097077e00c	enlightenment	c185b1fa0d87798fd07fb1cd85866b23	eutils	f20548a2f7b0128068388cd2ec26708a	git-2	df00117322129fb906bb0a53c3d6a020	libtool	b75230758539a7da029e24afdb693960	multilib	3972ca401cf7dbb430df9995f5d8d580	toolchain-funcs	7a212e5e01adfa4805c9978366e6ee85
+_md5_=d271b567c8ded632dce1bc3d19688e34
