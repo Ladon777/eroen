@@ -3,7 +3,7 @@
 # $Header: $
 
 EAPI=5
-PYTHON_COMPAT="python2_7"
+PYTHON_COMPAT=(python2_7)
 
 DESCRIPTION="command-line utility/shell for WebSocket inspired by netcat"
 HOMEPAGE="https://github.com/progrium/wssh"
