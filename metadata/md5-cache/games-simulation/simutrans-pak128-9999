@@ -1,5 +1,5 @@
 DEFINED_PHASES=compile configure install postinst preinst prepare setup unpack
-DEPEND=|| ( games-util/makeobj games-simulation/simutrans[makeobj(-)] ) || ( dev-lang/python:3.4 >=dev-lang/python-3.3.2-r2:3.3 >=dev-lang/python-2.7.5-r2:2.7 ) || ( dev-vcs/subversion[http] dev-vcs/subversion[webdav-neon] dev-vcs/subversion[webdav-serf] ) net-misc/rsync
+DEPEND=|| ( games-util/makeobj games-simulation/simutrans[makeobj(-)] ) || ( ) || ( dev-vcs/subversion[http] dev-vcs/subversion[webdav-neon] dev-vcs/subversion[webdav-serf] ) net-misc/rsync
 DESCRIPTION=Simutrans pakset featuring a complex economy and a wide variety of objects
 EAPI=5
 HOMEPAGE=http://www.simutrans.com/ http://sourceforge.net/p/simutrans/code/HEAD/tree/pak128/
@@ -7,5 +7,5 @@ LICENSE=Artistic
 RDEPEND=>=games-simulation/simutrans-0.120 games-misc/games-envd
 SLOT=0
 _eclass_exported_funcs=pkg_preinst:games pkg_postinst:- pkg_setup:- src_unpack:- src_prepare:base src_configure:games src_compile:- src_install:-
-_eclasses_=base	3fe4f8980633fd7bc69e9887209ba2fe	eutils	d9bd2ddd85a58e470b49ca997e255a4c	games	4dae170e58f773c484e07d18ef441804	multilib	3972ca401cf7dbb430df9995f5d8d580	python-any-r1	d48ce17f8005e9e5ca321f002d0fea6b	python-utils-r1	a5050c5c19fd08ed14d5d9f1792154fc	subversion	4fee0a764150bb4dda27ed4d2c4ed7ce	toolchain-funcs	7a212e5e01adfa4805c9978366e6ee85	user	906f3c8eb3a2350a4f1191a89baa3e46
+_eclasses_=base	3fe4f8980633fd7bc69e9887209ba2fe	eutils	d9bd2ddd85a58e470b49ca997e255a4c	games	4dae170e58f773c484e07d18ef441804	multilib	3972ca401cf7dbb430df9995f5d8d580	python-any-r1	18215b242007be1e9d7fd95683aaf4c0	python-utils-r1	8839d3b63783f5eebbe020034404fae1	subversion	4fee0a764150bb4dda27ed4d2c4ed7ce	toolchain-funcs	7a212e5e01adfa4805c9978366e6ee85	user	906f3c8eb3a2350a4f1191a89baa3e46
 _md5_=019d5d9862ed7f250b617deb3b1def9c
