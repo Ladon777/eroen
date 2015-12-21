@@ -1,4 +1,4 @@
-DEFINED_PHASES=compile configure install postinst preinst prepare setup test
+DEFINED_PHASES=compile configure install postinst preinst prepare setup test unpack
 DEPEND=dev-python/beautifulsoup[python_targets_python2_7(-)?,python_targets_python3_3(-)?,-python_single_target_python2_7(-),-python_single_target_python3_3(-)] dev-python/mako[python_targets_python2_7(-)?,python_targets_python3_3(-)?,-python_single_target_python2_7(-),-python_single_target_python3_3(-)] python_targets_python2_7? ( dev-python/3to2[python_targets_python2_7] ) python_targets_python2_7? ( >=dev-lang/python-2.7.5-r2:2.7 ) python_targets_python3_3? ( >=dev-lang/python-3.3.2-r2:3.3 ) >=dev-lang/python-exec-2:=[python_targets_python2_7(-)?,python_targets_python3_3(-)?,-python_single_target_python2_7(-),-python_single_target_python3_3(-)]
 DESCRIPTION=IdleRPG db parser and pretty-printer
 EAPI=5
@@ -9,6 +9,6 @@ RDEPEND=dev-python/beautifulsoup[python_targets_python2_7(-)?,python_targets_pyt
 REQUIRED_USE=|| ( python_targets_python2_7 python_targets_python3_3 )
 SLOT=0
 SRC_URI=irpgstats-0.2.tar.gz
-_eclass_exported_funcs=pkg_preinst:games pkg_postinst:games pkg_setup:games src_prepare:distutils-r1 src_configure:- src_compile:- src_test:distutils-r1 src_install:-
-_eclasses_=distutils-r1	4e8ac1ba76ddacd8f7c0289aa586a34c	eutils	d9bd2ddd85a58e470b49ca997e255a4c	games	a8dfd875e0a0eaa6accad260cd038779	multibuild	742139c87a9fa3766f0c2b155e5522bf	multilib	3972ca401cf7dbb430df9995f5d8d580	multiprocessing	e32940a7b2a9992ad217eccddb84d548	python-r1	98eaa2ec9918bbf0571252d6c6d894f2	python-utils-r1	832cb17726d498a182de6b9ee2adc0dc	toolchain-funcs	7a212e5e01adfa4805c9978366e6ee85	user	906f3c8eb3a2350a4f1191a89baa3e46
+_eclass_exported_funcs=pkg_preinst:games pkg_postinst:games pkg_setup:games src_unpack:base src_prepare:base src_configure:- src_compile:- src_test:distutils-r1 src_install:-
+_eclasses_=base	3fe4f8980633fd7bc69e9887209ba2fe	distutils-r1	4e8ac1ba76ddacd8f7c0289aa586a34c	eutils	d9bd2ddd85a58e470b49ca997e255a4c	games	4dae170e58f773c484e07d18ef441804	multibuild	742139c87a9fa3766f0c2b155e5522bf	multilib	3972ca401cf7dbb430df9995f5d8d580	multiprocessing	e32940a7b2a9992ad217eccddb84d548	python-r1	98eaa2ec9918bbf0571252d6c6d894f2	python-utils-r1	832cb17726d498a182de6b9ee2adc0dc	toolchain-funcs	7a212e5e01adfa4805c9978366e6ee85	user	906f3c8eb3a2350a4f1191a89baa3e46
 _md5_=295f2dc973ade0301a0681f812a5df73
