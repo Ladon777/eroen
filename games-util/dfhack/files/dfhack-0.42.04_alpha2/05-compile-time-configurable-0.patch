@@ -1,0 +1,38 @@
+compile-time configurable paths
+
+From: eroen <eroen@occam.eroen.eu>
+
+hack/
+./
+---
+ library/Core.cpp |    8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/library/Core.cpp b/library/Core.cpp
+index 39ec9b3..ecf8dde 100644
+--- a/library/Core.cpp
++++ b/library/Core.cpp
+@@ -375,7 +375,11 @@ static command_result runRubyScript(color_ostream &out, PluginManager *plug_mgr,
+         rbcmd += "'" + args[i] + "', ";
+     rbcmd += "]\n";
+ 
++#ifdef DFHACK_DATA_DESTINATION
++    rbcmd += "catch(:script_finished) { load '" DFHACK_DATA_DESTINATION "/scripts/" + name + ".rb' }";
++#else
+     rbcmd += "catch(:script_finished) { load './hack/scripts/" + name + ".rb' }";
++#endif
+ 
+     return plug_mgr->ruby->eval_ruby(out, rbcmd.c_str());
+ }
+@@ -1388,7 +1392,11 @@ void Core::fatal (std::string output)
+ std::string Core::getHackPath()
+ {
+ #ifdef LINUX_BUILD
++    #ifdef DFHACK_DATA_DESTINATION
++    return DFHACK_DATA_DESTINATION "/";
++    #else
+     return p->getPath() + "/hack/";
++    #endif
+ #else
+     return p->getPath() + "\\hack\\";
+ #endif

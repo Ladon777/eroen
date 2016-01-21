@@ -1,0 +1,39 @@
+dfhack.init.example
+
+From: eroen <eroen@occam.eroen.eu>
+
+
+---
+ library/CMakeLists.txt |    2 +-
+ library/Core.cpp       |    4 ++++
+ 2 files changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/library/CMakeLists.txt b/library/CMakeLists.txt
+index 294a452..a323a40 100644
+--- a/library/CMakeLists.txt
++++ b/library/CMakeLists.txt
+@@ -390,7 +390,7 @@ install(FILES xml/symbols.xml
+         DESTINATION ${DFHACK_DATA_DESTINATION}) #linux: share/dfhack
+ #install the example autoexec file
+ install(FILES ../dfhack.init-example
+-        DESTINATION ${DFHACK_USERDOC_DESTINATION})
++	DESTINATION ${DFHACK_DATA_DESTINATION})
+ 
+ install(TARGETS dfhack-run dfhack-client binpatch
+         LIBRARY DESTINATION ${DFHACK_LIBRARY_DESTINATION}
+diff --git a/library/Core.cpp b/library/Core.cpp
+index 89be713..5ab28ae 100644
+--- a/library/Core.cpp
++++ b/library/Core.cpp
+@@ -1263,7 +1263,11 @@ static void run_dfhack_init(color_ostream &out, Core *core)
+     if (!count || !Filesystem::isfile("dfhack.init"))
+     {
+         core->runCommand(out, "gui/no-dfhack-init");
++#ifdef DFHACK_DATA_DESTINATION
++        core->loadScriptFile(out, DFHACK_DATA_DESTINATION "/dfhack.init-example", true);
++#else
+         core->loadScriptFile(out, "dfhack.init-example", true);
++#endif
+     }
+ }
+ 

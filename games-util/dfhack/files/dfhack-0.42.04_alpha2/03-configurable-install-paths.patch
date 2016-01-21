@@ -1,0 +1,96 @@
+configurable install paths
+
+From: eroen <eroen@occam.eroen.eu>
+
+
+---
+ CMakeLists.txt              |   20 +++++++++++---------
+ library/CMakeLists.txt      |    6 +++---
+ plugins/ruby/CMakeLists.txt |    4 ++--
+ 3 files changed, 16 insertions(+), 14 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index f07d454..d53d151 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -112,30 +112,32 @@ set(DFHACK_VERSION "${DF_VERSION}-${DFHACK_RELEASE}")
+ # the dfhack libraries will be installed here:
+ IF(UNIX)
+     # put the lib into DF/hack
+-    SET(DFHACK_LIBRARY_DESTINATION hack)
+-    SET(DFHACK_EGGY_DESTINATION libs)
++    SET(DFHACK_LIBRARY_DESTINATION hack CACHE PATH "DFHACK_LIBRARY_DESTINATION")
++    SET(DFHACK_EGGY_DESTINATION libs CACHE PATH "DFHACK_EGGY_DESTINATION")
+ ELSE()
+     # windows is crap, therefore we can't do nice things with it. leave the libs on a nasty pile...
+     SET(DFHACK_LIBRARY_DESTINATION .)
+     SET(DFHACK_EGGY_DESTINATION .)
+ ENDIF()
+ # external tools will be installed here:
+-SET(DFHACK_BINARY_DESTINATION .)
++SET(DFHACK_BINARY_DESTINATION . CACHE PATH "DFHACK_BINARY_DESTINATION")
+ # dfhack data goes here:
+-SET(DFHACK_DATA_DESTINATION hack)
++SET(DFHACK_DATA_DESTINATION hack CACHE PATH "DFHACK_DATA_DESTINATION")
+ # plugin libs go here:
+-SET(DFHACK_PLUGIN_DESTINATION hack/plugins)
++SET(DFHACK_PLUGIN_DESTINATION hack/plugins CACHE PATH "DFHACK_PLUGIN_DESTINATION")
+ # dfhack header files go here:
+-SET(DFHACK_INCLUDES_DESTINATION hack/include)
++SET(DFHACK_INCLUDES_DESTINATION hack/include CACHE PATH "DFHACK_INCLUDES_DESTINATION")
+ # dfhack lua files go here:
+-SET(DFHACK_LUA_DESTINATION hack/lua)
++SET(DFHACK_LUA_DESTINATION hack/lua CACHE PATH "DFHACK_LUA_DESTINATION")
++# dfhack ruby files go here:
++SET(DFHACK_RUBY_DESTINATION hack/ruby CACHE PATH "DFHACK_RUBY_DESTINATION")
+ # the windows .lib file goes here:
+ SET(DFHACK_DEVLIB_DESTINATION hack)
+ 
+ # user documentation goes here:
+-SET(DFHACK_USERDOC_DESTINATION hack)
++SET(DFHACK_USERDOC_DESTINATION hack CACHE PATH "DFHACK_USERDOC_DESTINATION")
+ # developer documentation goes here:
+-SET(DFHACK_DEVDOC_DESTINATION hack)
++SET(DFHACK_DEVDOC_DESTINATION hack CACHE PATH "DFHACK_DEVDOC_DESTINATION")
+ 
+ ## some options for the user/developer to play with
+ OPTION(BUILD_LIBRARY "Build the library that goes into DF." ON)
+diff --git a/library/CMakeLists.txt b/library/CMakeLists.txt
+index 5fb3823..dd8c541 100644
+--- a/library/CMakeLists.txt
++++ b/library/CMakeLists.txt
+@@ -349,9 +349,9 @@ IF(UNIX)
+     else()
+         # On linux, copy our version of the df launch script which sets LD_PRELOAD
+         install(PROGRAMS ${dfhack_SOURCE_DIR}/package/linux/dfhack
+-            DESTINATION .)
++            DESTINATION ${DFHACK_BINARY_DESTINATION})
+         install(PROGRAMS ${dfhack_SOURCE_DIR}/package/linux/dfhack-run
+-            DESTINATION .)
++            DESTINATION ${DFHACK_BINARY_DESTINATION})
+     endif()
+ ELSE()
+     if(NOT BUILD_EGGY)
+@@ -377,7 +377,7 @@ install(FILES xml/symbols.xml
+         DESTINATION ${DFHACK_DATA_DESTINATION}) #linux: share/dfhack
+ #install the example autoexec file
+ install(FILES ../dfhack.init-example
+-        DESTINATION ${DFHACK_BINARY_DESTINATION})
++        DESTINATION ${DFHACK_USERDOC_DESTINATION})
+ 
+ install(TARGETS dfhack-run dfhack-client binpatch
+         LIBRARY DESTINATION ${DFHACK_LIBRARY_DESTINATION}
+diff --git a/plugins/ruby/CMakeLists.txt b/plugins/ruby/CMakeLists.txt
+index 3aeac6d..640161a 100644
+--- a/plugins/ruby/CMakeLists.txt
++++ b/plugins/ruby/CMakeLists.txt
+@@ -38,7 +38,7 @@ ADD_DEPENDENCIES(ruby ruby-autogen-rb)
+ INSTALL(FILES ${RUBYLIB} DESTINATION ${DFHACK_LIBRARY_DESTINATION})
+ 
+ INSTALL(DIRECTORY .
+-        DESTINATION hack/ruby
++        DESTINATION ${DFHACK_RUBY_DESTINATION}
+         FILES_MATCHING PATTERN "*.rb")
+ 
+-INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/${RUBYAUTOGEN} DESTINATION hack/ruby)
++INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/${RUBYAUTOGEN} DESTINATION ${DFHACK_RUBY_DESTINATION})
