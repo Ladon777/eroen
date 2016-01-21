@@ -1,0 +1,106 @@
+compile-time configurable state directory
+
+From: eroen <eroen@occam.eroen.eu>
+
+It'd be nice to write stuff somewhere writeable.
+---
+ CMakeLists.txt            |    4 ++++
+ library/Console-posix.cpp |    4 ++++
+ library/Core.cpp          |    8 ++++++++
+ library/Hooks-egg.cpp     |    4 ++++
+ library/Hooks-linux.cpp   |    5 +++++
+ 5 files changed, 25 insertions(+)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 3488e95..e50fbf6 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -108,6 +108,10 @@ SET(DFHACK_PRERELEASE TRUE)
+ 
+ set(DFHACK_VERSION "${DF_VERSION}-${DFHACK_RELEASE}")
+ 
++## where persistent things are written (and read) at runtime
++SET(DFHACK_STATEDIR "." CACHE PATH "DFHACK_STATEDIR")
++ADD_DEFINITIONS(-DDFHACK_STATEDIR="${DFHACK_STATEDIR}")
++
+ ## where to install things (after the build is done, classic 'make install' or package structure)
+ # the dfhack libraries will be installed here:
+ IF(UNIX)
+diff --git a/library/Console-posix.cpp b/library/Console-posix.cpp
+index 8ef879d..fb5da5b 100644
+--- a/library/Console-posix.cpp
++++ b/library/Console-posix.cpp
+@@ -746,7 +746,11 @@ bool Console::init(bool sharing)
+         inited = false;
+         return false;
+     }
++    #ifdef DFHACK_STATEDIR
++    if (!freopen(DFHACK_STATEDIR "/stdout.log", "w", stdout))
++    #else
+     if (!freopen("stdout.log", "w", stdout))
++    #endif
+         ;
+     d = new Private();
+     // make our own weird streams so our IO isn't redirected
+diff --git a/library/Core.cpp b/library/Core.cpp
+index ecf8dde..e8394e6 100644
+--- a/library/Core.cpp
++++ b/library/Core.cpp
+@@ -1285,7 +1285,11 @@ void fIOthread(void * iodata)
+     PluginManager * plug_mgr = ((IODATA*) iodata)->plug_mgr;
+ 
+     CommandHistory main_history;
++    #ifdef DFHACK_STATEDIR
++    main_history.load(DFHACK_STATEDIR "/dfhack.history");
++    #else
+     main_history.load("dfhack.history");
++    #endif
+ 
+     Console & con = core->getConsole();
+     if (plug_mgr == 0)
+@@ -1320,7 +1324,11 @@ void fIOthread(void * iodata)
+         {
+             // a proper, non-empty command was entered
+             main_history.add(command);
++            #ifdef DFHACK_STATEDIR
++            main_history.save(DFHACK_STATEDIR "/dfhack.history");
++            #else
+             main_history.save("dfhack.history");
++            #endif
+         }
+ 
+         auto rv = core->runCommand(con, command);
+diff --git a/library/Hooks-egg.cpp b/library/Hooks-egg.cpp
+index c98cf5d..90df6af 100644
+--- a/library/Hooks-egg.cpp
++++ b/library/Hooks-egg.cpp
+@@ -37,7 +37,11 @@ distribution.
+ DFhackCExport int egg_init(void)
+ {
+     // reroute stderr
++    #ifdef DFHACK_STATEDIR
++    freopen(DFHACK_STATEDIR "/stderr.log", "w", stderr);
++    #else
+     freopen("stderr.log", "w", stderr);
++    #endif
+     // we don't reroute stdout until  we figure out if this should be done at all
+     // See: Console-linux.cpp
+     fprintf(stderr,"dfhack: hooking successful\n");
+diff --git a/library/Hooks-linux.cpp b/library/Hooks-linux.cpp
+index b0bf5a7..306ce00 100644
+--- a/library/Hooks-linux.cpp
++++ b/library/Hooks-linux.cpp
+@@ -114,8 +114,13 @@ static int (*_SDL_Init)(uint32_t flags) = 0;
+ DFhackCExport int SDL_Init(uint32_t flags)
+ {
+     // reroute stderr
++    #ifdef DFHACK_STATEDIR
++    if (!freopen(DFHACK_STATEDIR "stderr.log", "w", stderr))
++        fprintf(stderr, "dfhack: failed to reroute stderr\n");
++    #else
+     if (!freopen("stderr.log", "w", stderr))
+         fprintf(stderr, "dfhack: failed to reroute stderr\n");
++    #endif
+     // we don't reroute stdout until  we figure out if this should be done at all
+     // See: Console-linux.cpp
+ 
