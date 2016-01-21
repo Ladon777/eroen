@@ -15,7 +15,7 @@ HOMEPAGE="http://www.bay12games.com/dwarves"
 SRC_URI="http://www.bay12games.com/dwarves/${MY_P}_linux.tar.bz2"
 
 LICENSE="free-noncomm BSD BitstreamVera"
-SLOT="0"
+SLOT="$PV"
 KEYWORDS="~amd64 ~x86 -*"
 IUSE="debug"
 
@@ -38,7 +38,7 @@ DEPEND="${RDEPEND}
 
 S=${WORKDIR}/${MY_PN}_linux
 
-gamesdir="${GAMES_PREFIX_OPT}/${PN}"
+gamesdir="${GAMES_PREFIX_OPT}/${PN}-${SLOT}"
 QA_PRESTRIPPED="${gamesdir}/libs/Dwarf_Fortress"
 RESTRICT="strip"
 
@@ -49,19 +49,17 @@ pkg_setup() {
 }
 
 src_prepare() {
-	rm libs/*.so*
-	cp "${FILESDIR}"/{dwarf-fortress,Makefile} .
+	rm -f libs/*.so* || die
+	cp "${FILESDIR}"/Makefile . || die
+	cp "${FILESDIR}"/dwarffortress2.sh ./dwarffortress || die
 	epatch_user
 }
 
 src_configure() {
+	sed -i -e "s/@@SLOT@@/${SLOT}/g" ./dwarffortress || die
+
 	tc-export CXX PKG_CONFIG
 	CXXFLAGS+=" -D$(use debug || echo N)DEBUG"
-}
-
-src_compile() {
-	default
-	sed -i -e "s:^gamesdir=.*:gamesdir=${gamesdir}:" ${PN} || die
 }
 
 src_install() {
@@ -70,7 +68,7 @@ src_install() {
 	doins -r raw data libs
 
 	# install our wrapper
-	dogamesbin ${PN}
+	newgamesbin ./dwarffortress dwarffortress-${SLOT}
 
 	# install docs
 	dodoc README.linux *.txt
@@ -82,9 +80,9 @@ src_install() {
 
 pkg_postinst() {
 	elog "System-wide Dwarf Fortress has been installed to ${gamesdir}. This is"
-	elog "symlinked to ~/.dwarf-fortress when dwarf-fortress is run."
-	elog "For more information on what exactly is replaced, see ${GAMES_BINDIR}/${PN}."
-	elog "Note: This means that the primary entry point is ${GAMES_BINDIR}/${PN}."
+	elog "symlinked to ~/.dwarffortress-${SLOT} when dwarffortress-${SLOT} is run."
+	elog "For more information on what exactly is replaced, see ${GAMES_BINDIR}/dwarffortress-${SLOT}."
+	elog "Note: This means that the primary entry point is ${GAMES_BINDIR}/dwarffortress-${SLOT}."
 	elog "Do not run ${gamesdir}/libs/Dwarf_Fortress."
 	elog
 	elog "Optional runtime dependencies: install sys-libs/ncurses[$(use amd64 && echo "abi_x86_32,")unicode]"

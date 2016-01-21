@@ -1,7 +1,7 @@
 #!/bin/sh
 
-gamesdir=/opt/dwarf-fortress
-install="$HOME/.dwarf-fortress"
+gamesdir=/opt/dwarffortress-@@SLOT@@
+install="$HOME/.dwarffortress-@@SLOT@@"
 
 do_install() {
 	cp -rn "$gamesdir"/data "$install"/
