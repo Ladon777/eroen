@@ -4,7 +4,7 @@
 
 EAPI=5
 
-inherit eutils games multilib versionator
+inherit eutils flag-o-matic pax-utils games multilib versionator
 
 MY_PV=$(replace_all_version_separators _ "$(get_version_component_range 2-)")
 MY_PN=df
@@ -46,6 +46,9 @@ pkg_setup() {
 	games_pkg_setup
 
 	multilib_toolchain_setup x86
+
+	# dfhack needs symbols that are removed from libgraphics with optimization
+	filter-flags '-O*'
 }
 
 src_prepare() {
@@ -76,6 +79,10 @@ src_install() {
 	prepgamesdirs
 
 	fperms 750 "${gamesdir}"/libs/Dwarf_Fortress
+	
+	# PAX marking for dfhack. PTPAX markings change the md5 hash of the
+	# executable, and breaks version detection in dfhack
+	PAX_MARKINGS=XT pax-mark -m "${ED%/}${gamesdir}"/libs/Dwarf_Fortress
 }
 
 pkg_postinst() {
