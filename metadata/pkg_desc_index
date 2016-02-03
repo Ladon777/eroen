@@ -1,7 +1,6 @@
 app-admin/eselect-wine 0.1 0.2: Manage active wine version
 app-arch/lld 9999: The LLVM Linker
 app-cdr/k3b 2.0.2_p20140225: The CD/DVD Kreator for KDE
-app-emulation/emul-linux-x86-wxGTK 20130224: Provides precompiled 32bit libraries
 app-emulation/lxc 0.8.0-r1 0.8.0-r2: LinuX Containers userspace utilities
 app-emulation/wine 1.5.19 1.5.20 1.5.21 1.5.22 1.5.28 1.7.8 1.7.13 1.7.14 1.7.15 1.7.16 1.7.17 1.7.18 1.7.19-r1 1.7.21 1.7.21-r1 1.7.21-r2 1.7.21-r3 1.7.26 1.7.26-r1 1.7.26-r2 1.7.26-r3 1.7.27 1.7.28 1.7.28-r1 1.7.28-r2 1.7.29 1.7.29-r1 1.7.29-r2 1.7.33-r1 1.7.33-r2 1.7.34-r1 1.7.34-r2: Free implementation of Windows(tm) on Unix
 app-emulation/wine-compholio 1.7.26 1.7.27: Special build of wine with patches to make a variety of Windows applications work out of the box
