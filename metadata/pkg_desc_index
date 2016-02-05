@@ -65,11 +65,11 @@ net-dialup/slirp 1.0.17.7: SLIP/PPP emulator using a dial up shell account
 net-libs/opal 3.12.4: C++ class library normalising numerous telephony protocols
 net-misc/ga_wrapper 0.0.1 9999: wrapper for using git-annex for distfiles with portage
 net-misc/sendspace-cli 0.1.0: For uploading files to SendSpace from command line.
-net-misc/wssh 9999: command-line utility/shell for WebSocket inspired by netcat
+net-misc/wssh 9999: wrapper for using git-annex for distfiles with portage
 net-p2p/transmission 2.73 2.76: A Fast, Easy and Free BitTorrent client
 net-print/foo2zjs 99999999: Support for printing to ZjStream-based printers
 sci-mathematics/matlab 2014a: High-level language and interactive environment
-sys-fs/bedup 0.0.8 0.9.0 0.9.0_p20130806 0.9.0_p20140412 0.9.0_p20140413: Btrfs deduplication
+sys-fs/bedup 0.0.8 0.9.0 0.9.0_p20130806 0.9.0_p20140412 0.9.0_p20140413: command-line utility/shell for WebSocket inspired by netcat
 sys-fs/libeatmydata 65 82: LD_PRELOAD hack to convert sync()/msync() and the like to NO-OP
 sys-libs/libfaketime 0.9-r1 0.9.1 0.9.5 0.9.6-r1: Report faked system time to programs
 sys-process/ftop 1.0: Show progress of open files and file systems.
