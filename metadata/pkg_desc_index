@@ -37,6 +37,7 @@ games-roguelike/FTL 1.5.4 1.5.13: Faster Than Light: A spaceship simulation real
 games-roguelike/roguelegacy 20131228: A genealogical rogue-LITE where anyone can be a hero.
 games-rpg/dontstarve 0 1377999049 1377999049_p9999: An uncompromising wilderness survival game full of science and magic.
 games-rpg/farsky 2.01.00: Gather resources and protect yourself in the Ocean depths
+games-simulation/HumanResourceMachine 2016.03.23: Program little office workers to solve puzzles. Be a good employee!
 games-simulation/dwarffortress 0.42.04 34.11 40.03 40.04 40.05 40.06 40.07 40.08 40.09 40.10 40.11 40.12 40.13 40.19 40.20 40.21 40.22 40.23 40.24: Part roguelike, part city-building game set in a procedurally generated high fantasy universe.
 games-simulation/hearthlands 0.6.5: Medieval/fantasy real time city building/strategy game
 games-simulation/lincity-ng 2.0 2.9_beta 9999: City/country simulation game for X and opengl

@@ -1,0 +1,13 @@
+DEFINED_PHASES=install prepare setup unpack
+DESCRIPTION=Program little office workers to solve puzzles. Be a good employee!
+EAPI=5
+HOMEPAGE=http://tomorrowcorporation.com/humanresourcemachine
+KEYWORDS=-* ~amd64
+LICENSE=all-rights-reserved
+RDEPEND=media-libs/libsdl2 media-libs/openal
+RESTRICT=bindist fetch mirror
+SLOT=0
+SRC_URI=HumanResourceMachine-Linux-2016-03-23.sh
+_eclass_exported_funcs=pkg_setup:- src_unpack:- src_prepare:- src_install:-
+_eclasses_=eutils	9d81603248f2ba3ec59124320d123e5e	humblebundle	496df933884252632956ca859b27f1e3	multilib	3972ca401cf7dbb430df9995f5d8d580	toolchain-funcs	7a212e5e01adfa4805c9978366e6ee85	unpacker	45d07319df5f40ee6af58418b0f930be
+_md5_=1bb3a1ca70b6ca8e7fbeee540c94e4c0
