@@ -3,9 +3,6 @@
 # * generated automatically using pmaint *
 
 app-cdr/k3b:emovix - Enable burning support for eMoviX images
-app-emulation/emul-linux-x86-wxGTK:development - Install pkgconfig files
-app-emulation/lxc:man - Build and install man pages.
-app-emulation/lxc:vanilla - Avoid adding Gentoo Linux-specific modifications, which include the custom init script. This is present as a flag to avoid forcing dependencies over users that might not want have them around as they use LXC in contexts where the init script is not useful.
 app-emulation/wine:capi - Enable ISDN support via CAPI
 app-emulation/wine:custom-cflags - Bypass strip-flags; use at your own peril
 app-emulation/wine:dos - Pull in games-emulation/dosbox to run DOS applications

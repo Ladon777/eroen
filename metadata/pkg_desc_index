@@ -1,7 +1,6 @@
 app-admin/eselect-wine 0.1 0.2: Manage active wine version
 app-arch/lld 9999: The LLVM Linker
 app-cdr/k3b 2.0.2_p20140225: The CD/DVD Kreator for KDE
-app-emulation/lxc 0.8.0-r1 0.8.0-r2: LinuX Containers userspace utilities
 app-emulation/wine 1.5.19 1.5.20 1.5.21 1.5.22 1.5.28 1.7.8 1.7.13 1.7.14 1.7.15 1.7.16 1.7.17 1.7.18 1.7.19-r1 1.7.21 1.7.21-r1 1.7.21-r2 1.7.21-r3 1.7.26 1.7.26-r1 1.7.26-r2 1.7.26-r3 1.7.27 1.7.28 1.7.28-r1 1.7.28-r2 1.7.29 1.7.29-r1 1.7.29-r2 1.7.33-r1 1.7.33-r2 1.7.34-r1 1.7.34-r2: Free implementation of Windows(tm) on Unix
 app-emulation/wine-compholio 1.7.26 1.7.27: Special build of wine with patches to make a variety of Windows applications work out of the box
 app-emulation/wine-gentoo 2013.06.24: Menu items and icons for wine
@@ -65,11 +64,11 @@ net-dialup/slirp 1.0.17.7: SLIP/PPP emulator using a dial up shell account
 net-libs/opal 3.12.4: C++ class library normalising numerous telephony protocols
 net-misc/ga_wrapper 0.0.1 9999: wrapper for using git-annex for distfiles with portage
 net-misc/sendspace-cli 0.1.0: For uploading files to SendSpace from command line.
-net-misc/wssh 9999: wrapper for using git-annex for distfiles with portage
+net-misc/wssh 9999: command-line utility/shell for WebSocket inspired by netcat
 net-p2p/transmission 2.73 2.76: A Fast, Easy and Free BitTorrent client
 net-print/foo2zjs 99999999: Support for printing to ZjStream-based printers
 sci-mathematics/matlab 2014a: High-level language and interactive environment
-sys-fs/bedup 0.0.8 0.9.0 0.9.0_p20130806 0.9.0_p20140412 0.9.0_p20140413: command-line utility/shell for WebSocket inspired by netcat
+sys-fs/bedup 0.0.8 0.9.0 0.9.0_p20130806 0.9.0_p20140412 0.9.0_p20140413: Btrfs deduplication
 sys-fs/libeatmydata 65 82: LD_PRELOAD hack to convert sync()/msync() and the like to NO-OP
 sys-libs/libfaketime 0.9-r1 0.9.1 0.9.5 0.9.6-r1: Report faked system time to programs
 sys-process/ftop 1.0: Show progress of open files and file systems.

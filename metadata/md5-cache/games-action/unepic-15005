@@ -1,0 +1,15 @@
+DEFINED_PHASES=compile configure install postinst preinst prepare setup unpack
+DEPEND=app-admin/chrpath
+DESCRIPTION=Combination of platforming and role playing game with many hilarious references
+EAPI=5
+HOMEPAGE=http://www.unepicgame.com/en/game.html
+IUSE=bundled-libs linguas_en linguas_es
+KEYWORDS=~amd64
+LICENSE=all-rights-reserved
+RDEPEND=!bundled-libs? ( media-libs/libsdl2[X,alsa,joystick,opengl,sound,threads,video] media-libs/sdl2-mixer[vorbis] ) sys-libs/zlib virtual/opengl sys-devel/gcc[cxx] games-misc/games-envd
+RESTRICT=mirror fetch bindist
+SLOT=0
+SRC_URI=unepic-15005-bin-installer-32.run
+_eclass_exported_funcs=pkg_preinst:games pkg_postinst:games pkg_setup:- src_unpack:- src_prepare:- src_configure:games src_compile:games src_install:-
+_eclasses_=base	3fe4f8980633fd7bc69e9887209ba2fe	eutils	9d81603248f2ba3ec59124320d123e5e	games	2cf0d67d765e6358b435ccda30c13ad8	multilib	3972ca401cf7dbb430df9995f5d8d580	toolchain-funcs	7a212e5e01adfa4805c9978366e6ee85	user	906f3c8eb3a2350a4f1191a89baa3e46
+_md5_=58d4e720f47fc0fa02e31c353ad3a9b8
