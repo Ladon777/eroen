@@ -38,16 +38,15 @@ games-roguelike/roguelegacy 20131228: A genealogical rogue-LITE where anyone can
 games-rpg/dontstarve 0 1377999049 1377999049_p9999: An uncompromising wilderness survival game full of science and magic.
 games-rpg/farsky 2.01.00: Gather resources and protect yourself in the Ocean depths
 games-simulation/HumanResourceMachine 2016.03.23: Program little office workers to solve puzzles. Be a good employee!
-games-simulation/dwarffortress 0.42.04 34.11 40.03 40.04 40.05 40.06 40.07 40.08 40.09 40.10 40.11 40.12 40.13 40.19 40.20 40.21 40.22 40.23 40.24: Part roguelike, part city-building game set in a procedurally generated high fantasy universe.
+games-simulation/dwarffortress 0.42.04 40.03 40.04 40.05 40.06 40.07 40.08 40.09 40.10 40.11 40.12 40.13 40.19 40.20 40.21 40.22 40.23 40.24: Part roguelike, part city-building game set in a procedurally generated high fantasy universe.
 games-simulation/hearthlands 0.6.5: Medieval/fantasy real time city building/strategy game
 games-simulation/lincity-ng 2.0 2.9_beta 9999: City/country simulation game for X and opengl
-games-simulation/prisonarchitect 0.24c: 
 games-simulation/simutrans 0.112.3 0.120.0.1 0.120.0.1-r1: A free Transport Tycoon clone
 games-simulation/simutrans-pak128 2.5.2_rc120 9999: Simutrans pakset featuring a complex economy and a wide variety of objects
 games-simulation/simutrans-pak64 0.120.0.1 9999: Official Simutrans pakset
 games-simulation/sunlesssea 2016.03.29: Lose your mind. Eat your crew.
 games-strategy/unityofcommand 104d: Operational-level wargame covering the 1942/43 Stalingrad campaign
-games-util/dfhack 0.34.11.2 0.34.11.3_p20130302 0.40.06_pre20140808 0.40.07_pre20140811 0.40.08.2 0.40.09_pre20140827 0.40.10.1 0.40.11.1 0.40.12.1 0.40.13.1 0.40.13.9999 0.40.19.1 0.40.23.1 0.40.24.0 0.40.24.1 0.40.24.2 0.42.04_alpha2: Memory hacking library for Dwarf Fortress and a set of tools that use it
+games-util/dfhack 0.34.11.2 0.40.06_pre20140808 0.40.07_pre20140811 0.40.08.2 0.40.09_pre20140827 0.40.10.1 0.40.11.1 0.40.12.1 0.40.13.1 0.40.13.9999 0.40.19.1 0.40.23.1 0.40.24.0 0.40.24.1 0.40.24.2 0.42.04_alpha2: Memory hacking library for Dwarf Fortress and a set of tools that use it
 games-util/dontstarve-updater 18: extracted updater from Don't Starve
 games-util/dwarftherapist 0.6.13_p20120616 0.6.13_p20120616-r1 0.6.13_p20120616-r2: Management tool designed to run side-by-side with games-simulation/dwarffortress
 games-util/irpgstats 0.2: IdleRPG db parser and pretty-printer
@@ -70,7 +69,7 @@ net-misc/wssh 9999: command-line utility/shell for WebSocket inspired by netcat
 net-p2p/transmission 2.73 2.76: A Fast, Easy and Free BitTorrent client
 net-print/foo2zjs 99999999: Support for printing to ZjStream-based printers
 sci-mathematics/matlab 2014a: High-level language and interactive environment
-sys-fs/bedup 0.0.8 0.9.0 0.9.0_p20130806 0.9.0_p20140412 0.9.0_p20140413: Btrfs deduplication
+sys-fs/bedup 0.0.8 0.9.0: Btrfs deduplication
 sys-fs/libeatmydata 65 82: LD_PRELOAD hack to convert sync()/msync() and the like to NO-OP
 sys-libs/libfaketime 0.9-r1 0.9.1 0.9.5 0.9.6-r1: Report faked system time to programs
 sys-process/ftop 1.0: Show progress of open files and file systems.
