@@ -4,7 +4,7 @@
 
 EAPI=5
 
-inherit eutils pax-utils humblebundle
+inherit eutils pax-utils readme.gentoo-r1 humblebundle
 
 DESCRIPTION="Minimalistic subway layout game"
 HOMEPAGE="http://dinopoloclub.com/minimetro/"
@@ -58,4 +58,10 @@ src_install() {
 
 	make_wrapper $PN "\"${EPREFIX%/}/opt/$PN/MiniMetro.$arch\""
 	make_desktop_entry $PN "MiniMetro" "${EPREFIX%/}/opt/$PN/MiniMetro_Data/Resources/UnityPlayer.png"
+
+	readme.gentoo_create_doc
+}
+
+pkg_postinst() {
+	readme.gentoo_print_elog
 }
