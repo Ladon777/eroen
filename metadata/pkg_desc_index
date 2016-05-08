@@ -42,6 +42,7 @@ games-simulation/HumanResourceMachine 2016.03.23: Program little office workers 
 games-simulation/dwarffortress 0.42.04 34.11 40.03 40.04 40.05 40.06 40.07 40.08 40.09 40.10 40.11 40.12 40.13 40.19 40.20 40.21 40.22 40.23 40.24: Part roguelike, part city-building game set in a procedurally generated high fantasy universe.
 games-simulation/hearthlands 0.6.5: Medieval/fantasy real time city building/strategy game
 games-simulation/lincity-ng 2.0 2.9_beta 9999: City/country simulation game for X and opengl
+games-simulation/minimetro 6: Minimalistic subway layout game
 games-simulation/prisonarchitect 0.24c: 
 games-simulation/simutrans 0.112.3 0.120.0.1 0.120.0.1-r1: A free Transport Tycoon clone
 games-simulation/simutrans-pak128 2.5.2_rc120 9999: Simutrans pakset featuring a complex economy and a wide variety of objects
