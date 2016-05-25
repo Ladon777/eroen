@@ -1,4 +1,4 @@
-# Copyright 2012 Eroen
+# Copyright 2012 - 2016 Eroen
 # Distributed under the terms of the BSD 2-clause license
 # $Header: $
 
@@ -87,8 +87,8 @@ src_install () {
 pkg_postinst () {
 	games_pkg_postinst
 
-	elog fs2_open needs to be run from a directory containing the *.vp files
+	elog fs2_open needs to be run from a directory containing the \*.vp files
 	elog from a Freespace 2 install.
 	elog
-	elog User data is stored in ~/.fs2_open/
+	elog User data is stored in \~/.fs2_open/
 }
