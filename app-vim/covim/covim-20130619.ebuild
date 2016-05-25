@@ -1,4 +1,4 @@
-# By eroen, 2013 - 2015
+# By eroen, 2013 - 2016
 # Distributed under the terms of the ISC licence
 # $Header: $
 
@@ -37,6 +37,8 @@ src_prepare() {
 }
 
 src_install() {
+	eshopts_push -u failglob
 	vim-plugin_src_install
+	eshopts_pop
 	chmod ugo+x "${D}"/usr/share/vim/vimfiles/plugin/CoVimServer.py || die
 }
