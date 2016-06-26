@@ -34,10 +34,10 @@ MY_SYSCONFDIR="${GAMES_SYSCONFDIR}/${P}"
 
 absdf="${GAMES_BINDIR}/Dwarf_Fortress"
 QA_PREBUILT+=" ${absdf#/}"
-if use libgraphics; then
-	abslg="$( games_get_libdir )/libgraphics.so"
-	QA_PREBUILT+=" ${abslg#/}"
-fi
+# if use libgraphics; then
+# 	abslg="$( games_get_libdir )/libgraphics.so"
+# 	QA_PREBUILT+=" ${abslg#/}"
+# fi
 
 pkg_setup() {
 	games_pkg_setup
