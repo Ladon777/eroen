@@ -88,15 +88,15 @@ RDEPEND="${LIBRARY_DEPEND}
 #	x11-libs/libXrandr (libXrandr.so.2)
 #	x11-libs/pango (libpangocairo-1.0.so.0,libpango-1.0.so.0,libpangoft2-1.0.so.0) - gtklibs
 
-multilib_toolchain_setup x86
-if use egg; then
-	dfhack_libdir="$(games_get_libdir)"
-else
-	dfhack_libdir="$(games_get_libdir)/${P}"
-fi
-QA_PREBUILT+="${dfhack_libdir}"/libruby.so
-
 pkg_setup() {
+	multilib_toolchain_setup x86
+	if use egg; then
+		dfhack_libdir="$(games_get_libdir)"
+	else
+		dfhack_libdir="$(games_get_libdir)/${P}"
+	fi
+	# QA_PREBUILT+="${dfhack_libdir}"/libruby.so
+
 	df_executable="df-${df_PV}"
 	dfhack_datadir="${GAMES_DATADIR}/${P}"
 	dfhack_docdir="/usr/share/doc/${P}"
