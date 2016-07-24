@@ -23,6 +23,7 @@ RDEPEND="media-libs/glew[abi_x86_32(-)]
 	media-libs/libsdl[abi_x86_32(-),joystick,video]
 	media-libs/sdl-image[abi_x86_32(-),png]
 	media-libs/sdl-ttf[abi_x86_32(-)]
+	>=sys-apps/coreutils-7.1
 	sys-libs/zlib[abi_x86_32(-)]
 	virtual/glu[abi_x86_32(-)]
 	x11-libs/gtk+:2[abi_x86_32(-)]"

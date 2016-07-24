@@ -4,6 +4,7 @@ gamesdir=/opt/dwarf-fortress
 install="$HOME/.dwarf-fortress"
 
 do_install() {
+	# -n switch requires GNU cp 7.1
 	cp -rn "$gamesdir"/data "$install"/
 	# DF gets unhappy when this is out of sync
 	cp -f "$gamesdir"/data/index "$install"/data/
