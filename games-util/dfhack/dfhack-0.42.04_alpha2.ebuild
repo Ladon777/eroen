@@ -89,10 +89,6 @@ src_unpack() {
 }
 
 src_prepare() {
-	# rm -r patches-master-$(date -I)/
-	# stg export -n -d patches-master-$(date -I) -e patch
-	# rm /usr/local/portage/games-util/dfhack/files/dfhack-0.40.06.9999/*
-	# cp patches-master-$(date -I)/* /usr/local/portage/games-util/dfhack/files/dfhack-0.40.06.9999/
 	epatch "${FILESDIR}"/${P}/*.patch
 
 #	pushd "${S}"/depends/clsocket
@@ -139,69 +135,39 @@ src_prepare() {
 	# Set in ./Config.cpp, installed together with the rest of the directory.
 	# - output files
 	# - - Make symlinks to (unversioned) /var
-
-#	 Doesn't build:
-#	sed -e '/autolabor2/d' \
-#		-e '/rprobe/d' \
-#		-i plugins/devel/CMakeLists.txt || die
-:
 }
 
 src_configure() {
-	# cmake -Wno-dev -LA .. | grep -v '^--' | sed -e 's/:\S*=/=/' -e 's/.*/"-D&"/'
-	mycmakeargs=(
-		#"-DBUILD_DEVEL=OFF"
+	local mycmakeargs=(
 		"$(cmake-utils_use_build api DEVEL)"
-		#"-DBUILD_DEV_PLUGINS=OFF"
 		"$(cmake-utils_use_build !minimal DEV_PLUGINS)"
-		#"-DBUILD_DFUSION=ON"
 		"$(cmake-utils_use_build dfusion DFUSION)"
-		#"-DBUILD_DOXYGEN=OFF"
+		"$(cmake-utils_use_build doc DOCS)"
 		"$(cmake-utils_use_build doc DOXYGEN)"
-		#"-DBUILD_DWARFEXPORT=ON"
 		"$(cmake-utils_use_build !minimal DWARFEXPORT)"
-		#"-DBUILD_EGGY=OFF"
 		"$(cmake-utils_use_build egg EGGY)"
-		#"-DBUILD_ISOWORLD=OFF"
 		"$(cmake-utils_use_build isoworld ISOWORLD)"
 		"-DBUILD_LIBRARY=ON"
-		#"-DBUILD_MAPEXPORT=ON"
 		"$(cmake-utils_use_build !minimal MAPEXPORT)"
 		"-DBUILD_PLUGINS=ON"
 		"-DBUILD_RUBY=ON"
 		"-DBUILD_SKELETON=OFF"
-		#"-DBUILD_SUPPORTED=ON"
+		"$(cmake-utils_use_build stonesense STONESENSE)"
 		"$(cmake-utils_use_build !minimal SUPPORTED)"
-		#"-DCMAKE_INSTALL_PREFIX=/usr/local"
 		"-DCMAKE_INSTALL_PREFIX=${GAMES_DATADIR}"
 		"-DCONSOLE_NO_CATCH=OFF"
-		#"-DDFHACK_BINARY_DESTINATION=."
 		"-DDFHACK_BINARY_DESTINATION=/usr/bin"
-		#"-DDFHACK_DATA_DESTINATION=hack"
 		"-DDFHACK_DATA_DESTINATION=${dfhack_datadir}"
-		#"-DDFHACK_DEVDOC_DESTINATION=hack"
 		"-DDFHACK_DEVDOC_DESTINATION=${dfhack_docdir}/dev"
-		#"-DDFHACK_EGGY_DESTINATION=libs"
 		"-DDFHACK_EGGY_DESTINATION=${dfhack_libdir}"
-		#"-DDFHACK_INCLUDES_DESTINATION=hack/include"
 		"-DDFHACK_INCLUDES_DESTINATION=${GAMES_PREFIX}/include"
-		#"-DDFHACK_LIBRARY_DESTINATION=hack"
 		"-DDFHACK_LIBRARY_DESTINATION=${dfhack_libdir}"
-		#"-DDFHACK_LUA_DESTINATION=hack/lua"
 		"-DDFHACK_LUA_DESTINATION=${dfhack_datadir}/lua"
-		#"-DDFHACK_PLUGIN_DESTINATION=hack/plugins"
 		"-DDFHACK_PLUGIN_DESTINATION=${dfhack_datadir}/plugins"
-		#"-DDFHACK_RUBY_DESTINATION=hack/ruby"
 		"-DDFHACK_RUBY_DESTINATION=${dfhack_datadir}/ruby"
-		#"-DDFHACK_STATEDIR=."
 		"-DDFHACK_STATEDIR=${GAMES_STATEDIR}/${P}"
-		#"-DDFHACK_USERDOC_DESTINATION=hack"
 		"-DDFHACK_USERDOC_DESTINATION=${dfhack_docdir}"
-		#"-DDF_EXECUTABLE=./libs/Dwarf_Fortress"
 		"-DDF_EXECUTABLE=${df_executable}"
-		"-DDL_RUBY=OFF"
-		"-DRUBYLIB=${WORKDIR}/libruby.so"
-		"-DINSTALL_NEW_LIBSTDCXX=OFF"
 		)
 
 	cmake-utils_src_configure

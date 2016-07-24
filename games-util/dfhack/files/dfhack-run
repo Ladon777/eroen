@@ -1,0 +1,9 @@
+#!/bin/sh
+
+gamesdir=/opt/dwarf-fortress
+dfhackdir=/opt/dfhack
+install="$HOME/.dwarf-fortress"
+
+cd "$install" || exit
+export LD_LIBRARY_PATH="${LD_LIBRARY_PATH:+$LD_LIBRARY_PATH:}$dfhackdir/hack/lib:$dfhackdir/hack"
+exec "$dfhackdir"/hack/dfhack-run "$@"
