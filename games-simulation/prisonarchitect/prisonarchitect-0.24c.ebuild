@@ -38,10 +38,12 @@ DEPEND=""
 RDEPEND="${LIBDEPEND}"
 [[ ${EAPI} == *-hdepend ]] || DEPEND+=" ${HDEPEND}"
 
-MY_PREFIX=${GAMES_PREFIX_OPT}/${P}
-use amd64 && MY_ARCH=x86_64
-use x86 && MY_ARCH=i686
-QA_PREBUILT=("${MY_PREFIX#/}"/PrisonArchitect.${MY_ARCH})
+pkg_setup() {
+	MY_PREFIX=${GAMES_PREFIX_OPT}/${P}
+	use amd64 && MY_ARCH=x86_64
+	use x86 && MY_ARCH=i686
+	QA_PREBUILT=("${MY_PREFIX#/}"/PrisonArchitect.${MY_ARCH})
+}
 
 src_install() {
 	insinto "${MY_PREFIX}"
