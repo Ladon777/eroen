@@ -4,7 +4,8 @@
 
 EAPI=6
 
-inherit versionator
+MULTILIB_COMPAT=( abi_x86_{32,64} )
+inherit multilib-build toolchain-funcs versionator
 
 MY_PV=$(replace_all_version_separators _ "$(get_version_component_range 2-)")
 MY_PN=df
@@ -12,63 +13,105 @@ MY_P=${MY_PN}_${MY_PV}
 
 DESCRIPTION="A single-player fantasy game"
 HOMEPAGE="http://www.bay12games.com/dwarves"
-SRC_URI="amd64? ( http://www.bay12games.com/dwarves/${MY_P}_linux.tar.bz2 )
-	x86? ( http://www.bay12games.com/dwarves/${MY_P}_linux32.tar.bz2 )"
+SRC_URI="abi_x86_64? ( http://www.bay12games.com/dwarves/${MY_P}_linux.tar.bz2 )
+	abi_x86_32? ( http://www.bay12games.com/dwarves/${MY_P}_linux32.tar.bz2 )"
 
 LICENSE="free-noncomm BSD BitstreamVera"
 SLOT="0"
 KEYWORDS="~amd64 ~x86 -*"
 IUSE="debug"
 
-RDEPEND="media-libs/glew
-	media-libs/libsdl[joystick,video]
-	media-libs/sdl-image[png]
-	media-libs/sdl-ttf
-	sys-libs/zlib
-	virtual/glu
-	x11-libs/gtk+:2"
+RDEPEND="media-libs/glew[${MULTILIB_USEDEP}]
+	media-libs/libsdl[joystick,video,${MULTILIB_USEDEP}]
+	media-libs/sdl-image[png,${MULTILIB_USEDEP}]
+	media-libs/sdl-ttf[${MULTILIB_USEDEP}]
+	sys-libs/zlib[${MULTILIB_USEDEP}]
+	virtual/glu[${MULTILIB_USEDEP}]
+	x11-libs/gtk+:2[${MULTILIB_USEDEP}]"
 # Yup, libsndfile, openal and ncurses are only needed at compile-time; the code
 # dlopens them at runtime if requested.
 DEPEND="${RDEPEND}
-	media-libs/libsndfile
-	media-libs/openal
-	sys-libs/ncurses[unicode]
-	virtual/pkgconfig"
+	media-libs/libsndfile[${MULTILIB_USEDEP}]
+	media-libs/openal[${MULTILIB_USEDEP}]
+	sys-libs/ncurses[unicode,${MULTILIB_USEDEP}]
+	virtual/pkgconfig[${MULTILIB_USEDEP}]"
 
-S=${WORKDIR}/${MY_PN}_linux
+S=${WORKDIR}
 
 gamesdir="/opt/${PN}"
 QA_PREBUILT="${gamesdir#/}/libs/Dwarf_Fortress"
 RESTRICT="strip"
 
+src_unpack() {
+	abi_src_unpack() {
+		case "$MULTILIB_ABI_FLAG" in
+			abi_x86_32) local f=${MY_P}_linux32.tar.bz2 ;;
+			abi_x86_64) local f=${MY_P}_linux.tar.bz2 ;;
+			*) die ;;
+		esac
+		unpack "$f"
+		mv "df_linux" "$BUILD_DIR" || die
+	}
+	multilib_foreach_abi abi_src_unpack
+}
+
 src_prepare() {
-	rm -f libs/*.so* || die
-	sed -i -e '1i#include <cmath>' g_src/ttf_manager.cpp || die
-	default
+	abi_src_prepare() {
+		cd "$BUILD_DIR" || die
+		rm -f libs/*.so* || die
+		sed -i -e '1i#include <cmath>' g_src/ttf_manager.cpp || die
+		default_src_prepare
+	}
+	multilib_foreach_abi abi_src_prepare
 }
 
 src_configure() {
-	tc-export CXX PKG_CONFIG
 	CXXFLAGS+=" -D$(use debug || echo N)DEBUG"
 }
 
 src_compile() {
-	emake -f "${FILESDIR}/Makefile.native"
-	sed -e "s:^gamesdir=.*:gamesdir=${gamesdir}:" "${FILESDIR}/dwarf-fortress" > dwarf-fortress || die
+	abi_src_compile() {
+		tc-export PKG_CONFIG
+		cd "$BUILD_DIR" || die
+		emake -f "${FILESDIR}/Makefile.native"
+
+		if multilib_is_native_abi; then
+			local install="\${HOME}/.dwarf-fortress-${PV}" exe="./libs/Dwarf_Fortress"
+		else
+			local install="\${HOME}/.dwarf-fortress-${PV}_${MULTILIB_ABI_FLAG}" exe="./libs_${MULTILIB_ABI_FLAG}/Dwarf_Fortress"
+		fi
+		sed -e "s:^gamesdir=.*:gamesdir=${gamesdir}:" \
+			-e "s:^install=.*:install=\"${install}\":" \
+			-e "s:^exe=.*:exe=\"${exe}\":" \
+			"${FILESDIR}/dwarf-fortress" > dwarf-fortress || die
+	}
+	multilib_foreach_abi abi_src_compile
 }
 
 src_install() {
-	# install data-files and libs
-	insinto "${gamesdir}"
-	doins -r raw data libs
+	abi_src_install() {
+		cd "$BUILD_DIR" || die
 
-	# install our wrapper
-	dobin dwarf-fortress
+		# install data-files and libs
+		insinto "${gamesdir}"
+		doins -r raw data libs
 
-	# install docs
-	dodoc README.linux *.txt
+		# install our wrapper
+		if multilib_is_native_abi; then
+			dobin dwarf-fortress
+		else
+			newbin dwarf-fortress "dwarf-fortress_${MULTILIB_ABI_FLAG}"
+		fi
 
-	fperms 755 "${gamesdir}"/libs/Dwarf_Fortress
+		# install docs
+		dodoc README.linux *.txt
+
+		fperms 755 "${gamesdir}"/libs/Dwarf_Fortress
+		if ! multilib_is_native_abi; then
+			mv "${ED}${gamesdir}/libs" "${ED}${gamesdir}/libs_${MULTILIB_ABI_FLAG}"
+		fi
+	}
+	multilib_foreach_abi abi_src_install
 }
 
 pkg_postinst() {
