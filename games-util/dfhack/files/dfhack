@@ -3,8 +3,10 @@
 gamesdir=/opt/dwarf-fortress
 dfhackdir=/opt/dfhack
 install="$HOME/.dwarf-fortress"
+exe="./libs/Dwarf_Fortress"
 
 do_install() {
+	# -n switch requires GNU cp 7.1
 	cp -rn "$gamesdir"/data "$install"/
 	# DF gets unhappy when this is out of sync
 	cp -f "$gamesdir"/data/index "$install"/data/
@@ -29,4 +31,4 @@ fi
 cd "$install" || exit
 export LD_LIBRARY_PATH="${LD_LIBRARY_PATH:+$LD_LIBRARY_PATH:}$dfhackdir/hack/lib:$dfhackdir/hack"
 export LD_PRELOAD="${LD_PRELOAD:+$LD_PRELOAD:}$dfhackdir/hack/libdfhack.so"
-exec ./libs/Dwarf_Fortress "$@"
+exec "$exe" "$@"
