@@ -23,9 +23,11 @@ if [ -d "$install" ]; then
 	find -L "$install/" -type l -delete
 	# ignore "are the same file" errors
 	do_install 2>/dev/null
+	do_dfhack_install 2>/dev/null
 else
 	mkdir "$install" || exit
 	do_install || exit
+	do_dfhack_install || exit
 fi
 
 cd "$install" || exit
