@@ -1,0 +1,61 @@
+respect DFHACK_LIBRARY_DESTINATION
+
+From: eroen <eroen@occam.eroen.eu>
+
+
+---
+ CMakeLists.txt              |    4 ++--
+ plugins/ruby/CMakeLists.txt |    2 ++
+ plugins/ruby/ruby.cpp       |    6 +++---
+ 3 files changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 17f6b65..60af461 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -115,11 +115,11 @@ set(DFHACK_VERSION "${DF_VERSION}-${DFHACK_RELEASE}")
+ # the dfhack libraries will be installed here:
+ IF(UNIX)
+     # put the lib into DF/hack
+-    SET(DFHACK_LIBRARY_DESTINATION hack)
++    SET(DFHACK_LIBRARY_DESTINATION hack CACHE INTERNAL "")
+     SET(DFHACK_EGGY_DESTINATION libs)
+ ELSE()
+     # windows is crap, therefore we can't do nice things with it. leave the libs on a nasty pile...
+-    SET(DFHACK_LIBRARY_DESTINATION .)
++    SET(DFHACK_LIBRARY_DESTINATION . CACHE INTERNAL "")
+     SET(DFHACK_EGGY_DESTINATION .)
+ ENDIF()
+ # external tools will be installed here:
+diff --git a/plugins/ruby/CMakeLists.txt b/plugins/ruby/CMakeLists.txt
+index 3aeac6d..f2974f6 100644
+--- a/plugins/ruby/CMakeLists.txt
++++ b/plugins/ruby/CMakeLists.txt
+@@ -34,6 +34,8 @@ INCLUDE_DIRECTORIES("${dfhack_SOURCE_DIR}/depends/tthread")
+ 
+ DFHACK_PLUGIN(ruby ruby.cpp LINK_LIBRARIES dfhack-tinythread)
+ ADD_DEPENDENCIES(ruby ruby-autogen-rb)
++set_property( SOURCE "ruby.cpp" APPEND PROPERTY COMPILE_DEFINITIONS
++        "DFHACK_LIBRARY_DESTINATION=\"${DFHACK_LIBRARY_DESTINATION}\"" )
+ 
+ INSTALL(FILES ${RUBYLIB} DESTINATION ${DFHACK_LIBRARY_DESTINATION})
+ 
+diff --git a/plugins/ruby/ruby.cpp b/plugins/ruby/ruby.cpp
+index adc451a..0dc423a 100644
+--- a/plugins/ruby/ruby.cpp
++++ b/plugins/ruby/ruby.cpp
+@@ -325,11 +325,11 @@ static int df_loadruby(void)
+ {
+     const char *libpath =
+ #if defined(WIN32)
+-        "./libruby.dll";
++        DFHACK_LIBRARY_DESTINATION "/libruby.dll";
+ #elif defined(__APPLE__)
+-        "hack/libruby.dylib";
++        DFHACK_LIBRARY_DESTINATION "/libruby.dylib";
+ #else
+-        "hack/libruby.so";
++        DFHACK_LIBRARY_DESTINATION "/libruby.so";
+ #endif
+ 
+     libruby_handle = OpenPlugin(libpath);
