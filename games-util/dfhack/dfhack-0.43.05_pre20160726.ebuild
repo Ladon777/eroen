@@ -23,7 +23,7 @@ else
 	xml_EGIT_COMMIT="95f0627d9f2fe9179865a1eaebf348ea6afcbc27"
 fi
 
-# KEYWORDS="-* ~amd64" # ~x86
+KEYWORDS="-* ~amd64" # ~x86
 
 CMAKE_MIN_VERSION=2.8.0
 CMAKE_REMOVE_MODULES_LIST="FindCurses FindDoxygen CMakeVS10FindMake"
@@ -48,6 +48,8 @@ RDEPEND="${LIBRARY_DEPEND}
 
 PATCHES=( "$FILESDIR"/dfhack-$PV )
 
+QA_PREBUILT="opt/dfhack/hack/libruby.so"
+
 pkg_setup() {
 	multilib_toolchain_setup x86
 }
@@ -62,7 +64,7 @@ src_unpack() {
 
 src_prepare() {
 	default
-	local install="\${HOME}/.dwarf-fortress-${PV}_${MULTILIB_ABI_FLAG}" exe="./libs_abi_x86_32/Dwarf_Fortress"
+	local install="\${HOME}/.dwarf-fortress-${df_PV}_dfhack" exe="./libs_abi_x86_32/Dwarf_Fortress"
 	sed -e "s:^install=.*:install=${install}:" \
 		-e "s:^exe=.*:exe=\"${exe}\":" \
 		"$FILESDIR"/dfhack > "$T"/dfhack || die
