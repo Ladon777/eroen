@@ -22,7 +22,7 @@ IUSE="egg"
 
 DEPEND_SCONS="virtual/pkgconfig"
 
-DEPEND_INCLUDE="media-libs/glew
+DEPEND_INCLUDE="media-libs/glew:0
 	virtual/glu
 	media-libs/libsdl
 	media-libs/libsndfile
@@ -37,7 +37,7 @@ COMMON_DEPEND="!games-simulation/dwarffortress[libgraphics]
 	app-emulation/emul-linux-x86-gtklibs
 	app-emulation/emul-linux-x86-sdl
 	|| ( virtual/glu[abi_x86_32(-)] app-emulation/emul-linux-x86-opengl )
-	|| ( media-libs/glew[abi_x86_32(-)] app-emulation/emul-linux-x86-opengl )
+	|| ( media-libs/glew:0[abi_x86_32(-)] app-emulation/emul-linux-x86-opengl )
 	|| ( sys-libs/zlib[abi_x86_32(-)] app-emulation/emul-linux-x86-baselibs[-abi_x86_32(-)] )"
 
 	#|| ( media-libs/libsdl app-emulation/emul-linux-x86-sdl )
