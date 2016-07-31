@@ -21,7 +21,7 @@ SLOT="0"
 KEYWORDS="~amd64 ~x86 -*"
 IUSE="debug"
 
-RDEPEND="media-libs/glew[${MULTILIB_USEDEP}]
+RDEPEND="media-libs/glew:0[${MULTILIB_USEDEP}]
 	media-libs/libsdl[joystick,video,${MULTILIB_USEDEP}]
 	media-libs/sdl-image[png,${MULTILIB_USEDEP}]
 	media-libs/sdl-ttf[${MULTILIB_USEDEP}]

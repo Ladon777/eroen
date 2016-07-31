@@ -22,7 +22,7 @@ IUSE="egg"
 
 HDEPEND="virtual/pkgconfig"
 LIBDEPEND="
-	|| ( media-libs/glew[abi_x86_32]
+	|| ( media-libs/glew:0[abi_x86_32]
 		( media-libs/glew
 			app-emulation/emul-linux-x86-opengl ) )
 	|| ( virtual/glu[abi_x86_32]

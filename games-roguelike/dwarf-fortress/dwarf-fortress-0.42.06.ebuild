@@ -19,7 +19,7 @@ SLOT="0"
 KEYWORDS="~amd64 ~x86 -*"
 IUSE="debug"
 
-RDEPEND="media-libs/glew[abi_x86_32(-)]
+RDEPEND="media-libs/glew:0[abi_x86_32(-)]
 	media-libs/libsdl[abi_x86_32(-),opengl,video,X]
 	media-libs/libsndfile[abi_x86_32(-),alsa]
 	media-libs/sdl-image[abi_x86_32(-),jpeg,png,tiff]
