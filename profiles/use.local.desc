@@ -99,6 +99,7 @@ games-action/unepic:bundled-libs - Use the bundled SDL2 libraries
 games-engines/fs2_open:doxygen - Generate developer documentation
 games-engines/fs2_open:inferno - Build with enhanced limits
 games-engines/fs2_open:speech - Support for text-to-speach
+games-engines/openmw:devtools - Install development tools like bsatool, esmtool and opencs.
 games-engines/openmw:installer - Build installer for copying game data from CDROM
 games-engines/openmw:launcher - Build launcher
 games-engines/openmw:minimal - Don't build utilities that don't require extra dependencies
