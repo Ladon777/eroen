@@ -31,3 +31,16 @@ src_install() {
 	doins Morrowind.ini Journal.htm
 	dodoc Bethesda.TXT readme.txt
 }
+
+pkg_postinst() {
+	elog "If you want to use the data from this package with openmw, you"
+	elog "should first run "
+	elog "  mkdir ~/.config/openmw"
+	elog "  openmw-iniimporter /usr/share/morrowind-data/Morrowind.ini ~/.config/openmw/openmw.cfg"
+	elog
+	elog "Then launch openmw with a command like"
+	elog "  openmw --data \"\\\"/usr/share/morrowind-data/Data Files\\\"\" --content Morrowind.esm --content Tribunal.esm --content Bloodmoon.esm"
+	elog
+	elog "Alternatively, you can use openmw-launcher to set up the"
+	elog "configuration files."
+}
