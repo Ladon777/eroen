@@ -11,7 +11,6 @@ inherit steam
 
 DESCRIPTION="Data files for Morrowind"
 HOMEPAGE="http://www.elderscrolls.com"
-SRC_URI=""
 LICENSE="all-rights-reserved Morrowind-EULA"
 RESTRICT="bindist mirror"
 
