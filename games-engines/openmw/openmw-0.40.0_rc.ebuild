@@ -52,7 +52,7 @@ src_prepare() {
 }
 
 src_configure() {
-	use devtools && ! use qt5 && elog "qt5 USE flag is disabled, openmw-cs will not be installed"
+	use devtools && ! use qt5 && elog "'qt5' USE flag is disabled, 'openmw-cs' will not be installed"
 
 	local mycmakeargs=(
 		-DBUILD_BSATOOL=$(usex devtools)
@@ -100,11 +100,26 @@ pkg_preinst() {
 pkg_postinst() {
 	gnome2_icon_cache_update
 
-	elog "You need the original Morrowind Data files. If you haven't"
+	elog "You need the original Morrowind data files. If you haven't"
 	elog "installed them yet, you can install them straight via the"
 	elog "installation wizard which is the officially"
 	elog "supported method (either by using the launcher or by calling"
 	elog "'openmw-wizard' directly)."
+
+	if ! use qt5; then
+		elog
+		elog "'qt5' USE flag is disabled, 'openmw-launcher' and"
+		elog "'openmw-wizard' are not available. You are on your own for"
+		elog "making the Morrowind data files available and pointing"
+		elog "openmw at them."
+		elog
+		elog "Additionally; you must import the Morrowind.ini file before"
+		elog "running openmw with the Morrowind data files for the first"
+		elog "time. Typically this can be done like so:"
+		elog
+		elog "    mkdir -p ~/.config/openmw"
+		elog "    openmw-iniimporter /path/to/Morrowind.ini ~/.config/openmw/openmw.cfg"
+	fi
 }
 
 pkg_postrm() {
