@@ -7,7 +7,7 @@ inherit gnome2-utils cmake-utils
 
 DESCRIPTION="An open source reimplementation of TES III: Morrowind"
 HOMEPAGE="http://openmw.org/"
-SRC_URI="https://github.com/OpenMW/openmw/archive/${P}.tar.gz"
+SRC_URI="https://github.com/OpenMW/openmw/archive/${P%_*}.tar.gz"
 
 LICENSE="GPL-3 MIT BitstreamVera ZLIB"
 SLOT="0"
