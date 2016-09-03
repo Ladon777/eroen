@@ -1,112 +1,128 @@
-# By Eroen, 2013-2014
-# Distributed under the terms of the ISC license
-# $Header: $
+# Copyright 1999-2016 Gentoo Foundation
+# Distributed under the terms of the GNU General Public License v2
+# $Id$
 
-EAPI=5
+EAPI=6
+inherit gnome2-utils cmake-utils git-r3
 
-inherit eutils flag-o-matic versionator games cmake-utils
-[[ $(get_version_component_range $(get_version_component_count)) == *999? ]] && inherit git-r3
-
-DESCRIPTION="Unofficial open source engine reimplementation of the game Morrowind"
+DESCRIPTION="An open source reimplementation of TES III: Morrowind"
 HOMEPAGE="http://openmw.org/"
-LICENSE="GPL-3 MIT BitstreamVera"
+#SRC_URI="https://github.com/OpenMW/openmw/archive/${P%_*}.tar.gz"
+EGIT_REPO_URI="http://github.com/OpenMW/openmw.git https://github.com/OpenMW/openmw.git"
+
+LICENSE="GPL-3 MIT BitstreamVera ZLIB"
 SLOT="0"
-KEYWORDS=""
-IUSE="installer +launcher minimal +opencs profile test +tr1"
+#KEYWORDS="~amd64 ~x86"
+IUSE="doc devtools +qt5"
 
-if [[ ${PV} == *999? ]]; then
-	EGIT_REPO_URI="git://github.com/OpenMW/openmw.git"
-	if [[ $(get_version_component_count) -ge 4 ]]; then
-		EGIT_BRANCH=openmw$(get_version_component_range 2)
-	fi
-else
-	SRC_URI="http://github.com/OpenMW/${PN}/archive/${P}.tar.gz"
-	S=${WORKDIR}/${PN}-${P}
-fi
-
-OPENMW_LIBS=">=dev-games/mygui-3.2.1
-	dev-libs/tinyxml
+# 0.37.0: >=media-video/ffmpeg-0.9 is required for swresample
+RDEPEND="
+	>=dev-games/openscenegraph-3.3.4[ffmpeg,jpeg,png,qt5,sdl,svg,truetype,zlib]
+	|| ( media-libs/libtxc_dxtn x11-drivers/ati-drivers x11-drivers/nvidia-drivers )
+	>=dev-games/mygui-3.2.2
+	>=dev-libs/boost-1.56.0-r1[threads]
+	dev-libs/tinyxml[stl]
+	media-libs/libsdl2[joystick,opengl,X,video]
 	media-libs/openal
-	>=virtual/ffmpeg-0.9
-	sci-physics/bullet"
-INSTALLER_LIBS="app-arch/unshield
-	dev-qt/qtcore
-	dev-qt/qtgui"
-LAUNCHER_LIBS="dev-qt/qtcore
-	dev-qt/qtgui"
-OPENCS_LIBS="dev-qt/qtcore
-	dev-qt/qtgui
-	dev-qt/qtxmlpatterns"
+	>=sci-physics/bullet-2.83
+	>=media-video/ffmpeg-0.9
+	virtual/opengl
+	qt5? ( app-arch/unshield
+		dev-qt/qtcore:5
+		dev-qt/qtnetwork:5
+		dev-qt/qtopengl:5
+		dev-qt/qtwidgets:5 )"
+DEPEND="${RDEPEND}
+	virtual/pkgconfig
+	doc? ( app-doc/doxygen
+		dev-python/sphinx
+		media-gfx/graphviz )"
 
-HDEPEND=""
-# boost[threads]: can't test https://bugs.gentoo.org/458404
-# libsdl2[-directfb]: https://bugs.gentoo.org/503130
-LIBDEPEND="${OPENMW_LIBS}
-	installer? ( ${INSTALLER_LIBS} )
-	launcher? ( ${LAUNCHER_LIBS} )
-	opencs? ( ${OPENCS_LIBS} )
-	>=dev-games/ogre-1.9[boost,cg,freeimage,opengl,threads,zip]
-	dev-libs/boost:=[threads]
-	media-libs/libsdl2[-directfb(-)]"
-DEPEND="${LIBDEPEND}
-	test? ( dev-cpp/gtest[tr1=] )"
-[[ ${EAPI} == *-hdepend ]] || DEPEND+=" ${HDEPEND}"
-RDEPEND="${LIBDEPEND}"
-
-DOCS=""
-
-pkg_setup() {
-	if use test && ! use tr1; then
-		append-cflags -DGTEST_USE_OWN_TR1_TUPLE=1
-		append-cxxflags -DGTEST_USE_OWN_TR1_TUPLE=1
-	fi
-}
+#S=${WORKDIR}/${PN}-${P}
 
 src_prepare() {
-	epatch_user
+	default
+
+	# We don't install license files
+	sed -e '/LICDIR/d' \
+		-i CMakeLists.txt || die
+	# Use the system tinyxml headers
+	sed -e 's/"tinyxml.h"/<tinyxml.h>/g' \
+		-e 's/"tinystr.h"/<tinystr.h>/g' \
+		-i extern/oics/ICSPrerequisites.h || die
 }
 
 src_configure() {
-	mycmakeargs=(
-		-DDPKG_PROGRAM=""
-		-DCMAKE_INSTALL_PREFIX="${GAMES_PREFIX}"
-		-DDATAROOTDIR="${GAMES_DATADIR_BASE}"
-		-DGLOBAL_DATA_PATH="${GAMES_DATADIR}"
-		-DDATADIR="${GAMES_DATADIR}/${PN}"
-		-DSYSCONFDIR="${GAMES_SYSCONFDIR}"/${PN}
-		-DMORROWIND_DATA_FILES="${GAMES_DATADIR}/${PN}/data"
-		-DOPENMW_RESOURCE_FILES="${GAMES_DATADIR}/${PN}/resources"
-		$(cmake-utils_use_build installer WIZARD)
-		$(cmake-utils_use_build launcher LAUNCHER)
-		$(cmake-utils_use_build opencs OPENCS)
-		$(cmake-utils_use_build !minimal BSATOOL)
-		$(cmake-utils_use_build !minimal ESMTOOL)
-		$(cmake-utils_use_build !minimal MWINIIMPORTER)
-		$(cmake-utils_use_build !minimal MYGUI_PLUGIN)
-		$(cmake-utils_use_build !minimal NIFTEST)
-		$(cmake-utils_use_with profile CODE_COVERAGE)
+	use devtools && ! use qt5 && elog "'qt5' USE flag is disabled, 'openmw-cs' will not be installed"
+
+	local mycmakeargs=(
+		-DBUILD_BSATOOL=$(usex devtools)
+		-DBUILD_ESMTOOL=$(usex devtools)
+		-DBUILD_OPENCS=$(usex devtools $(usex qt5))
+		-DBUILD_NIFTEST=$(usex devtools)
+		-DBUILD_LAUNCHER=$(usex qt5)
+		-DBUILD_WIZARD=$(usex qt5)
+		-DBUILD_UNITTESTS=OFF
+		-DGLOBAL_DATA_PATH=/usr/share
+		-DICONDIR="/usr/share/icons/hicolor/256x256/apps"
+		-DMORROWIND_DATA_FILES="/usr/share/morrowind-data"
 		-DUSE_SYSTEM_TINYXML=ON
-		$(cmake-utils_use_build test UNITTESTS)
-		)
-	# Compatibility with commits pre 0738e862cb
-	mycmakeargs+=(-DGLOBAL_CONFIG_PATH=/etc/)
+		-DDESIRED_QT_VERSION=5
+	)
+
 	cmake-utils_src_configure
 }
 
-src_test() {
-	pushd "${BUILD_DIR}" > /dev/null || die
-	./openmw_test_suite || die
-	popd > /dev/null || die
+src_compile() {
+	cmake-utils_src_compile
+
+	if use doc ; then
+		emake -C "${CMAKE_BUILD_DIR}" doc
+		find "${CMAKE_BUILD_DIR}"/docs/Doxygen/html \
+			-name '*.md5' -type f -delete || die
+	fi
 }
 
 src_install() {
 	cmake-utils_src_install
-	rm -rf "${D}"/usr/share/licenses || die
-	sed -e "s:resources=resources:resources=${GAMES_DATADIR}/${PN}/resources:" \
-		-i "${D}/${GAMES_SYSCONFDIR}"/${PN}/openmw.cfg || die
-	prepgamesdirs
-	# /etc/openmw/ is hardcoded, but we set SYSCONFDIR for games.eclass
-	# Compatibility with commits pre 0738e862cb
-	mv -t "${D}"/etc "${D}/${GAMES_SYSCONFDIR}"/${PN} || die
-	rmdir "${D}/${GAMES_SYSCONFDIR}" || die
+
+	# about 43k files, dodoc seems to have trouble
+	if use doc ; then
+		dodir "/usr/share/doc/${PF}"
+		mv "${CMAKE_BUILD_DIR}"/docs/Doxygen/html \
+			"${D}/usr/share/doc/${PF}/" || die
+	fi
+}
+
+pkg_preinst() {
+	gnome2_icon_savelist
+}
+
+pkg_postinst() {
+	gnome2_icon_cache_update
+
+	elog "You need the original Morrowind data files. If you haven't"
+	elog "installed them yet, you can install them straight via the"
+	elog "installation wizard which is the officially"
+	elog "supported method (either by using the launcher or by calling"
+	elog "'openmw-wizard' directly)."
+
+	if ! use qt5; then
+		elog
+		elog "'qt5' USE flag is disabled, 'openmw-launcher' and"
+		elog "'openmw-wizard' are not available. You are on your own for"
+		elog "making the Morrowind data files available and pointing"
+		elog "openmw at them."
+		elog
+		elog "Additionally; you must import the Morrowind.ini file before"
+		elog "running openmw with the Morrowind data files for the first"
+		elog "time. Typically this can be done like so:"
+		elog
+		elog "    mkdir -p ~/.config/openmw"
+		elog "    openmw-iniimporter /path/to/Morrowind.ini ~/.config/openmw/openmw.cfg"
+	fi
+}
+
+pkg_postrm() {
+	gnome2_icon_cache_update
 }
