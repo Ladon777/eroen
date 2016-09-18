@@ -88,6 +88,12 @@ STEAM_FILESDIR="${BASH_SOURCE[0]%/*}/files"
 # Absolute path to steamcmd.sh
 STEAM_STEAMCMD=$T/steamcmd/steamcmd.sh
 
+# @ECLASS-VARIABLE: STEAM_ANON
+# @DESCRIPTION:
+# Set this to "yes" if the application to be fetched is available with
+# anonymous login.
+: ${STEAM_ANON:=no}
+
 # @FUNCTION: steam_pkg_setup
 # @DESCRIPTION:
 # This function is exported. It makes sanity checks and fails early for some
@@ -105,8 +111,9 @@ steam_pkg_setup() {
 		ewarn "x86 TEXTRELs are not supported on the system."
 	fi
 
-	: ${STEAM_CREDS:=/etc/portage/creds_steam}
-	if [[ $MERGE_TYPE != binary && ! -r $STEAM_CREDS ]]; then
+	if [[ $MERGE_TYPE != binary && \
+		yes != ${STEAM_ANON,,} && \
+		! -r $STEAM_CREDS ]]; then
 		die "\$STEAM_CREDS=$STEAM_CREDS is not readable"
 	fi
 
@@ -118,8 +125,20 @@ steam_pkg_setup() {
 # @DESCRIPTION:
 # Takes 1 argument, prints the corresponding value from STEAM_CREDS.
 steam_get_cred() {
-	[[ -n $1 ]] || die "$FUNCNAME - no argument passed"
-	awk "/^${1^^}: /{print \$2}" "$STEAM_CREDS" || die
+	[[ 1 == $# ]] || die "$FUNCNAME - wrong number of arguments, expected 1"
+	[[ -n $1 ]] || die "$FUNCNAME - passed empty argument"
+	if [[ yes = $STEAM_ANON ]]; then
+		case "$1" in
+			STEAM_USER)
+				printf "anonymous\n"
+				;;
+			*)
+				printf "\n"
+				;;
+		esac
+	else
+		awk "/^${1^^}: /{print \$2}" "$STEAM_CREDS" || die
+	fi
 }
 
 # @FUNCTION: steam_get_mail
@@ -210,5 +229,5 @@ steam_src_unpack() {
 	esteamcmd \
 		"$cmd_platform" \
 		"+force_install_dir ${S}" \
-		"+app_update ${STEAM_app_id}"
+		"+app_update ${STEAM_app_id} verify"
 }
