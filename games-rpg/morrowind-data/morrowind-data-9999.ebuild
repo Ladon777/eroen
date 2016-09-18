@@ -11,7 +11,6 @@ inherit steam
 
 DESCRIPTION="Data files for Morrowind"
 HOMEPAGE="http://www.elderscrolls.com"
-SRC_URI=""
 LICENSE="all-rights-reserved Morrowind-EULA"
 RESTRICT="bindist mirror"
 
@@ -27,7 +26,7 @@ STEAM_platform=windows
 
 src_install() {
 	insinto /usr/share/morrowind-data
-	doins -r "Data Files"
+	doins -r "Data Files/."
 	doins Morrowind.ini Journal.htm
 	dodoc Bethesda.TXT readme.txt
 }
@@ -39,7 +38,7 @@ pkg_postinst() {
 	elog "  openmw-iniimporter /usr/share/morrowind-data/Morrowind.ini ~/.config/openmw/openmw.cfg"
 	elog
 	elog "Then launch openmw with a command like"
-	elog "  openmw --data \"\\\"/usr/share/morrowind-data/Data Files\\\"\" --content Morrowind.esm --content Tribunal.esm --content Bloodmoon.esm"
+	elog "  openmw --content Morrowind.esm --content Tribunal.esm --content Bloodmoon.esm"
 	elog
 	elog "Alternatively, you can use openmw-launcher to set up the"
 	elog "configuration files."
