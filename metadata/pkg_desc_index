@@ -28,6 +28,7 @@ dev-python/python-evas 9999: Python bindings for EVAS library
 dev-python/uncompyle 0.0.2: converts Python byte-code back into equivalent Python source
 dev-util/patchelf 0.8_p20150724: Small utility to modify the dynamic linker and RPATH of ELF executables
 games-action/unepic 15005: Combination of platforming and role playing game with many hilarious references
+games-arcade/supermeatboy 9999: Platforming with an adorable cube of meat
 games-emulation/psemu-padjoy 0.82: PSEmu plugin to use joysticks/gamepads in PSX-emulators
 games-engines/fs2_open 3.6.14: Opensourced engine from Freespace 2
 games-engines/openmw 0.20.0 0.21.0 0.23.0 0.24.0 0.26.0 0.27.0-r1 0.28.0 0.29.0 0.30.0 0.31.0 0.32.0 0.33.0 0.33.1 0.34.0 0.39.0 0.40.0 9999: An open source reimplementation of TES III: Morrowind
