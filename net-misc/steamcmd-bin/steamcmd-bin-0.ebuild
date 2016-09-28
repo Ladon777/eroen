@@ -45,5 +45,5 @@ src_install() {
 	exeinto /opt/steamcmd/linux32
 	doexe linux32/steamcmd
 	exeinto /opt/steamcmd
-	doexe steamcmd.sh steam.sh
+	doexe steamcmd.sh
 }

@@ -17,8 +17,10 @@ EGIT_REPO_URI="https://github.com/DFHack/dfhack.git"
 if [[ $PV == *.9999 ]]; then
 	EGIT_BRANCH="develop"
 elif [[ $PV == *_alpha* ]]; then
+	EGIT_MIN_CLONE="single"
 	EGIT_COMMIT="${PV/_alpha/-alpha}"
 else
+	EGIT_MIN_CLONE_TYPE=mirror
 	EGIT_COMMIT="29963f4b67b9edae74cd69e159bb63730b524d27"
 	xml_EGIT_COMMIT="95f0627d9f2fe9179865a1eaebf348ea6afcbc27"
 fi
@@ -56,7 +58,7 @@ pkg_setup() {
 
 src_unpack() {
 	git-r3_src_unpack
-	if [[ -n xml_EGIT_COMMIT ]]; then
+	if [[ -n $xml_EGIT_COMMIT ]]; then
 		cd "$S/library/xml" || die
 		git checkout "$xml_EGIT_COMMIT" || die
 	fi

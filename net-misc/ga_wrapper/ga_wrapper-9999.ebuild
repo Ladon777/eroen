@@ -1,15 +1,13 @@
-# By eroen, 2013
-#
+# By eroen, 2013-2016
 # Permission to use, copy, modify, and/or distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
 # copyright notice and this permission notice appear in all copies.
-#
-# $Header: $
+# $Id$
 
 EAPI=5
-PYTHON_COMPAT=(python2_7 python3_3)
+PYTHON_COMPAT=(python2_7 python3_3 python3_4 python3_5)
 
-if [[ ${PV} == *9999* ]]; then
+if [[ ${PV} == 9999 ]]; then
 	inherit git-r3 distutils-r1
 	EGIT_REPO_URI="https://www.eroen.eu/cgit/cgit.cgi/ga_wrapper"
 else
@@ -18,7 +16,7 @@ else
 	KEYWORDS="~x86 ~amd64"
 fi
 
-DESCRIPTION="wrapper for using git-annex for distfiles with portage"
+DESCRIPTION="Wrapper for using git-annex for portage DISTDIR"
 HOMEPAGE="https://www.eroen.eu"
 
 LICENSE="ISC"
