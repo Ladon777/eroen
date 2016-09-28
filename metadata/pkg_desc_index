@@ -70,7 +70,7 @@ media-libs/fmod 4.38.02 4.44.04: music and sound effects library, and a sound pr
 media-plugins/audacious-plugins 3.5.1: Audacious Player - Your music, your way, no exceptions
 net-dialup/slirp 1.0.17.7: SLIP/PPP emulator using a dial up shell account
 net-libs/opal 3.12.4: C++ class library normalising numerous telephony protocols
-net-misc/ga_wrapper 0.0.1 9999: wrapper for using git-annex for distfiles with portage
+net-misc/ga_wrapper 0.0.1 9999: Wrapper for using git-annex for portage DISTDIR
 net-misc/sendspace-cli 0.1.0: For uploading files to SendSpace from command line.
 net-misc/steamcmd-bin 0: Used by steam.eclass
 net-misc/wssh 9999: command-line utility/shell for WebSocket inspired by netcat
