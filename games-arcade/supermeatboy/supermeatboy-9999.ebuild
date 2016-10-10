@@ -32,7 +32,7 @@ src_install() {
 
 	insinto /opt/$PN
 	doins -r resources
-	doins buttonmap.cfg gameaudio.dat gamedata.dat locdb.txt
+	doins buttonmap.cfg gameaudio.dat gamedata.dat locdb.txt steam_appid.txt
 
 	doicon -s 64 supermeatboy.png
 	make_wrapper $PN /opt/$PN/bin/SuperMeatBoy /opt/$PN

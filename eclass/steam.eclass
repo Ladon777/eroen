@@ -42,6 +42,12 @@ DEPEND="${PYTHON_DEPS}
 # steam_src_unpack is called. The App ID for an application can be found on
 # https://steamdb.info
 
+# @ECLASS-VARIABLE: STEAM_ANON
+# @DESCRIPTION:
+# Set this to "yes" if the application to be fetched is available with
+# anonymous login.
+: ${STEAM_ANON:=no}
+
 # @ECLASS-VARIABLE: STEAM_platform
 # @DEFAULT_UNSET
 # @DESCRIPTION:
@@ -51,7 +57,8 @@ DEPEND="${PYTHON_DEPS}
 # @ECLASS-VARIABLE: STEAM_CREDS
 # @DESCRIPTION:
 # Path to credentials file. If unset, the default /etc/portage/creds_steam will
-# be used.
+# be used. This should not be set in ebuilds, it is meant as user
+# configuration. The credentials are not used if EVCS_OFFLINE is non-empty.
 #
 # This file should be created by the user, and contain the following:
 #
@@ -63,7 +70,7 @@ DEPEND="${PYTHON_DEPS}
 # MAIL_PASS: myemailpassword
 # @CODE
 #
-# Note that the file must be readable by the user your package manager runs as.
+# Note that this file must be readable by the user your package manager runs as.
 #
 # The STEAM_* settings will be used to authenticate with Steam, while the
 # MAIL_* settings will be used to obtain the verification code required for new
@@ -71,10 +78,29 @@ DEPEND="${PYTHON_DEPS}
 # https://store.steampowered.com/twofactor/manage_action the MAIL_* settings
 # can be omitted.
 #
+# If the MAIL_* settings are supplied, we can attempt to log in to an account
+# with 'Steam Guard' enabled.
 # MAIL_SERVER should refer to an imap4/TLS server on port 993 that supports
 # PLAIN authentication. For gmail, this must be explicitly enabled by the user.
-# Only the folder named "INBOX" will be checked.
+# Only the IMAP folder named "INBOX" will be checked.
 : ${STEAM_CREDS:=/etc/portage/creds_steam}
+
+# @ECLASS-VARIABLE: STEAM_CACHEDIR
+# @DESCRIPTION:
+# Location for caching downloaded files between runs. To disable caching, set
+# this to zero-length string.
+#
+# This should not be set by ebuilds or profiles, it is meant for user
+# configuration.
+# STEAM_CACHEDIR ?= ${DISTDIR}/steam-cache
+
+# @ECLASS-VARIABLE: EVCS_OFFLINE
+# @DEFAULT_UNSET
+# @DESCRIPTION:
+# If non-empty, this variable prevents any online operations.
+#
+# If this is enabled, STEAM_CACHEDIR must not be empty and a cache must exist
+# for the current STEAM_app_id.
 
 # @ECLASS-VARIABLE: STEAM_FILESDIR
 # @INTERNAL
@@ -88,33 +114,33 @@ STEAM_FILESDIR="${BASH_SOURCE[0]%/*}/files"
 # Absolute path to steamcmd.sh
 STEAM_STEAMCMD=$T/steamcmd/steamcmd.sh
 
-# @ECLASS-VARIABLE: STEAM_ANON
-# @DESCRIPTION:
-# Set this to "yes" if the application to be fetched is available with
-# anonymous login.
-: ${STEAM_ANON:=no}
-
 # @FUNCTION: steam_pkg_setup
 # @DESCRIPTION:
 # This function is exported. It makes sanity checks and fails early for some
 # issues, and sets up the python interpreter.
 steam_pkg_setup() {
-	# CONFIG_PAX_ELFRELOCS must not be disabled (if present).
-	# Textrels are all over the place :(
-	if linux_config_exists; then
-		if [[ -n $(linux_chkconfig_string PAX_ELFRELOCS) ]] && \
-			! linux_chkconfig_present PAX_ELFRELOCS; then
-			die "steamcmd needs support for x86 TEXTRELs to run"
-		fi
-	else
-		ewarn "Could not find kernel config. The install will fail later if"
-		ewarn "x86 TEXTRELs are not supported on the system."
-	fi
+	if [[ $MERGE_TYPE != binary ]]; then
+		if [[ -n $EVCS_OFFLINE ]]; then
+			if [[ -v STEAM_CACHEDIR && -z $STEAM_CACHEDIR ]]; then
+				die "EVCS_OFFLINE is set, but STEAM_CACHEDIR is empty."
+			fi
+		else
+			# CONFIG_PAX_ELFRELOCS must not be disabled (if present, only with grsecurity).
+			# Textrels are all over the place :(
+			if linux_config_exists; then
+				if [[ -n $(linux_chkconfig_string PAX_ELFRELOCS) ]] && \
+					! linux_chkconfig_present PAX_ELFRELOCS; then
+					die "steamcmd needs support for x86 TEXTRELs to run"
+				fi
+			else
+				ewarn "Could not find kernel config. The install will fail later if"
+				ewarn "x86 TEXTRELs are not supported on the system."
+			fi
 
-	if [[ $MERGE_TYPE != binary && \
-		yes != ${STEAM_ANON,,} && \
-		! -r $STEAM_CREDS ]]; then
-		die "\$STEAM_CREDS=$STEAM_CREDS is not readable"
+			if [[ yes != ${STEAM_ANON,,} && ! -r $STEAM_CREDS ]]; then
+				die "STEAM_CREDS=$STEAM_CREDS is not readable"
+			fi
+		fi
 	fi
 
 	python-any-r1_pkg_setup
@@ -161,11 +187,10 @@ steam_get_mail() {
 # credentials from STEAM_CREDS to log in. This is normally called by
 # steam_src_install, but it can be used directly for specific uses.
 esteamcmd() {
-	# Supply password on stdin to avoid leaking it in /proc/$pid/cmdline
-	printf "%s\n" "$(steam_get_cred STEAM_PASS)" \
-		| "$STEAM_STEAMCMD" \
+	# Credentials are not passed, already supplied by steam_firstlogin
+	"$STEAM_STEAMCMD" \
 		"+@ShutdownOnFailedCommand 1" \
-		"+@NoPromptForPassword 0" \
+		"+@NoPromptForPassword 1" \
 		"+login $(steam_get_cred STEAM_USER)" \
 		"$@" \
 		"+quit" || die -n "Error $? in $FUNCNAME $*"
@@ -177,19 +202,24 @@ esteamcmd() {
 # verfication code email, and complete authentication. This is normally called
 # by steam_src_install, and must be called before esteamcmd.
 steam_firstlogin() {
-	# make steam up to date
-	einfo "Update steam"
-	"$STEAM_STEAMCMD" "+quit" || die "unable to run steamcmd.sh"
+	# ensure steamcmd is up to date
+	einfo "Update steamcmd"
+	"$STEAM_STEAMCMD" "+quit" || die "Unable to run steamcmd.sh"
 
-	# generate the 'special access code'
-	einfo "Attempt to log in, generate special access code email"
+	# Attempt to log in
+	# Supply password on stdin to avoid leaking it in /proc/$pid/cmdline
+	einfo "Attempt to log in"
 	printf "%s\n" "$(steam_get_cred STEAM_PASS)" \
 		| "$STEAM_STEAMCMD" "+login $(steam_get_cred STEAM_USER)" "+quit"
+
 	if [[ $? == 5 ]]; then
+		# 'Steam Guard' is enabled, attempt to get the 'special access code'
+		# that (hopefully) was generated.
+		einfo "Login failed, attempt to get 'Steam Guard' 'special access code' from email"
 		local i imax=5
 		for (( i=1; i<=imax; i++ )); do
 			# supply 'special access code'
-			einfo "Supply special access code, attempt $i of $imax"
+			einfo "'Steam Guard' login attempt $i of $imax"
 			printf "%s\n" "$(steam_get_cred STEAM_PASS)" \
 				| "$STEAM_STEAMCMD" "+set_steam_guard_code $(steam_get_mail)" \
 				"+login $(steam_get_cred STEAM_USER)" \
@@ -199,10 +229,6 @@ steam_firstlogin() {
 			sleep 10
 		done
 	fi
-
-	# verify we can log in
-	einfo "Verify we can log in"
-	esteamcmd
 }
 
 # @FUNCTION: steam_src_unpack
@@ -214,20 +240,51 @@ steam_firstlogin() {
 # This function is exported.
 steam_src_unpack() {
 	if [[ -z $STEAM_app_id ]]; then
-		die "\$STEAM_app_id is not set, $FUNCNAME cannot be used"
+		die "STEAM_app_id is not set, $FUNCNAME cannot be used"
 	fi
-
-	cp -rf "$EROOT/opt/steamcmd" "${STEAM_STEAMCMD%/*}" || die
-
-	steam_firstlogin
 
 	local cmd_platform=
 	[[ -n $STEAM_platform ]] && cmd_platform="+@sSteamCmdForcePlatformType ${STEAM_platform}"
 
-	# fetch our thing to $S
-	einfo "Install app_id ${STEAM_app_id}"
-	esteamcmd \
-		"$cmd_platform" \
-		"+force_install_dir ${S}" \
-		"+app_update ${STEAM_app_id} verify"
+	# This attempts to immitate the $EGIT3_STORE_DIR logic in git-r3.eclass
+	local distdir=${PORTAGE_ACTUAL_DISTDIR:-${DISTDIR}}
+	: ${STEAM_CACHEDIR=${distdir}/steam-cache}
+	if [[ -n $STEAM_CACHEDIR ]]; then
+		local fetchdir=$STEAM_CACHEDIR/$STEAM_app_id
+		[[ -n $STEAM_platform ]] && fetchdir+="/$STEAM_platform"
+	else
+		local fetchdir=$S
+	fi
+	einfo "Download location: $fetchdir"
+
+	if [[ -n $EVCS_OFFLINE ]]; then
+		if [[ ! -d $fetchdir ]]; then
+			die "EVCS_OFFLINE is set, but fetchdir=$fetchdir does not exist."
+		fi
+	else
+		einfo "Copying steamcmd to ${STEAM_STEAMCMD%/*}"
+		cp -rf "${EPREFIX%/}/opt/steamcmd" "${STEAM_STEAMCMD%/*}" || die
+		steam_firstlogin
+
+		if [[ ! -d $fetchdir ]]; then
+			(
+				addwrite /
+				mkdir -p "$fetchdir"
+			) || die "Unable to create ${fetchdir}"
+		fi
+
+		einfo "Install app_id ${STEAM_app_id}"
+		(
+			addwrite "${fetchdir}"
+			esteamcmd \
+				"$cmd_platform" \
+				"+force_install_dir \"$fetchdir\"" \
+				"+app_update ${STEAM_app_id} verify"
+		)
+	fi
+
+	if [[ -n $STEAM_CACHEDIR ]]; then
+		einfo "Copying from cache to \$S"
+		cp -fPpR "$fetchdir" "$S" || die
+	fi
 }
