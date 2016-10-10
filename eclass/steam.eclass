@@ -51,7 +51,7 @@ DEPEND="${PYTHON_DEPS}
 # @ECLASS-VARIABLE: STEAM_CREDS
 # @DESCRIPTION:
 # Path to credentials file. If unset, the default /etc/portage/creds_steam will
-# be used.
+# be used. The credentials are not used if EVCS_OFFLINE is non-empty.
 #
 # This file should be created by the user, and contain the following:
 #
@@ -85,6 +85,14 @@ DEPEND="${PYTHON_DEPS}
 # configuration.
 # STEAM_CACHEDIR ?= ${DISTDIR}/steam-cache
 
+# @ECLASS-VARIABLE: EVCS_OFFLINE
+# @DESCRIPTION:
+# If non-empty, this variable prevents any online operations.
+#
+# If this is enabled, STEAM_CACHEDIR must not be empty and a cache must exist
+# for the current STEAM_app_id.
+: ${EVCS_OFFLINE:=}
+
 # @ECLASS-VARIABLE: STEAM_FILESDIR
 # @INTERNAL
 # @DESCRIPTION:
@@ -108,22 +116,28 @@ STEAM_STEAMCMD=$T/steamcmd/steamcmd.sh
 # This function is exported. It makes sanity checks and fails early for some
 # issues, and sets up the python interpreter.
 steam_pkg_setup() {
-	# CONFIG_PAX_ELFRELOCS must not be disabled (if present).
-	# Textrels are all over the place :(
-	if linux_config_exists; then
-		if [[ -n $(linux_chkconfig_string PAX_ELFRELOCS) ]] && \
-			! linux_chkconfig_present PAX_ELFRELOCS; then
-			die "steamcmd needs support for x86 TEXTRELs to run"
-		fi
-	else
-		ewarn "Could not find kernel config. The install will fail later if"
-		ewarn "x86 TEXTRELs are not supported on the system."
-	fi
+	if [[ $MERGE_TYPE != binary ]]; then
+		if [[ -n $EVCS_OFFLINE ]]; then
+			if [[ -v STEAM_CACHEDIR && -z $STEAM_CACHEDIR ]]; then
+				die "\$EVCS_OFFLINE is set, but \$STEAM_CACHEDIR is empty."
+			fi
+		else
+			# CONFIG_PAX_ELFRELOCS must not be disabled (if present, only with grsecurity).
+			# Textrels are all over the place :(
+			if linux_config_exists; then
+				if [[ -n $(linux_chkconfig_string PAX_ELFRELOCS) ]] && \
+					! linux_chkconfig_present PAX_ELFRELOCS; then
+					die "steamcmd needs support for x86 TEXTRELs to run"
+				fi
+			else
+				ewarn "Could not find kernel config. The install will fail later if"
+				ewarn "x86 TEXTRELs are not supported on the system."
+			fi
 
-	if [[ $MERGE_TYPE != binary && \
-		yes != ${STEAM_ANON,,} && \
-		! -r $STEAM_CREDS ]]; then
-		die "\$STEAM_CREDS=$STEAM_CREDS is not readable"
+			if [[ yes != ${STEAM_ANON,,} && ! -r $STEAM_CREDS ]]; then
+				die "\$STEAM_CREDS=$STEAM_CREDS is not readable"
+			fi
+		fi
 	fi
 
 	python-any-r1_pkg_setup
@@ -226,36 +240,45 @@ steam_src_unpack() {
 		die "\$STEAM_app_id is not set, $FUNCNAME cannot be used"
 	fi
 
-	cp -rf "$EROOT/opt/steamcmd" "${STEAM_STEAMCMD%/*}" || die
-
-	steam_firstlogin
-
 	local cmd_platform=
 	[[ -n $STEAM_platform ]] && cmd_platform="+@sSteamCmdForcePlatformType ${STEAM_platform}"
 
+	# This attempts to immitate the $EGIT3_STORE_DIR logic in git-r3.eclass
 	local distdir=${PORTAGE_ACTUAL_DISTDIR:-${DISTDIR}}
 	: ${STEAM_CACHEDIR:=${distdir}/steam-cache}
 	if [[ -n $STEAM_CACHEDIR ]]; then
 		local fetchdir=$STEAM_CACHEDIR/$STEAM_app_id
+		[[ -n $STEAM_platform ]] && fetchdir+="/$STEAM_platform"
+	else
+		local fetchdir=$S
+	fi
+	einfo "Download location: $fetchdir"
+
+	if [[ -n $EVCS_OFFLINE ]]; then
+		if [[ ! -d $fetchdir ]]; then
+			die "\$EVCS_OFFLINE is set, but \$fetchdir=$fetchdir does not exist."
+		fi
+	else
+		einfo "Copying steamcmd to ${STEAM_STEAMCMD%/*}"
+		cp -rf "${EPREFIX%/}/opt/steamcmd" "${STEAM_STEAMCMD%/*}" || die
+		steam_firstlogin
+
 		if [[ ! -d $fetchdir ]]; then
 			(
 				addwrite /
 				mkdir -p "$fetchdir"
 			) || die "Unable to create ${fetchdir}"
 		fi
-	else
-		local fetchdir=$S
-	fi
 
-	# fetch our thing
-	einfo "Install app_id ${STEAM_app_id}"
-	(
-		addwrite "${fetchdir}"
-		esteamcmd \
-			"$cmd_platform" \
-			"+force_install_dir \"$fetchdir\"" \
-			"+app_update ${STEAM_app_id} verify"
-	)
+		einfo "Install app_id ${STEAM_app_id}"
+		(
+			addwrite "${fetchdir}"
+			esteamcmd \
+				"$cmd_platform" \
+				"+force_install_dir \"$fetchdir\"" \
+				"+app_update ${STEAM_app_id} verify"
+		)
+	fi
 
 	if [[ -n $STEAM_CACHEDIR ]]; then
 		einfo "Copying from cache to \$S"
