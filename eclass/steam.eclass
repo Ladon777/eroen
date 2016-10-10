@@ -76,6 +76,15 @@ DEPEND="${PYTHON_DEPS}
 # Only the folder named "INBOX" will be checked.
 : ${STEAM_CREDS:=/etc/portage/creds_steam}
 
+# @ECLASS-VARIABLE: STEAM_CACHEDIR
+# @DESCRIPTION:
+# Location for caching downloaded files between runs. To disable caching, set
+# this to zero-length string.
+#
+# This should not be set by ebuilds or profiles, it is meant for user
+# configuration.
+# STEAM_CACHEDIR ?= ${DISTDIR}/steam-cache
+
 # @ECLASS-VARIABLE: STEAM_FILESDIR
 # @INTERNAL
 # @DESCRIPTION:
@@ -224,10 +233,32 @@ steam_src_unpack() {
 	local cmd_platform=
 	[[ -n $STEAM_platform ]] && cmd_platform="+@sSteamCmdForcePlatformType ${STEAM_platform}"
 
-	# fetch our thing to $S
+	local distdir=${PORTAGE_ACTUAL_DISTDIR:-${DISTDIR}}
+	: ${STEAM_CACHEDIR:=${distdir}/steam-cache}
+	if [[ -n $STEAM_CACHEDIR ]]; then
+		local fetchdir=$STEAM_CACHEDIR/$STEAM_app_id
+		if [[ ! -d $fetchdir ]]; then
+			(
+				addwrite /
+				mkdir -p "$fetchdir"
+			) || die "Unable to create ${fetchdir}"
+		fi
+	else
+		local fetchdir=$S
+	fi
+
+	# fetch our thing
 	einfo "Install app_id ${STEAM_app_id}"
-	esteamcmd \
-		"$cmd_platform" \
-		"+force_install_dir ${S}" \
-		"+app_update ${STEAM_app_id} verify"
+	(
+		addwrite "${fetchdir}"
+		esteamcmd \
+			"$cmd_platform" \
+			"+force_install_dir \"$fetchdir\"" \
+			"+app_update ${STEAM_app_id} verify"
+	)
+
+	if [[ -n $STEAM_CACHEDIR ]]; then
+		einfo "Copying from cache to \$S"
+		cp -fPpR "$fetchdir" "$S" || die
+	fi
 }
