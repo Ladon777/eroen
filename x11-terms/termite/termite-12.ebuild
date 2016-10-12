@@ -9,7 +9,10 @@ inherit eutils toolchain-funcs versionator
 if [[ 9999 == $PV ]]; then
 	inherit git-r3
 else
-	SRC_URI="https://github.com/thestinger/termite/archive/v$PV.tar.gz -> $P.tar.gz"
+	# Submodules :-(
+	#SRC_URI="https://github.com/thestinger/termite/archive/v$PV.tar.gz -> $P.tar.gz"
+	inherit git-r3
+	EGIT_COMMIT=v$PV
 	KEYWORDS="~amd64 ~x86"
 fi
 
@@ -24,7 +27,7 @@ SLOT="0"
 IUSE=""
 
 LIBDEPEND=">=x11-libs/gtk+-3.0
-	>=x11-libs/vte-0.38:2.91[termite-patch(-)]
+	>=x11-libs/vte-0.43.2:2.91[termite-patch(-)]
 	"
 DEPEND="${LIBDEPEND}"
 RDEPEND="${LIBDEPEND}"
@@ -39,6 +42,12 @@ pkg_pretend() {
 pkg_setup() {
 	# Makefile prepends -O3
 	CXXFLAGS="-O0 ${CXXFLAGS}"
+}
+
+src_prepare() {
+	default
+	sed -e "s/^VERSION = .*$/VERSION = v${PV}/" \
+		-i Makefile || die
 }
 
 src_compile() {
