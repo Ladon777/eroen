@@ -25,14 +25,19 @@ case "${EAPI:-0}" in
 		;;
 esac
 
-[[ -z ${PYTHON_COMPAT[*]} ]] && PYTHON_COMPAT=(python2_7 python3_3 python3_4 python3_5)
-PYTHON_REQ_USE="${PYTHON_REQ_USE}${PYTHON_REQ_USE:+,}ssl"
-inherit linux-info python-any-r1
+inherit linux-info
 
-EXPORT_FUNCTIONS pkg_setup src_unpack
+# Some packages use the eclass just for variables
+case $CATEGORY/$PN in
+	net-misc/steam-eclass-utils) ;;
+	net-misc/steamcmd-bin) ;;
+	*)
+		EXPORT_FUNCTIONS pkg_setup src_unpack
+		DEPEND="net-misc/steamcmd-bin
+			net-misc/steam-eclass-utils"
+		;;
+esac
 
-DEPEND="${PYTHON_DEPS}
-	net-misc/steamcmd-bin"
 
 # @ECLASS-VARIABLE: STEAM_app_id
 # @DEFAULT_UNSET
@@ -71,9 +76,11 @@ DEPEND="${PYTHON_DEPS}
 # MAIL_PASS: myemailpassword
 # @CODE
 #
-# The STEAM_* settings are used to authenticate with Steam.  The MAIL_*
-# settings are used to obtain the 'special access code' required to
-# authenticate accounts with 'Steam Guard' enabled.
+# The STEAM_* settings are used to authenticate with Steam.
+#
+# The MAIL_* settings are used to obtain the 'special access code' required to
+# authenticate accounts with 'Steam Guard' enabled.  This is only available if
+# net-misc/steam-eclass-utils is installed with the 'steam-guard' USE flag.
 #
 # Authenticating with 'Steam Guard' is highly experimental and expected to be
 # fragile.  It is recommended to instead disable 'Steam Guard' by visiting
@@ -102,23 +109,34 @@ DEPEND="${PYTHON_DEPS}
 #
 # This should not be set by ebuilds, it is meant for user configuration.
 
-# @ECLASS-VARIABLE: STEAM_FILESDIR
+# @ECLASS-VARIABLE: ESTEAM_SCRIPTDIR
 # @INTERNAL
 # @DESCRIPTION:
-# Directory where the eclass expects to find its internal files.
-STEAM_FILESDIR="${BASH_SOURCE[0]%/*}/files"
+# Where the eclass expects to find its scripts.
+ESTEAM_SCRIPTDIR="/usr/lib/steam-scripts"
 
-# @ECLASS-VARIABLE: STEAM_STEAMCMD
+# @ECLASS-VARIABLE: ESTEAM_STEAMCMD_SYSTEM
 # @INTERNAL
 # @DESCRIPTION:
-# Absolute path to our copy of steamcmd.sh
-STEAM_STEAMCMD=$T/steamcmd/steamcmd.sh
+# Absolute path to system copy of steamcmd
+ESTEAM_STEAMCMD_SYSTEM="/opt/steamcmd"
+
+# @ECLASS-VARIABLE: ESTEAM_STEAMCMD
+# @INTERNAL
+# @DESCRIPTION:
+# Absolute path to our copy of steamcmd
+ESTEAM_STEAMCMD="$T/steamcmd"
+
+# @ECLASS-VARIABLE: ESTEAM_STEAMCMD_EXE
+# @INTERNAL
+# @DESCRIPTION:
+# Absolute path to steamcmd.sh executable
+ESTEAM_STEAMCMD_EXE="$ESTEAM_STEAMCMD/steamcmd.sh"
 
 # @FUNCTION: steam_pkg_setup
 # @DESCRIPTION:
 # This function is exported.  It performs sanity checks and fails early for
-# some issues, and sets up the python interpreter (used for email checking
-# script).
+# some issues.
 steam_pkg_setup() {
 	if [[ $MERGE_TYPE != binary ]]; then
 		if [[ -n $EVCS_OFFLINE ]]; then
@@ -143,8 +161,6 @@ steam_pkg_setup() {
 			fi
 		fi
 	fi
-
-	python-any-r1_pkg_setup
 }
 
 # @FUNCTION: steam_get_cred
@@ -179,7 +195,7 @@ steam_get_mail() {
 		"$(steam_get_cred MAIL_SERVER)" \
 		"$(steam_get_cred MAIL_USER)" \
 		"$(steam_get_cred MAIL_PASS)" \
-		| ${EPYTHON} "${STEAM_FILESDIR}"/steam-mail.py
+		| "${EPREFIX%/}/$ESTEAM_SCRIPTDIR"/steam-mail.py
 }
 
 # @FUNCTION: esteamcmd
@@ -190,7 +206,7 @@ steam_get_mail() {
 # directly for specialty use.
 esteamcmd() {
 	# Credentials are not passed, already supplied by steam_firstlogin
-	"$STEAM_STEAMCMD" \
+	"$ESTEAM_STEAMCMD_EXE" \
 		"+@ShutdownOnFailedCommand 1" \
 		"+@NoPromptForPassword 1" \
 		"+login $(steam_get_cred STEAM_USER)" \
@@ -207,15 +223,19 @@ esteamcmd() {
 steam_firstlogin() {
 	# Ensure steamcmd is up to date
 	einfo "Update steamcmd"
-	"$STEAM_STEAMCMD" "+quit" || die "Unable to run steamcmd.sh"
+	"$ESTEAM_STEAMCMD_EXE" "+quit" || die "Unable to run steamcmd.sh"
 
 	# Attempt to log in
 	# Supply password on stdin to avoid leaking it in /proc/$pid/cmdline
 	einfo "Attempt to log in"
 	printf "%s\n" "$(steam_get_cred STEAM_PASS)" \
-		| "$STEAM_STEAMCMD" "+login $(steam_get_cred STEAM_USER)" "+quit"
+		| "$ESTEAM_STEAMCMD_EXE" "+login $(steam_get_cred STEAM_USER)" "+quit"
 
 	if [[ $? == 5 ]]; then
+		if ! has_version "net-misc/steam-eclass-utils[steam-guard]"; then
+			die "Steam account is \"Steam Guard\" enabled, but net-misc/steam-eclass-utils" \
+				"is not installed with support for it enabled."
+		fi
 		# 'Steam Guard' is enabled, attempt to get the 'special access code'
 		# that (hopefully) was generated.
 		einfo "Login failed, attempt to get 'Steam Guard' 'special access code' from email"
@@ -224,7 +244,7 @@ steam_firstlogin() {
 			# supply 'special access code'
 			einfo "'Steam Guard' login attempt $i of $imax"
 			printf "%s\n" "$(steam_get_cred STEAM_PASS)" \
-				| "$STEAM_STEAMCMD" "+set_steam_guard_code $(steam_get_mail)" \
+				| "$ESTEAM_STEAMCMD_EXE" "+set_steam_guard_code $(steam_get_mail)" \
 				"+login $(steam_get_cred STEAM_USER)" \
 				"+quit" && break
 
@@ -265,8 +285,8 @@ steam_src_unpack() {
 			die "EVCS_OFFLINE is set, but fetchdir=$fetchdir does not exist."
 		fi
 	else
-		einfo "Copy steamcmd to ${STEAM_STEAMCMD%/*}"
-		cp -rf "${EPREFIX%/}/opt/steamcmd" "${STEAM_STEAMCMD%/*}" || die
+		einfo "Copy steamcmd to ${ESTEAM_STEAMCMD}"
+		cp -rf "${EPREFIX%/}/$ESTEAM_STEAMCMD_SYSTEM" "${ESTEAM_STEAMCMD}" || die
 		steam_firstlogin
 
 		if [[ ! -d $fetchdir ]]; then
