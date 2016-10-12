@@ -14,7 +14,7 @@
 # Conveiniently set up and authenticates with steamcmd and use it to install
 # applications.
 
-# steamcmd documentation:
+# General steamcmd documentation:
 # https://developer.valvesoftware.com/wiki/SteamCMD
 
 case "${EAPI:-0}" in
@@ -26,8 +26,7 @@ case "${EAPI:-0}" in
 esac
 
 [[ -z ${PYTHON_COMPAT[*]} ]] && PYTHON_COMPAT=(python2_7 python3_3 python3_4 python3_5)
-[[ -n $PYTHON_REQ_USE ]] && PYTHON_REQ_USE="$PYTHON_REQ_USE "
-PYTHON_REQ_USE="$PYTHON_REQ_USEssl"
+PYTHON_REQ_USE="${PYTHON_REQ_USE}${PYTHON_REQ_USE:+,}ssl"
 inherit linux-info python-any-r1
 
 EXPORT_FUNCTIONS pkg_setup src_unpack
@@ -38,29 +37,31 @@ DEPEND="${PYTHON_DEPS}
 # @ECLASS-VARIABLE: STEAM_app_id
 # @DEFAULT_UNSET
 # @DESCRIPTION:
-# Steam App ID for steam_src_unpack to install. This must be set before
-# steam_src_unpack is called. The App ID for an application can be found on
+# Steam App ID for steam_src_unpack to fetch.  This must be set before
+# steam_src_unpack is called.  The App ID for an application can be found on
 # https://steamdb.info
 
 # @ECLASS-VARIABLE: STEAM_ANON
 # @DESCRIPTION:
-# Set this to "yes" if the application to be fetched is available with
-# anonymous login.
+# Set this to "yes" if the application can be fetched with anonymous login.
 : ${STEAM_ANON:=no}
 
 # @ECLASS-VARIABLE: STEAM_platform
 # @DEFAULT_UNSET
 # @DESCRIPTION:
-# If this is set, steam_src_unpack will override the current platform in order
-# to install non-native application. Possible values are: "linux", "macos", and "windows".
+# If this is non-empty, steam_src_unpack will override the current platform in
+# order to fetch applications for other platforms.  Possible values are:
+# "linux", "macos", and "windows".  This is useful if you only want to install
+# non-executable data files.
 
 # @ECLASS-VARIABLE: STEAM_CREDS
 # @DESCRIPTION:
-# Path to credentials file. If unset, the default /etc/portage/creds_steam will
-# be used. This should not be set in ebuilds, it is meant as user
-# configuration. The credentials are not used if EVCS_OFFLINE is non-empty.
+# Path to credentials file.  This should not be set in ebuilds, it is meant as
+# user configuration.  This file not required if EVCS_OFFLINE is non-empty, nor
+# for packages that set STEAM_ANON.  Note that this file must be readable by
+# the user your package manager runs as.
 #
-# This file should be created by the user, and contain the following:
+# This file should be created by the user, and has the following format:
 #
 # @CODE
 # STEAM_USER: mysteamusername
@@ -70,28 +71,25 @@ DEPEND="${PYTHON_DEPS}
 # MAIL_PASS: myemailpassword
 # @CODE
 #
-# Note that this file must be readable by the user your package manager runs as.
+# The STEAM_* settings are used to authenticate with Steam.  The MAIL_*
+# settings are used to obtain the 'special access code' required to
+# authenticate accounts with 'Steam Guard' enabled.
 #
-# The STEAM_* settings will be used to authenticate with Steam, while the
-# MAIL_* settings will be used to obtain the verification code required for new
-# Steam installations.  If Steam Guard is disabled from
-# https://store.steampowered.com/twofactor/manage_action the MAIL_* settings
-# can be omitted.
+# Authenticating with 'Steam Guard' is highly experimental and expected to be
+# fragile.  It is recommended to instead disable 'Steam Guard' by visiting
+# https://store.steampowered.com/twofactor/manage_action
 #
-# If the MAIL_* settings are supplied, we can attempt to log in to an account
-# with 'Steam Guard' enabled.
-# MAIL_SERVER should refer to an imap4/TLS server on port 993 that supports
-# PLAIN authentication. For gmail, this must be explicitly enabled by the user.
-# Only the IMAP folder named "INBOX" will be checked.
-: ${STEAM_CREDS:=/etc/portage/creds_steam}
+# If supplied, MAIL_SERVER should refer to an imap4/TLS server on port 993 that
+# supports PLAIN authentication.  For gmail, PLAIN authentication must be
+# explicitly enabled.  Only the IMAP folder named "INBOX" will be checked.
+: ${STEAM_CREDS:=${EPREFIX%/}/etc/portage/creds_steam}
 
 # @ECLASS-VARIABLE: STEAM_CACHEDIR
 # @DESCRIPTION:
-# Location for caching downloaded files between runs. To disable caching, set
-# this to zero-length string.
+# Location for caching downloaded files between runs of the ebuild.  To disable
+# caching, set this to zero-length string.
 #
-# This should not be set by ebuilds or profiles, it is meant for user
-# configuration.
+# This should not be set by ebuilds, it is meant for user configuration.
 # STEAM_CACHEDIR ?= ${DISTDIR}/steam-cache
 
 # @ECLASS-VARIABLE: EVCS_OFFLINE
@@ -101,6 +99,8 @@ DEPEND="${PYTHON_DEPS}
 #
 # If this is enabled, STEAM_CACHEDIR must not be empty and a cache must exist
 # for the current STEAM_app_id.
+#
+# This should not be set by ebuilds, it is meant for user configuration.
 
 # @ECLASS-VARIABLE: STEAM_FILESDIR
 # @INTERNAL
@@ -111,18 +111,19 @@ STEAM_FILESDIR="${BASH_SOURCE[0]%/*}/files"
 # @ECLASS-VARIABLE: STEAM_STEAMCMD
 # @INTERNAL
 # @DESCRIPTION:
-# Absolute path to steamcmd.sh
+# Absolute path to our copy of steamcmd.sh
 STEAM_STEAMCMD=$T/steamcmd/steamcmd.sh
 
 # @FUNCTION: steam_pkg_setup
 # @DESCRIPTION:
-# This function is exported. It makes sanity checks and fails early for some
-# issues, and sets up the python interpreter.
+# This function is exported.  It performs sanity checks and fails early for
+# some issues, and sets up the python interpreter (used for email checking
+# script).
 steam_pkg_setup() {
 	if [[ $MERGE_TYPE != binary ]]; then
 		if [[ -n $EVCS_OFFLINE ]]; then
 			if [[ -v STEAM_CACHEDIR && -z $STEAM_CACHEDIR ]]; then
-				die "EVCS_OFFLINE is set, but STEAM_CACHEDIR is empty."
+				die "EVCS_OFFLINE is set, but STEAM_CACHEDIR is set to an empty value."
 			fi
 		else
 			# CONFIG_PAX_ELFRELOCS must not be disabled (if present, only with grsecurity).
@@ -133,7 +134,7 @@ steam_pkg_setup() {
 					die "steamcmd needs support for x86 TEXTRELs to run"
 				fi
 			else
-				ewarn "Could not find kernel config. The install will fail later if"
+				ewarn "Could not find kernel config.  The install will fail later if"
 				ewarn "x86 TEXTRELs are not supported on the system."
 			fi
 
@@ -170,9 +171,9 @@ steam_get_cred() {
 # @FUNCTION: steam_get_mail
 # @INTERNAL
 # @DESCRIPTION:
-# Prints the verification code required to log in to Steam from a new
-# installation. The code is obtained through IMAP, see the description of
-# STEAM_CREDS
+# Prints the verification code required to authenticate 'Steam Guard' enabled
+# accounts with Steam.  The 'special access code' is obtained through IMAP, see
+# the documentation for STEAM_CREDS
 steam_get_mail() {
 	printf "%s\n%s\n%s\n" \
 		"$(steam_get_cred MAIL_SERVER)" \
@@ -183,9 +184,10 @@ steam_get_mail() {
 
 # @FUNCTION: esteamcmd
 # @DESCRIPTION:
-# Runs steamcmd.sh with some boilerplate and passes it any arguments. Uses the
-# credentials from STEAM_CREDS to log in. This is normally called by
-# steam_src_install, but it can be used directly for specific uses.
+# Runs steamcmd.sh with some boilerplate and passes it any arguments.  Assumes
+# credentials have already been supplied to steamcmd to enable passwordless
+# login.  This is normally called by steam_src_install, but it can be used
+# directly for specialty use.
 esteamcmd() {
 	# Credentials are not passed, already supplied by steam_firstlogin
 	"$STEAM_STEAMCMD" \
@@ -198,11 +200,12 @@ esteamcmd() {
 
 # @FUNCTION: steam_firstlogin
 # @DESCRIPTION:
-# Runs steamcmd.sh several times in order to bring it up to date, generate the
-# verfication code email, and complete authentication. This is normally called
-# by steam_src_install, and must be called before esteamcmd.
+# Run steamcmd.sh several times in order to bring it up to date and
+# login/authenticate with Steam.  For 'Steam Guard' enabled accounts, obtaining
+# the 'special access code' by imap is attempted.  This is normally called by
+# steam_src_install, and must be called before esteamcmd.
 steam_firstlogin() {
-	# ensure steamcmd is up to date
+	# Ensure steamcmd is up to date
 	einfo "Update steamcmd"
 	"$STEAM_STEAMCMD" "+quit" || die "Unable to run steamcmd.sh"
 
@@ -233,9 +236,9 @@ steam_firstlogin() {
 
 # @FUNCTION: steam_src_unpack
 # @DESCRIPTION:
-# Runs steam_firstlogin, then uses esteamcmd to install the application
-# referred to by STEAM_app_id into S. STEAM_platform can be set to force a
-# non-native platform.
+# Run steam_firstlogin, then use esteamcmd to install the application referred
+# to by STEAM_app_id into S.  STEAM_platform can be set to force installing an
+# application for a non-native platform.
 #
 # This function is exported.
 steam_src_unpack() {
@@ -246,7 +249,7 @@ steam_src_unpack() {
 	local cmd_platform=
 	[[ -n $STEAM_platform ]] && cmd_platform="+@sSteamCmdForcePlatformType ${STEAM_platform}"
 
-	# This attempts to immitate the $EGIT3_STORE_DIR logic in git-r3.eclass
+	# This attempts to immitate the EGIT3_STORE_DIR logic in git-r3.eclass
 	local distdir=${PORTAGE_ACTUAL_DISTDIR:-${DISTDIR}}
 	: ${STEAM_CACHEDIR=${distdir}/steam-cache}
 	if [[ -n $STEAM_CACHEDIR ]]; then
@@ -262,7 +265,7 @@ steam_src_unpack() {
 			die "EVCS_OFFLINE is set, but fetchdir=$fetchdir does not exist."
 		fi
 	else
-		einfo "Copying steamcmd to ${STEAM_STEAMCMD%/*}"
+		einfo "Copy steamcmd to ${STEAM_STEAMCMD%/*}"
 		cp -rf "${EPREFIX%/}/opt/steamcmd" "${STEAM_STEAMCMD%/*}" || die
 		steam_firstlogin
 
