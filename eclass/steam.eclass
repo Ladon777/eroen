@@ -39,19 +39,19 @@ case $CATEGORY/$PN in
 esac
 
 
-# @ECLASS-VARIABLE: STEAM_app_id
+# @ECLASS-VARIABLE: ESTEAM_APPID
 # @DEFAULT_UNSET
 # @DESCRIPTION:
 # Steam App ID for steam_src_unpack to fetch.  This must be set before
 # steam_src_unpack is called.  The App ID for an application can be found on
 # https://steamdb.info
 
-# @ECLASS-VARIABLE: STEAM_ANON
+# @ECLASS-VARIABLE: ESTEAM_ANON
 # @DESCRIPTION:
 # Set this to "yes" if the application can be fetched with anonymous login.
-: ${STEAM_ANON:=no}
+: ${ESTEAM_ANON:=no}
 
-# @ECLASS-VARIABLE: STEAM_platform
+# @ECLASS-VARIABLE: ESTEAM_PLATFORM
 # @DEFAULT_UNSET
 # @DESCRIPTION:
 # If this is non-empty, steam_src_unpack will override the current platform in
@@ -59,11 +59,11 @@ esac
 # "linux", "macos", and "windows".  This is useful if you only want to install
 # non-executable data files.
 
-# @ECLASS-VARIABLE: STEAM_CREDS
+# @ECLASS-VARIABLE: ESTEAM_CREDS
 # @DESCRIPTION:
 # Path to credentials file.  This should not be set in ebuilds, it is meant as
 # user configuration.  This file not required if EVCS_OFFLINE is non-empty, nor
-# for packages that set STEAM_ANON.  Note that this file must be readable by
+# for packages that set ESTEAM_ANON.  Note that this file must be readable by
 # the user your package manager runs as.
 #
 # This file should be created by the user, and has the following format:
@@ -89,23 +89,23 @@ esac
 # If supplied, MAIL_SERVER should refer to an imap4/TLS server on port 993 that
 # supports PLAIN authentication.  For gmail, PLAIN authentication must be
 # explicitly enabled.  Only the IMAP folder named "INBOX" will be checked.
-: ${STEAM_CREDS:=${EPREFIX%/}/etc/portage/creds_steam}
+: ${ESTEAM_CREDS:=${EPREFIX%/}/etc/portage/creds_steam}
 
-# @ECLASS-VARIABLE: STEAM_CACHEDIR
+# @ECLASS-VARIABLE: ESTEAM_STORE_DIR
 # @DESCRIPTION:
 # Location for caching downloaded files between runs of the ebuild.  To disable
 # caching, set this to zero-length string.
 #
 # This should not be set by ebuilds, it is meant for user configuration.
-# STEAM_CACHEDIR ?= ${DISTDIR}/steam-cache
+# ESTEAM_STORE_DIR ?= ${DISTDIR}/steam-cache
 
 # @ECLASS-VARIABLE: EVCS_OFFLINE
 # @DEFAULT_UNSET
 # @DESCRIPTION:
 # If non-empty, this variable prevents any online operations.
 #
-# If this is enabled, STEAM_CACHEDIR must not be empty and a cache must exist
-# for the current STEAM_app_id.
+# If this is enabled, ESTEAM_STORE_DIR must not be empty and a cache must exist
+# for the current ESTEAM_APPID.
 #
 # This should not be set by ebuilds, it is meant for user configuration.
 
@@ -140,8 +140,8 @@ ESTEAM_STEAMCMD_EXE="$ESTEAM_STEAMCMD/steamcmd.sh"
 steam_pkg_setup() {
 	if [[ $MERGE_TYPE != binary ]]; then
 		if [[ -n $EVCS_OFFLINE ]]; then
-			if [[ -v STEAM_CACHEDIR && -z $STEAM_CACHEDIR ]]; then
-				die "EVCS_OFFLINE is set, but STEAM_CACHEDIR is set to an empty value."
+			if [[ -v ESTEAM_STORE_DIR && -z $ESTEAM_STORE_DIR ]]; then
+				die "EVCS_OFFLINE is set, but ESTEAM_STORE_DIR is set to an empty value."
 			fi
 		else
 			# CONFIG_PAX_ELFRELOCS must not be disabled (if present, only with grsecurity).
@@ -156,8 +156,8 @@ steam_pkg_setup() {
 				ewarn "x86 TEXTRELs are not supported on the system."
 			fi
 
-			if [[ yes != ${STEAM_ANON,,} && ! -r $STEAM_CREDS ]]; then
-				die "STEAM_CREDS=$STEAM_CREDS is not readable"
+			if [[ yes != ${ESTEAM_ANON,,} && ! -r $ESTEAM_CREDS ]]; then
+				die "ESTEAM_CREDS=$ESTEAM_CREDS is not readable"
 			fi
 		fi
 	fi
@@ -166,11 +166,11 @@ steam_pkg_setup() {
 # @FUNCTION: steam_get_cred
 # @INTERNAL
 # @DESCRIPTION:
-# Takes 1 argument, prints the corresponding value from STEAM_CREDS.
+# Takes 1 argument, prints the corresponding value from ESTEAM_CREDS.
 steam_get_cred() {
 	[[ 1 == $# ]] || die "$FUNCNAME - wrong number of arguments, expected 1"
 	[[ -n $1 ]] || die "$FUNCNAME - passed empty argument"
-	if [[ yes = $STEAM_ANON ]]; then
+	if [[ yes = $ESTEAM_ANON ]]; then
 		case "$1" in
 			STEAM_USER)
 				printf "anonymous\n"
@@ -180,7 +180,7 @@ steam_get_cred() {
 				;;
 		esac
 	else
-		awk "/^${1^^}: /{print \$2}" "$STEAM_CREDS" || die
+		awk "/^${1^^}: /{print \$2}" "$ESTEAM_CREDS" || die
 	fi
 }
 
@@ -189,7 +189,7 @@ steam_get_cred() {
 # @DESCRIPTION:
 # Prints the verification code required to authenticate 'Steam Guard' enabled
 # accounts with Steam.  The 'special access code' is obtained through IMAP, see
-# the documentation for STEAM_CREDS
+# the documentation for ESTEAM_CREDS
 steam_get_mail() {
 	printf "%s\n%s\n%s\n" \
 		"$(steam_get_cred MAIL_SERVER)" \
@@ -223,21 +223,22 @@ esteamcmd() {
 steam_firstlogin() {
 	# Ensure steamcmd is up to date
 	einfo "Update steamcmd"
-	"$ESTEAM_STEAMCMD_EXE" "+quit" || die "Unable to run steamcmd.sh"
+	"$ESTEAM_STEAMCMD_EXE" "+quit" || die "steamcmd.sh failed with exit code $?"
 
 	# Attempt to log in
 	# Supply password on stdin to avoid leaking it in /proc/$pid/cmdline
 	einfo "Attempt to log in"
 	printf "%s\n" "$(steam_get_cred STEAM_PASS)" \
 		| "$ESTEAM_STEAMCMD_EXE" "+login $(steam_get_cred STEAM_USER)" "+quit"
+	local ret=$?
 
-	if [[ $? == 5 ]]; then
+	if [[ $ret == 5 ]]; then
+		# 'Steam Guard' is enabled, attempt to get the 'special access code'
+		# that (hopefully) was generated.
 		if ! has_version "net-misc/steam-eclass-utils[steam-guard]"; then
 			die "Steam account is \"Steam Guard\" enabled, but net-misc/steam-eclass-utils" \
 				"is not installed with support for it enabled."
 		fi
-		# 'Steam Guard' is enabled, attempt to get the 'special access code'
-		# that (hopefully) was generated.
 		einfo "Login failed, attempt to get 'Steam Guard' 'special access code' from email"
 		local i imax=5
 		for (( i=1; i<=imax; i++ )); do
@@ -247,34 +248,36 @@ steam_firstlogin() {
 				| "$ESTEAM_STEAMCMD_EXE" "+set_steam_guard_code $(steam_get_mail)" \
 				"+login $(steam_get_cred STEAM_USER)" \
 				"+quit" && break
-
+			einfo "steamcmd.sh exited with code $ret"
 			(( i < 5 )) || die "Unable to log in"
 			sleep 10
 		done
+	elif [[ $ret != 0 ]]; then
+		die "steamcmd.sh failed with exit code $ret"
 	fi
 }
 
 # @FUNCTION: steam_src_unpack
 # @DESCRIPTION:
 # Run steam_firstlogin, then use esteamcmd to install the application referred
-# to by STEAM_app_id into S.  STEAM_platform can be set to force installing an
+# to by ESTEAM_APPID into S.  ESTEAM_PLATFORM can be set to force installing an
 # application for a non-native platform.
 #
 # This function is exported.
 steam_src_unpack() {
-	if [[ -z $STEAM_app_id ]]; then
-		die "STEAM_app_id is not set, $FUNCNAME cannot be used"
+	if [[ -z $ESTEAM_APPID ]]; then
+		die "ESTEAM_APPID is not set, $FUNCNAME cannot be used"
 	fi
 
 	local cmd_platform=
-	[[ -n $STEAM_platform ]] && cmd_platform="+@sSteamCmdForcePlatformType ${STEAM_platform}"
+	[[ -n $ESTEAM_PLATFORM ]] && cmd_platform="+@sSteamCmdForcePlatformType ${ESTEAM_PLATFORM}"
 
 	# This attempts to immitate the EGIT3_STORE_DIR logic in git-r3.eclass
 	local distdir=${PORTAGE_ACTUAL_DISTDIR:-${DISTDIR}}
-	: ${STEAM_CACHEDIR=${distdir}/steam-cache}
-	if [[ -n $STEAM_CACHEDIR ]]; then
-		local fetchdir=$STEAM_CACHEDIR/$STEAM_app_id
-		[[ -n $STEAM_platform ]] && fetchdir+="/$STEAM_platform"
+	: ${ESTEAM_STORE_DIR=${distdir}/steam-cache}
+	if [[ -n $ESTEAM_STORE_DIR ]]; then
+		local fetchdir=$ESTEAM_STORE_DIR/$ESTEAM_APPID
+		[[ -n $ESTEAM_PLATFORM ]] && fetchdir+="/$ESTEAM_PLATFORM"
 	else
 		local fetchdir=$S
 	fi
@@ -296,17 +299,17 @@ steam_src_unpack() {
 			) || die "Unable to create ${fetchdir}"
 		fi
 
-		einfo "Install app_id ${STEAM_app_id}"
+		einfo "Install app_id ${ESTEAM_APPID}"
 		(
 			addwrite "${fetchdir}"
 			esteamcmd \
 				"$cmd_platform" \
 				"+force_install_dir \"$fetchdir\"" \
-				"+app_update ${STEAM_app_id} verify"
+				"+app_update ${ESTEAM_APPID} verify"
 		)
 	fi
 
-	if [[ -n $STEAM_CACHEDIR ]]; then
+	if [[ -n $ESTEAM_STORE_DIR ]]; then
 		einfo "Copying from cache to \$S"
 		cp -fPpR "$fetchdir" "$S" || die
 	fi
