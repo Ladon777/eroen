@@ -82,8 +82,8 @@ sys-fs/libeatmydata 65 82: LD_PRELOAD hack to convert sync()/msync() and the lik
 sys-libs/libfaketime 0.9-r1 0.9.1 0.9.5 0.9.6-r1: Report faked system time to programs
 sys-process/ftop 1.0: Show progress of open files and file systems.
 www-apps/nikola 6.4.0: A static website and blog generator
-x11-libs/vte 0.34.2 0.34.9 0.36.2 0.36.3 0.36.4 0.40.2 0.42.4: Library providing a virtual terminal emulator widget
+x11-libs/vte 0.34.2 0.36.3 0.36.4 0.40.2 0.42.4 0.44.2: Library providing a virtual terminal emulator widget
 x11-misc/xautolock 2.2: An automatic X screen-locker/screen-saver.
 x11-terms/terminology 0.3.50.9999 9999: Simple EFL based terminal emulator
-x11-terms/termite 6 7 8 9 10 11 9999: A keyboard-centric VTE-based terminal
+x11-terms/termite 6 7 8 9 10 11 12 9999: A keyboard-centric VTE-based terminal
 x11-wm/dwm 6.0: a dynamic window manager for X11
