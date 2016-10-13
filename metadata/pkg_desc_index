@@ -58,8 +58,6 @@ games-util/dontstarve-updater 18: extracted updater from Don't Starve
 games-util/dwarftherapist 0.6.13_p20120616 0.6.13_p20120616-r1 0.6.13_p20120616-r2: Management tool designed to run side-by-side with games-simulation/dwarffortress
 games-util/irpgstats 0.2: IdleRPG db parser and pretty-printer
 games-util/makeobj 0.120.0.1: Tool for creating Simutrans paksets.
-kde-base/kdebase-meta 4.14.3: Merge this to pull in all kdebase-derived packages
-kde-base/kdebase-runtime-meta 4.13.0: Merge this to pull in all kdebase-runtime-derived packages
 kde-base/kwalletd 4.13.0: KDE Password Server
 lxde-base/lxde-meta 0.5.5-r3: Meta ebuild for LXDE, the Lightweight X11 Desktop Environment
 media-gfx/blender 2.49b-r2: 3D Creation/Animation/Publishing System
