@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
 <pkgmetadata>
+	<maintainer type="person">
+		<email>eroen-overlay@occam.eroen.eu</email>
+		<name>eroen</name>
+	</maintainer>
 	<longdescription lang="en">
-		lci is a LOLCODE interpreter written in C and is designed to be correct,
-		portable, fast, and precisely documented.
+		lci is a LOLCODE interpreter written in C and is designed to be
+		correct, portable, fast, and precisely documented.
 	</longdescription>
 	<use>
 		<flag name="memtest">Perform memory tests with <pkg>dev-util/valgrind</pkg>. Takes a while.</flag>
 	</use>
 </pkgmetadata>
-

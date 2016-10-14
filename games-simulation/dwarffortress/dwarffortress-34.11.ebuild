@@ -10,7 +10,7 @@ MY_PN="df"
 MY_PV="$(replace_all_version_separators '_')"
 MY_P="${MY_PN}_${MY_PV}"
 
-DESCRIPTION="Part roguelike, part city-building game set in a procedurally generated high fantasy universe."
+DESCRIPTION="Roguelike and city-building in a procedurally generated high fantasy universe."
 HOMEPAGE="http://www.bay12games.com/dwarves/"
 SRC_URI="http://www.bay12games.com/dwarves/${MY_P}_linux.tar.bz2"
 

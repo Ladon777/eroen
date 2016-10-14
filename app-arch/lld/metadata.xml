@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
 <pkgmetadata>
+	<maintainer type="person">
+		<email>eroen-overlay@occam.eroen.eu</email>
+		<name>eroen</name>
+	</maintainer>
 	<longdescription lang="en">
 		lld is a new set of modular code for creating linker tools.
 	</longdescription>
 </pkgmetadata>
-

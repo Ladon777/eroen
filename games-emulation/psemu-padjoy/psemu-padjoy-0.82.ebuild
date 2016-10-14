@@ -15,6 +15,7 @@ IUSE=""
 
 DEPEND="amd64? ( app-emulation/emul-linux-x86-gtklibs )
 	!amd64? ( =x11-libs/gtk+-1* )"
+RDEPEND=$DEPEND
 
 S=${WORKDIR}/padJoy/src
 

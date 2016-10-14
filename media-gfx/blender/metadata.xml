@@ -7,12 +7,9 @@
 	</longdescription>
 
 	<use>
-<<<<<<< current
-=======
-		<flag name="blender-game" restrict="&lt;=media-gfx/blender-2.50">
+		<flag name="blender-game">
 			Adds Game Engine support to Blender.
 		</flag>
->>>>>>> patched
 		<flag name="game-engine" restrict="&gt;=media-gfx/blender-2.50">
 			Adds Game Engine support to Blender.
 		</flag>
@@ -20,12 +17,9 @@
 			Add support for Collada interchange format through
 			<pkg>media-libs/opencollada</pkg>.
 		</flag>
-<<<<<<< current
-=======
 		<flag name='verse'>
 			Adds verse clustering features to Blender.
 		</flag>
->>>>>>> patched
 		<flag name="cycles">
 			Build cycles renderer (requires <pkg>media-libs/openimageio</pkg> and
 			<pkg>dev-libs/boost</pkg>).

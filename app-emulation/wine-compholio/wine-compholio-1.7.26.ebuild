@@ -26,7 +26,7 @@ fi
 GV="2.24"
 MV="4.5.2"
 WINE_GENTOO="wine-gentoo-2013.06.24"
-DESCRIPTION="Special build of wine with patches to make a variety of Windows applications work out of the box"
+DESCRIPTION="Special build of wine with patches to make more applications work out of the box"
 HOMEPAGE="http://www.compholio.com/wine-compholio/"
 SRC_URI="${SRC_URI}
 	gecko? (

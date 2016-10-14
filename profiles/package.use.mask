@@ -10,3 +10,7 @@ dev-libs/libgraphics:40.14 egg
 
 # Needs work
 >=games-util/dfhack-0.40 stonesense
+
+# media-libs/lcms:0 was dropped from gentoo
+# May 28 18:07:08 2015
+<=app-emulation/wine-1.5.28 lcms
