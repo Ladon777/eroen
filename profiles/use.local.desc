@@ -90,20 +90,8 @@ games-util/dfhack:isoworld - Build the isoworld plugin.
 games-util/dfhack:ssense - Build the Stonesense plugin. This installs pre-built allegro libraries.
 games-util/dfhack:stonesense - Build the Stonesense plugin. This installs pre-built allegro libraries.
 lxde-base/lxde-meta:udisks - Pull in dependendcy on udisks (and consolekit)
-media-gfx/blender:boost - Enable features depending on boost.
-media-gfx/blender:bullet - Enable Bullet (Physics Engine).
-media-gfx/blender:collada - Add support for Collada interchange format through media-libs/opencollada.
-media-gfx/blender:colorio - Enable OpenColorIO color management.
-media-gfx/blender:cycles - Build cycles renderer (requires media-libs/openimageio and dev-libs/boost).
-media-gfx/blender:dds - Adds DDS textures support to Blender.
-media-gfx/blender:doc - Build C and Python API documentation directly from the source code.
-media-gfx/blender:elbeem - Adds surface fluid simulation to Blender using El'Beem library.
-media-gfx/blender:game-engine - Adds Game Engine support to Blender.
-media-gfx/blender:ndof - Enable NDOF input devices (SpaceNavigator and friends).
-media-gfx/blender:openimageio - Enable OpenImageIO Support
-media-gfx/blender:opennl - Enable use of Open Numerical Library
-media-gfx/blender:player - Build the Blender Player. THis requires the Game engine.
-media-gfx/blender:redcode - This flag add support for RED CODE camera digital format (5K HD images *.r3d) - EXPERIMENTAL.
+media-libs/fmod:designer - Install files for the FMOD designer API
+media-libs/fmod:tools - Install additional tools
 net-libs/opal:capi - Enable CAPI support
 net-libs/opal:celt - Enable CELT ultra-low delay audio codec
 net-libs/opal:dtmf - Enable DTMF encoding/decoding support

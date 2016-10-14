@@ -2,6 +2,7 @@ DEFINED_PHASES=compile configure install postinst preinst prepare setup test unp
 DEPEND=dev-python/beautifulsoup[python_targets_python2_7(-)?,python_targets_python3_3(-)?,-python_single_target_python2_7(-),-python_single_target_python3_3(-)] dev-python/mako[python_targets_python2_7(-)?,python_targets_python3_3(-)?,-python_single_target_python2_7(-),-python_single_target_python3_3(-)] python_targets_python2_7? ( dev-python/3to2[python_targets_python2_7] ) python_targets_python2_7? ( >=dev-lang/python-2.7.5-r2:2.7 ) python_targets_python3_3? ( >=dev-lang/python-3.3.2-r2:3.3 ) >=dev-lang/python-exec-2:=[python_targets_python2_7(-)?,python_targets_python3_3(-)?,-python_single_target_python2_7(-),-python_single_target_python3_3(-)]
 DESCRIPTION=IdleRPG db parser and pretty-printer
 EAPI=5
+HOMEPAGE=http://eroen.eu
 IUSE=python_targets_python2_7 python_targets_python3_3
 KEYWORDS=~amd64
 LICENSE=ISC
@@ -11,4 +12,4 @@ SLOT=0
 SRC_URI=irpgstats-0.2.tar.gz
 _eclass_exported_funcs=pkg_preinst:games pkg_postinst:games pkg_setup:games src_unpack:base src_prepare:base src_configure:- src_compile:- src_test:distutils-r1 src_install:-
 _eclasses_=base	3fe4f8980633fd7bc69e9887209ba2fe	distutils-r1	674dae153419b2200ae54e879cc65b57	eutils	b83a2420b796f7c6eff682679d08fe25	games	2cf0d67d765e6358b435ccda30c13ad8	multibuild	742139c87a9fa3766f0c2b155e5522bf	multilib	165fc17c38d1b11dac2008280dab6e80	multiprocessing	e32940a7b2a9992ad217eccddb84d548	python-r1	0f6937650a475d673baa5d0c8c0b37b3	python-utils-r1	1797277ea0e7cee5c7de7ce74cf8acd8	toolchain-funcs	6198c04daba0e1307bd844df7d37f423	user	80aaa71614ced86f02ee1a513821dc87	xdg-utils	e2b2bd56125ce8cf59ce30c642b59d48
-_md5_=295f2dc973ade0301a0681f812a5df73
+_md5_=41d4f06bd587e11dcc2214b996225b13
