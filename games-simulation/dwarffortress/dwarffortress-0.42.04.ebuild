@@ -79,7 +79,7 @@ src_install() {
 	prepgamesdirs
 
 	fperms 750 "${gamesdir}"/libs/Dwarf_Fortress
-	
+
 	# PAX marking for dfhack. PTPAX markings change the md5 hash of the
 	# executable, and breaks version detection in dfhack
 	PAX_MARKINGS=XT pax-mark -m "${ED%/}${gamesdir}"/libs/Dwarf_Fortress

@@ -4,7 +4,7 @@
 	<longdescription lang="en">
 		User data is saved in `~/.config/unity3d/ExNihilo`.
 	</longdescription>
-	<maintainer>
+	<maintainer type="person">
 		<email>overlay@faith.eroen.eu</email>
 		<name>eroen</name>
 	</maintainer>
