@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>eroen-overlay@occam.eroen.eu</email>
+		<name>eroen</name>
+	</maintainer>
+	<longdescription lang="en">
+	</longdescription>
+	<use>
+		<flag name="steam-guard">Enable experimental authentication with "Steam Guard" enabled accounts</flag>
+	</use>
+</pkgmetadata>

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
-<pkgmetadata>
-	<use>
-		<flag name="display-manager">Pull in a graphical display manager</flag>
-		<flag name="wallpapers">Install the KDE wallpapers</flag>
-		<flag name="consolekit">Install components that require <pkg>sys-auth/consolekit</pkg></flag>
-	</use>
-</pkgmetadata>

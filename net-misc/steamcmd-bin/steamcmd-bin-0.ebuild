@@ -6,7 +6,8 @@
 
 EAPI=6
 
-inherit linux-info
+# steam.eclass inherited for $ESTEAM_STEAMCMD_SYSTEM
+inherit linux-info steam
 
 DESCRIPTION="Used by steam.eclass"
 HOMEPAGE="https://developer.valvesoftware.com/wiki/SteamCMD"
@@ -37,13 +38,9 @@ pkg_setup() {
 	fi
 }
 
-src_unpack() {
-	default
-}
-
 src_install() {
-	exeinto /opt/steamcmd/linux32
+	exeinto "$ESTEAM_STEAMCMD_SYSTEM/linux32"
 	doexe linux32/steamcmd
-	exeinto /opt/steamcmd
+	exeinto "$ESTEAM_STEAMCMD_SYSTEM"
 	doexe steamcmd.sh
 }

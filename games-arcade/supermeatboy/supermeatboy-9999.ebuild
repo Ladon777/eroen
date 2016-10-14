@@ -14,7 +14,7 @@ HOMEPAGE="http://www.supermeatboy.com https://steamdb.info/app/40809"
 LICENSE="all-rights-reserved"
 RESTRICT="bindist"
 
-STEAM_app_id=40800
+ESTEAM_APPID=40800
 
 SLOT="0"
 KEYWORDS=""

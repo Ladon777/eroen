@@ -21,8 +21,8 @@ IUSE=""
 DEPEND=""
 RDEPEND=""
 
-STEAM_app_id=22320
-STEAM_platform=windows
+ESTEAM_APPID=22320
+ESTEAM_PLATFORM=windows
 
 src_install() {
 	insinto /usr/share/morrowind-data
