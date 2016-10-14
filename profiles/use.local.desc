@@ -2,7 +2,6 @@
 # Please add your descriptions to your package's metadata.xml ONLY.
 # * generated automatically using pmaint *
 
-app-cdr/k3b:emovix - Enable burning support for eMoviX images
 app-emulation/wine:capi - Enable ISDN support via CAPI
 app-emulation/wine:custom-cflags - Bypass strip-flags; use at your own peril
 app-emulation/wine:dos - Pull in games-emulation/dosbox to run DOS applications
@@ -61,40 +60,10 @@ app-emulation/wine-staging:run-exes - Use Wine to open and run .EXE and .MSI fil
 app-emulation/wine-staging:samba - Add support for NTLM auth. see http://wiki.winehq.org/NtlmAuthSetupGuide and http://wiki.winehq.org/NtlmSigningAndSealing
 app-emulation/wine-staging:staging - Apply unofficial Wine-Staging patches for advanced feature support that hasn't made it into upstream Wine yet; use at your own peril
 app-emulation/wine-staging:txc_dxtn - Apply unofficial Wine-Staging patches for DXTn encoding/decoding support
-app-office/libreoffice:gtk3 - Enable highly experimental gtk3 frontend
-app-office/libreoffice:jemalloc - Use dev-libs/jemalloc for allocations
-app-office/libreoffice:libcxx - Apply patches to build against sys-libs/libcxx
-app-office/libreoffice:odk - Build the Office Development Kit
-app-office/libreoffice:telepathy - Enable document colaboration features using telepathy communication framework.
-app-office/libreoffice:vba - Enable support for VBA compatibility and ActiveX embedding
-app-office/libreoffice:vlc - Use media-video/vlc for video embedding
-app-office/libreoffice:webdav - Adds support for HTTP content adding via net-libs/neon
 dev-cpp/gmock:tr1 - Use TR1 libraries
 dev-cpp/gtest:tr1 - Use TR1 libraries
-dev-db/mysql:big-tables - Make tables contain up to 1.844E+19 rows
-dev-db/mysql:cluster - Add support for NDB clustering (deprecated)
-dev-db/mysql:community - Enables the community features from upstream.
-dev-db/mysql:embedded - Build embedded server (libmysqld)
-dev-db/mysql:extraengine - Add support for alternative storage engines (Archive, CSV, Blackhole, Federated(X), Partition)
-dev-db/mysql:jemalloc - Use dev-libs/jemalloc for allocations.
-dev-db/mysql:latin1 - Use LATIN1 encoding instead of UTF8
-dev-db/mysql:max-idx-128 - Raise the max index per table limit from 64 to 128
-dev-db/mysql:minimal - Install client programs only, no server
-dev-db/mysql:pbxt - Add experimental support for PBXT storage engine
-dev-db/mysql:profiling - Add support for statement profiling (requires USE=community).
-dev-db/mysql:systemtap - Build support for profiling and tracing using dev-util/systemtap
-dev-db/mysql:test - Install upstream testsuites for end use.
-dev-db/mysql:xtradb - Add experimental support for Percona's InnoDB replacement: XtraDB
-dev-db/postgis:gtk - Build shp2pgsql-gui a graphical interface to shp2pgsql
 dev-lang/lci:memtest - Perform memory tests with dev-util/valgrind. Takes a while.
-dev-lang/lua:deprecated - make deprecated data structures/routines available
-dev-lang/ruby:libedit - Use the dev-libs/libedit library to provide the readline extension, used for instance by the irb tool. This flag will take precedence over the readline USE flag. If neither libedit nor readline USE flags are enabled, the readline extension will not be built (and irb will lose line editing functionality).
-dev-lang/ruby:rdoc - Install dev-ruby/rdoc after installing Ruby.
-dev-lang/ruby:readline - Use the sys-libs/readline library to provide the readline extension, used for instance by the irb tool. This flag is meaningful only if the libedit USE flag is disabled. If neither libedit nor readline USE flags are enabled, the readline extension will not be built (and irb will lose line editing functionality).
-dev-lang/ruby:rubytests - Install ruby tests that can only be run after ruby is installed
-dev-lang/ruby:yaml - Use the dev-libs/libyaml library to build the psych extension, available since Ruby 1.9.2_rc2, in alternative to the bundled syck-based parser.
 dev-libs/libgraphics:egg - Enable hooks for and link against libegg from games-util/dfhack.
-dev-python/mako:cache - Add dev-python/beaker dependency for caching.
 games-action/unepic:bundled-libs - Use the bundled SDL2 libraries
 games-engines/fs2_open:doxygen - Generate developer documentation
 games-engines/fs2_open:inferno - Build with enhanced limits
@@ -120,29 +89,21 @@ games-util/dfhack:egg - Build libegg in stead of the libsdl overriding library f
 games-util/dfhack:isoworld - Build the isoworld plugin.
 games-util/dfhack:ssense - Build the Stonesense plugin. This installs pre-built allegro libraries.
 games-util/dfhack:stonesense - Build the Stonesense plugin. This installs pre-built allegro libraries.
-kde-base/kdebase-meta:consolekit - Install components that require sys-auth/consolekit
-kde-base/kdebase-meta:display-manager - Pull in a graphical display manager
-kde-base/kdebase-meta:wallpapers - Install the KDE wallpapers
 lxde-base/lxde-meta:udisks - Pull in dependendcy on udisks (and consolekit)
-media-gfx/blender:3dmouse - Adds support for space navigator devices through package dev-libs/libspnav.
-media-gfx/blender:blender-game - Adds Game Engine support to Blender.
+media-gfx/blender:boost - Enable features depending on boost.
+media-gfx/blender:bullet - Enable Bullet (Physics Engine).
 media-gfx/blender:collada - Add support for Collada interchange format through media-libs/opencollada.
+media-gfx/blender:colorio - Enable OpenColorIO color management.
 media-gfx/blender:cycles - Build cycles renderer (requires media-libs/openimageio and dev-libs/boost).
 media-gfx/blender:dds - Adds DDS textures support to Blender.
 media-gfx/blender:doc - Build C and Python API documentation directly from the source code.
 media-gfx/blender:elbeem - Adds surface fluid simulation to Blender using El'Beem library.
 media-gfx/blender:game-engine - Adds Game Engine support to Blender.
+media-gfx/blender:ndof - Enable NDOF input devices (SpaceNavigator and friends).
+media-gfx/blender:openimageio - Enable OpenImageIO Support
+media-gfx/blender:opennl - Enable use of Open Numerical Library
 media-gfx/blender:player - Build the Blender Player. THis requires the Game engine.
 media-gfx/blender:redcode - This flag add support for RED CODE camera digital format (5K HD images *.r3d) - EXPERIMENTAL.
-media-gfx/blender:tweak-mode - This flag allows you to model without confirming each translation, in particular it lets you grab with left mouse button (LMB) and not having to confirm by another click. Blender 'Tweak Mode' is similar to the 'Tweak Mode' of the Wings modeller (media-gfx/wings).
-media-gfx/blender:verse - Adds verse clustering features to Blender.
-media-gfx/gimp:smp - Enable support for multiprocessors
-media-plugins/audacious-plugins:adplug - Build with AdPlug (Adlib sound card emulation) support
-media-plugins/audacious-plugins:bs2b - Enable Bauer Bauer stereophonic-to-binaural headphone filter
-media-plugins/audacious-plugins:cue - Support CUE sheets using the libcue library
-media-plugins/audacious-plugins:midi - Build with amidi-plug (MIDI synth using FluidSynth) support
-media-plugins/audacious-plugins:scrobbler - Build with scrobbler/LastFM submission support
-media-plugins/audacious-plugins:sid - Build with SID (Commodore 64 Audio) support
 net-libs/opal:capi - Enable CAPI support
 net-libs/opal:celt - Enable CELT ultra-low delay audio codec
 net-libs/opal:dtmf - Enable DTMF encoding/decoding support
@@ -167,11 +128,7 @@ net-libs/opal:vpb - Enable Voicetronics VPB card support
 net-libs/opal:vxml - Enable VXML support
 net-libs/opal:wav - Enable WAVFILE support
 net-libs/opal:x264-static - Install x264 plugin statically linked with x264
-net-p2p/transmission:bindtointerface - Apply unsupported patch to enable bind-to-interface functionality.
-net-p2p/transmission:lightweight - Optimize transmission for low-resource systems (smaller cache size, prefer unencrypted peer connections, etc.)
-net-p2p/transmission:xfs - Enable XFS filesystem capabilities by using sys-fs/xfsprogs headers (in building of fdlimit(.c))
-sys-fs/bedup:interactive - Pull in dependencies for running an interactive shell (useful for prototyping).
-sys-fs/bedup:xdg - Use dev-python/pyxdg to place database in $HOME.
+net-misc/steam-eclass-utils:steam-guard - Enable experimental authentication with "Steam Guard" enabled accounts
 www-apps/nikola:assets - Support web asset management through dev-python/assets
 www-apps/nikola:charts - Support chart generation through dev-python/pygal
 www-apps/nikola:hyphenation - Add hyphenation support through dev-python/pyphen
