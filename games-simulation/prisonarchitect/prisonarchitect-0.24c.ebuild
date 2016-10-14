@@ -9,7 +9,7 @@ inherit eutils games
 MY_PV=${PV/#0./alpha}
 MY_P=${PN}-${MY_PV}
 
-DESCRIPTION=""
+DESCRIPTION="Design and run your very own prison!"
 HOMEPAGE="http://www.prison-architect.com"
 SRC_URI="${MY_P}-linux.tar.gz"
 S=${WORKDIR}/${MY_P}-linux

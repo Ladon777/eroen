@@ -7,6 +7,12 @@
 	</longdescription>
 
 	<use>
+<<<<<<< current
+=======
+		<flag name="blender-game" restrict="&lt;=media-gfx/blender-2.50">
+			Adds Game Engine support to Blender.
+		</flag>
+>>>>>>> patched
 		<flag name="game-engine" restrict="&gt;=media-gfx/blender-2.50">
 			Adds Game Engine support to Blender.
 		</flag>
@@ -14,6 +20,12 @@
 			Add support for Collada interchange format through
 			<pkg>media-libs/opencollada</pkg>.
 		</flag>
+<<<<<<< current
+=======
+		<flag name='verse'>
+			Adds verse clustering features to Blender.
+		</flag>
+>>>>>>> patched
 		<flag name="cycles">
 			Build cycles renderer (requires <pkg>media-libs/openimageio</pkg> and
 			<pkg>dev-libs/boost</pkg>).
@@ -46,7 +58,7 @@
 		<flag name="ndof">
 			Enable NDOF input devices (SpaceNavigator and friends).
 		</flag>
-		<flag name="openimageio">Enable OpenImageIO Support</flag>
+		<!--<flag name="openimageio">Enable OpenImageIO Support</flag>-->
 		<flag name="opennl">Enable use of Open Numerical Library</flag>
 	</use>
 </pkgmetadata>
