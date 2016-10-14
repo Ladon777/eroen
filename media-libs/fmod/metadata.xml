@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
 <pkgmetadata>
+	<maintainer type="person">
+		<email>eroen-overlay@occam.eroen.eu</email>
+		<name>eroen</name>
+	</maintainer>
+	<longdescription lang="en">
+	</longdescription>
+	<use>
+		<flag name="designer">Install files for the FMOD designer API</flag>
+		<flag name="tools">Install additional tools</flag>
+	</use>
 </pkgmetadata>

@@ -8,7 +8,7 @@ PYTHON_COMPAT=(python2_7 python3_2 python3_3)
 inherit eutils distutils-r1 games
 
 DESCRIPTION="IdleRPG db parser and pretty-printer"
-HOMEPAGE=""
+HOMEPAGE="http://eroen.eu"
 SRC_URI="${P}.tar.gz"
 
 LICENSE="ISC"
