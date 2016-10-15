@@ -1,7 +1,7 @@
 app-admin/eselect-wine 0.1 0.2: Manage active wine version
 app-arch/lld 9999: The LLVM Linker
 app-emulation/wine 1.5.19 1.5.20 1.5.21 1.5.22 1.5.28 1.7.8 1.7.13 1.7.14 1.7.15 1.7.16 1.7.17 1.7.18 1.7.19-r1 1.7.21 1.7.21-r1 1.7.21-r2 1.7.21-r3 1.7.26 1.7.26-r1 1.7.26-r2 1.7.26-r3 1.7.27 1.7.28 1.7.28-r1 1.7.28-r2 1.7.29 1.7.29-r1 1.7.29-r2 1.7.33-r1 1.7.33-r2 1.7.34-r1 1.7.34-r2: Free implementation of Windows(tm) on Unix
-app-emulation/wine-compholio 1.7.26 1.7.27: Special build of wine with patches to make a variety of Windows applications work out of the box
+app-emulation/wine-compholio 1.7.26 1.7.27: Special build of wine with patches to make more applications work out of the box
 app-emulation/wine-gentoo 2013.06.24: Menu items and icons for wine
 app-emulation/wine-staging 1.7.33-r1: Wine package with wine-staging patchset applied
 app-vim/covim 20130619 99999999: Collaborative Editing for Vim
@@ -12,8 +12,6 @@ dev-libs/libgraphics 34.11 40.06 40.07 40.08 40.09 40.10 40.11 40.12 40.13 40.19
 dev-python/awkwardduet 1.1_pre4: Lib3to2 maintenance fork
 dev-python/m3u8 0.1.6 9999: m3u8 parser
 dev-python/pyffi 2.2.2: Python File Format Interface
-dev-python/python-elementary 9999: Python bindings for elementary library
-dev-python/python-evas 9999: Python bindings for EVAS library
 dev-python/uncompyle 0.0.2: converts Python byte-code back into equivalent Python source
 dev-util/patchelf 0.8_p20150724: Small utility to modify the dynamic linker and RPATH of ELF executables
 games-action/unepic 15005: Combination of platforming and role playing game with many hilarious references
@@ -31,7 +29,7 @@ games-rpg/farsky 2.01.00: Gather resources and protect yourself in the Ocean dep
 games-rpg/morrowind-data 9999: Data files for Morrowind
 games-rpg/morrowind-data-extras 0: Data files for Morrowind Official Add-Ons
 games-simulation/HumanResourceMachine 2016.03.23: Program little office workers to solve puzzles. Be a good employee!
-games-simulation/dwarffortress 0.42.04 34.11 40.03 40.04 40.05 40.06 40.07 40.08 40.09 40.10 40.11 40.12 40.13 40.19 40.20 40.21 40.22 40.23 40.24: Part roguelike, part city-building game set in a procedurally generated high fantasy universe.
+games-simulation/dwarffortress 0.42.04 34.11 40.03 40.04 40.05 40.06 40.07 40.08 40.09 40.10 40.11 40.12 40.13 40.19 40.20 40.21 40.22 40.23 40.24: Roguelike and city-building in a procedurally generated high fantasy universe.
 games-simulation/hearthlands 0.6.5: Medieval/fantasy real time city building/strategy game
 games-simulation/lincity-ng 2.9_beta 9999: City/country simulation game for X and opengl
 games-simulation/minimetro 6: Minimalistic subway layout game
