@@ -96,111 +96,85 @@ COMMON_DEPEND="
 	amd64? (
 		abi_x86_64? ( ${NATIVE_DEPEND} )
 		abi_x86_32? (
-			truetype? ( || (
-				>=app-emulation/emul-linux-x86-xlibs-2.1[development]
+			truetype? (
 				>=media-libs/freetype-2.0.0[abi_x86_32]
-			) )
-			ncurses? ( || (
-				app-emulation/emul-linux-x86-baselibs[development]
+			)
+			ncurses? (
 				sys-libs/ncurses[abi_x86_32]
-			) )
-			udisks? ( || (
-				>=app-emulation/emul-linux-x86-baselibs-20130224[development]
+			)
+			udisks? (
 				sys-apps/dbus[abi_x86_32]
-			) )
-			fontconfig? ( || (
-				app-emulation/emul-linux-x86-xlibs[development]
+			)
+			fontconfig? (
 				media-libs/fontconfig[abi_x86_32]
-			) )
+			)
 			gphoto2? (
 				app-emulation/emul-linux-x86-medialibs[development]
 			)
-			openal? ( || (
-				app-emulation/emul-linux-x86-sdl[development]
+			openal? (
 				media-libs/openal[abi_x86_32]
-			) )
+			)
 			gstreamer? (
 				app-emulation/emul-linux-x86-gstplugins
 				app-emulation/emul-linux-x86-medialibs[development]
 			)
-			X? ( || (
-				app-emulation/emul-linux-x86-xlibs[development]
-				(
+			X? (
 					x11-libs/libXcursor[abi_x86_32]
 					x11-libs/libXext[abi_x86_32]
 					x11-libs/libXrandr[abi_x86_32]
 					x11-libs/libXi[abi_x86_32]
 					x11-libs/libXxf86vm[abi_x86_32]
-				)
-			) )
-			xinerama? ( || (
-				app-emulation/emul-linux-x86-xlibs[development]
+			)
+			xinerama? (
 				x11-libs/libXinerama[abi_x86_32]
-			) )
-			alsa? ( || (
-				app-emulation/emul-linux-x86-soundlibs[alsa,development]
+			)
+			alsa? (
 				media-libs/alsa-lib[abi_x86_32]
-			) )
+			)
 			cups? ( app-emulation/emul-linux-x86-baselibs )
 			opencl? ( virtual/opencl[abi_x86_32] )
-			opengl? ( || (
-				app-emulation/emul-linux-x86-opengl[development]
-				(
+			opengl? (
 					virtual/glu[abi_x86_32]
 					virtual/opengl[abi_x86_32]
-				)
-			) )
-			gsm? ( || (
-				app-emulation/emul-linux-x86-soundlibs[development]
+			)
+			gsm? (
 				media-sound/gsm[abi_x86_32]
-			) )
-			jpeg? ( || (
-				app-emulation/emul-linux-x86-baselibs[development]
+			)
+			jpeg? (
 				virtual/jpeg:0[abi_x86_32]
-			) )
+			)
 			ldap? ( app-emulation/emul-linux-x86-baselibs[development] )
-			lcms? ( || (
-				app-emulation/emul-linux-x86-baselibs[development]
+			lcms? (
 				media-libs/lcms:2[abi_x86_32]
-			) )
-			mp3? ( || (
-				app-emulation/emul-linux-x86-soundlibs[development]
+			)
+			mp3? (
 				>=media-sound/mpg123-1.5.0[abi_x86_32]
-			) )
-			nls? ( || (
-				app-emulation/emul-linux-x86-baselibs[development]
+			)
+			nls? (
 				sys-devel/gettext[abi_x86_32]
-			) )
+			)
 			odbc? ( app-emulation/emul-linux-x86-db[development] )
-			osmesa? ( || (
-				>=app-emulation/emul-linux-x86-opengl-20121028[development]
+			osmesa? (
 				media-libs/mesa[osmesa,abi_x86_32]
-			) )
-			pulseaudio? ( || (
-				app-emulation/emul-linux-x86-soundlibs[development]
+			)
+			pulseaudio? (
 				>=media-sound/pulseaudio-4.0-r1[abi_x86_32]
-			) )
-			xml? ( || (
-				>=app-emulation/emul-linux-x86-baselibs-20131008[development]
-				(
+			)
+			xml? (
 					dev-libs/libxml2[abi_x86_32]
 					dev-libs/libxslt[abi_x86_32]
-				)
-			) )
+			)
 			scanner? ( app-emulation/emul-linux-x86-medialibs[development] )
 			ssl? ( app-emulation/emul-linux-x86-baselibs[development] )
-			png? ( || (
-				app-emulation/emul-linux-x86-baselibs[development]
+			png? (
 				media-libs/libpng:0[abi_x86_32]
-			) )
-			v4l? ( || (
-				app-emulation/emul-linux-x86-medialibs[development]
+			)
+			v4l? (
 				media-libs/libv4l[abi_x86_32]
-			) )
-			xcomposite? ( || (
-				app-emulation/emul-linux-x86-xlibs[development]
+			)
+			xcomposite? (
 				x11-libs/libXcomposite[abi_x86_32]
-			) )
+			)
 		)
 	)"
 

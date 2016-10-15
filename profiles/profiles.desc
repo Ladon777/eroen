@@ -1,0 +1,4 @@
+# Override gentoo's stable no-multilib profiles to silence repoman warnings for
+# multilib packages
+amd64		hardened/linux/amd64/no-multilib			dev
+amd64		hardened/linux/amd64/no-multilib/selinux		dev

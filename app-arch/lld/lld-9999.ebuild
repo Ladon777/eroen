@@ -1,6 +1,7 @@
-# By Eroen, 2013
-# Distributed under the terms of the ISC License
-# $Header: $
+# By eroen <eroen-overlay@occam.eroen.eu>, 2013 - 2016
+# Permission to use, copy, modify, and/or distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
 
 EAPI=5
 
@@ -13,13 +14,13 @@ SRC_URI=""
 
 LICENSE="UoI-NCSA"
 SLOT="0"
-KEYWORDS="~amd64"
+#KEYWORDS="~amd64"
 IUSE=""
 
 LIBDEPEND="
 	|| ( ( 	>=sys-devel/clang-3.1
 			sys-libs/libcxx )
-		>=sys-devel/gcc-4.7 )
+		>=sys-devel/gcc-4.7:* )
 "
 RDEPEND="${LIBDEPEND}"
 DEPEND="${LIBDEPEND}"

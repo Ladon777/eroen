@@ -10,7 +10,7 @@ EAPI=5
 
 inherit eutils games
 
-DESCRIPTION="Part roguelike, part city-building game set in a procedurally generated high fantasy universe."
+DESCRIPTION="Roguelike and city-building in a procedurally generated high fantasy universe."
 HOMEPAGE="http://www.bay12games.com/dwarves/"
 SRC_URI="http://www.bay12games.com/dwarves/df_${PV//./_}_linux.tar.bz2"
 
