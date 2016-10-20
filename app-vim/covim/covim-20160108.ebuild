@@ -24,7 +24,8 @@ else
 fi
 
 RDEPEND="${PYTHON_DEPS}
-	dev-python/twisted-core[${PYTHON_USEDEP}]
+	|| ( dev-python/twisted[${PYTHON_USEDEP}]
+		dev-python/twisted-core[${PYTHON_USEDEP}] )
 	app-editors/vim[python,${PYTHON_USEDEP}]"
 
 VIM_PLUGIN_HELPFILES="CoVim"
