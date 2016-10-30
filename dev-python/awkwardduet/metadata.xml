@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
 <pkgmetadata>
+	<maintainer type="person">
+		<email>eroen-overlay@occam.eroen.eu</email>
+		<name>eroen</name>
+	</maintainer>
 	<longdescription lang="en">
-		Lib3to2 maintenance fork. Lib3to2 is a set of fixers and utilities for lib2to3, a source code transformer included in Python standard library.
+		Lib3to2 maintenance fork. Lib3to2 is a set of fixers and utilities for
+		lib2to3, a source code transformer included in Python standard library.
 	</longdescription>
 </pkgmetadata>
