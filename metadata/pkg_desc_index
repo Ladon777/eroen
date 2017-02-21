@@ -12,7 +12,9 @@ dev-libs/libgraphics 34.11 40.06 40.07 40.08 40.09 40.10 40.11 40.12 40.13 40.19
 dev-python/awkwardduet 1.1_pre4: Lib3to2 maintenance fork
 dev-python/m3u8 0.1.6 9999: m3u8 parser
 dev-python/pyffi 2.2.2: Python File Format Interface
+dev-python/rpy 2.8.3: Python interface to the R Programming Language
 dev-python/uncompyle 0.0.2: converts Python byte-code back into equivalent Python source
+dev-util/emilpro 3-r3: a graphical disassembler for a large number of instruction sets
 dev-util/patchelf 0.8_p20150724: Small utility to modify the dynamic linker and RPATH of ELF executables
 games-action/unepic 15005: Combination of platforming and role playing game with many hilarious references
 games-arcade/supermeatboy 9999: Platforming with an adorable cube of meat
@@ -45,7 +47,6 @@ games-util/dwarftherapist 0.6.13_p20120616 0.6.13_p20120616-r1 0.6.13_p20120616-
 games-util/irpgstats 0.2: IdleRPG db parser and pretty-printer
 games-util/makeobj 0.120.0.1: Tool for creating Simutrans paksets.
 lxde-base/lxde-meta 0.5.5-r3: Meta ebuild for LXDE, the Lightweight X11 Desktop Environment
-media-gfx/blender 2.49b-r2: 3D Creation/Animation/Publishing System
 media-gfx/blender_nif_scripts 2.5.9: Blender NIF plugin
 media-libs/fmod 4.38.02 4.44.04: music and sound effects library, and a sound processing system
 net-dialup/slirp 1.0.17.7: SLIP/PPP emulator using a dial up shell account
@@ -59,5 +60,5 @@ net-print/foo2zjs 99999999: Support for printing to ZjStream-based printers
 sci-mathematics/matlab 2014a: High-level language and interactive environment
 sys-libs/libfaketime 0.9-r1 0.9.1 0.9.5 0.9.6-r1: Report faked system time to programs
 www-apps/nikola 6.4.0: A static website and blog generator
-x11-libs/vte 0.34.2 0.36.3 0.36.4 0.40.2 0.42.4 0.44.2: Library providing a virtual terminal emulator widget
+x11-libs/vte 0.34.2 0.36.3 0.36.4 0.40.2 0.42.4 0.44.2 0.46.1: Library providing a virtual terminal emulator widget
 x11-terms/termite 6 7 8 9 10 11 12 9999: A keyboard-centric VTE-based terminal
