@@ -1,14 +1,16 @@
-# By eroen, 2016
-# Distributed under the terms of the ISC licence
+# By eroen <eroen-overlay@occam.eroen.eu>, 2016 - 2017
+# Permission to use, copy, modify, and/or distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
 
-EAPI=5
+EAPI=6
 
 inherit eutils pax-utils unpacker humblebundle
 
 DESCRIPTION="Lose your mind. Eat your crew."
 HOMEPAGE="http://www.failbettergames.com/sunless/"
-SRC_URI="Sunless_Sea-StandAlone-Linux-${PV//./-}.sh"
-RESTRICT="bindist fetch mirror"
+SRC_URI="Sunless_Sea_Setup_V${PV}LINUX.zip"
+RESTRICT="bindist fetch mirror splitdebug"
 S=$WORKDIR
 
 LICENSE="all-rights-reserved"
@@ -24,17 +26,15 @@ RDEPEND="virtual/glu
 
 QA_PREBUILT="opt/$PN/*"
 
-pkg_setup() {
-	use amd64 && myarch=x86_64
-	use x86 && myarch=x86
-}
-
 src_unpack() {
-	unpack_zip $A
+	default
+	unpack_zip "Sunless Sea.sh"
+	rm -rf meta scripts "Sunless Sea.sh" || die
 }
 
 src_prepare() {
-	rm -rf meta scripts || die
+	default
+
 	use amd64 || rm -rf data/x86_64 \
 		"data/noarch/Sunless Sea_Data/Plugins/x86_64" \
 		"data/noarch/Sunless Sea_Data/Mono/x86_64/libmono.so" || die
@@ -46,6 +46,10 @@ src_prepare() {
 }
 
 src_install() {
+	local myarch
+	use amd64 && myarch=x86_64
+	use x86 && myarch=x86
+
 	insinto /opt/$PN
 	doins -r data/noarch/. data/$myarch/. # Executable and resources must be in same place
 	fperms +x "/opt/$PN/Sunless Sea.$myarch"
