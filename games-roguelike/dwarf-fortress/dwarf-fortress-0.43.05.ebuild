@@ -1,11 +1,10 @@
 # Copyright 1999-2016 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
 EAPI=6
 
 MULTILIB_COMPAT=( abi_x86_{32,64} )
-inherit multilib-build toolchain-funcs versionator
+inherit multilib-build pax-utils toolchain-funcs versionator
 
 MY_PV=$(replace_all_version_separators _ "$(get_version_component_range 2-)")
 MY_PN=df
@@ -66,6 +65,9 @@ src_prepare() {
 }
 
 src_configure() {
+	# gcc 6 somehow removes symbols requred by dfhack
+	tc-is-gcc && [[ $(gcc-major-version) -ge 6 ]] && CXXFLAGS+=" -O0"
+
 	CXXFLAGS+=" -D$(use debug || echo N)DEBUG"
 }
 
@@ -107,8 +109,9 @@ src_install() {
 		dodoc README.linux *.txt
 
 		fperms 755 "${gamesdir}"/libs/Dwarf_Fortress
+		pax-mark m "${ED}${gamesdir}"/libs/Dwarf_Fortress # needed to load plugins with dfhack
 		if ! multilib_is_native_abi; then
-			mv "${ED}${gamesdir}/libs" "${ED}${gamesdir}/libs_${MULTILIB_ABI_FLAG}"
+			mv "${ED}${gamesdir}/libs" "${ED}${gamesdir}/libs_${MULTILIB_ABI_FLAG}" || die
 		fi
 	}
 	multilib_foreach_abi abi_src_install

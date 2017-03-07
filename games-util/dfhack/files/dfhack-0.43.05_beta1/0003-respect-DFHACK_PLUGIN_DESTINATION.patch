@@ -1,0 +1,65 @@
+From 13be7ec2962986659d53cbcf1262a285c2629c11 Mon Sep 17 00:00:00 2001
+From: eroen <eroen@occam.eroen.eu>
+Date: Tue, 7 Mar 2017 22:43:57 +0100
+Subject: [PATCH 3/5] respect DFHACK_PLUGIN_DESTINATION
+
+---
+ CMakeLists.txt            | 2 +-
+ library/CMakeLists.txt    | 2 ++
+ library/PluginManager.cpp | 7 ++++++-
+ 3 files changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index fc5438f8..9e8d30ce 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -158,7 +158,7 @@ SET(DFHACK_BINARY_DESTINATION .)
+ # dfhack data goes here:
+ SET(DFHACK_DATA_DESTINATION hack CACHE INTERNAL "")
+ # plugin libs go here:
+-SET(DFHACK_PLUGIN_DESTINATION hack/plugins)
++SET(DFHACK_PLUGIN_DESTINATION hack/plugins CACHE INTERNAL "")
+ # dfhack header files go here:
+ SET(DFHACK_INCLUDES_DESTINATION hack/include)
+ # dfhack lua files go here:
+diff --git a/library/CMakeLists.txt b/library/CMakeLists.txt
+index ed1650e9..a858c8f8 100644
+--- a/library/CMakeLists.txt
++++ b/library/CMakeLists.txt
+@@ -80,6 +80,8 @@ RemoteTools.cpp
+ 
+ set_property( SOURCE "Core.cpp" APPEND PROPERTY COMPILE_DEFINITIONS
+ 	"DFHACK_DATA_DESTINATION=\"${DFHACK_DATA_DESTINATION}\"" )
++set_property( SOURCE "PluginManager.cpp" APPEND PROPERTY COMPILE_DEFINITIONS
++	"DFHACK_PLUGIN_DESTINATION=\"${DFHACK_PLUGIN_DESTINATION}\"" )
+ 
+ SET(MAIN_SOURCES_WINDOWS
+ Console-windows.cpp
+diff --git a/library/PluginManager.cpp b/library/PluginManager.cpp
+index a4927a75..a4cefb13 100644
+--- a/library/PluginManager.cpp
++++ b/library/PluginManager.cpp
+@@ -52,6 +52,7 @@ using namespace std;
+ using namespace tthread;
+ 
+ #include <assert.h>
++#include <string.h>
+ 
+ #define MUTEX_GUARD(lock) auto lock_##__LINE__ = make_mutex_guard(lock);
+ template <typename T>
+@@ -70,7 +71,11 @@ tthread::lock_guard<T> make_mutex_guard (T *mutex)
+ 
+ static string getPluginPath()
+ {
+-    return Core::getInstance().getHackPath() + "plugins/";
++    if(strncmp(DFHACK_PLUGIN_DESTINATION, "hack/plugins", 13) == 0)
++        // This is the default value
++        return Core::getInstance().getHackPath() + "plugins/";
++    else
++        return DFHACK_PLUGIN_DESTINATION "/";
+ }
+ 
+ static string getPluginPath (std::string name)
+-- 
+2.11.1
+
