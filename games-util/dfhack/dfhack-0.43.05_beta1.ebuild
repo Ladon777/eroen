@@ -1,28 +1,27 @@
-# By eroen, 2012-2016
-#
+# By eroen <eroen-overlay@occam.eroen.eu>, 2012 - 2017
 # Permission to use, copy, modify, and/or distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
 # copyright notice and this permission notice appear in all copies.
 
 EAPI=6
 
-inherit multilib versionator git-r3 cmake-utils
+inherit versionator git-r3 cmake-utils
 
 df_PV=$(get_version_component_range 1-3)
 
 DESCRIPTION="Memory hacking library for Dwarf Fortress and a set of tools that use it"
 HOMEPAGE="http://github.com/DFHack/dfhack"
-#EGIT_REPO_URI="git://github.com/DFHack/dfhack.git https://github.com/DFHack/dfhack.git"
 EGIT_REPO_URI="https://github.com/DFHack/dfhack.git"
 if [[ $PV == *.9999 ]]; then
 	EGIT_BRANCH="develop"
-elif [[ $PV == *_alpha* ]]; then
+elif [[ $PV == *_alpha* || $PV == *_beta* ]]; then
 	EGIT_MIN_CLONE="single"
 	EGIT_COMMIT="${PV/_alpha/-alpha}"
+	EGIT_COMMIT="${EGIT_COMMIT/_beta/-beta}"
 else
 	EGIT_MIN_CLONE_TYPE=mirror
-	EGIT_COMMIT="29963f4b67b9edae74cd69e159bb63730b524d27"
-	xml_EGIT_COMMIT="95f0627d9f2fe9179865a1eaebf348ea6afcbc27"
+	EGIT_COMMIT="X"
+	xml_EGIT_COMMIT="X"
 fi
 
 KEYWORDS="-* ~amd64" # ~x86
@@ -35,26 +34,22 @@ SLOT="0"
 IUSE=""
 
 HDEPEND="
-	>=sys-devel/gcc-4.5[multilib]
+	>=sys-devel/gcc-4.5
 	dev-lang/perl
 	dev-perl/XML-LibXML
 	dev-perl/XML-LibXSLT
 	"
 LIBRARY_DEPEND="
-	sys-libs/zlib[abi_x86_32]
+	sys-libs/zlib
 	"
 DEPEND="${LIBRARY_DEPEND}
 	${HDEPEND}"
 RDEPEND="${LIBRARY_DEPEND}
-	~games-roguelike/dwarf-fortress-$df_PV[abi_x86_32]"
+	~games-roguelike/dwarf-fortress-$df_PV"
 
 PATCHES=( "$FILESDIR"/dfhack-$PV )
 
 QA_PREBUILT="opt/dfhack/hack/libruby.so"
-
-pkg_setup() {
-	multilib_toolchain_setup x86
-}
 
 src_unpack() {
 	git-r3_src_unpack
@@ -66,7 +61,7 @@ src_unpack() {
 
 src_prepare() {
 	default
-	local install="\${HOME}/.dwarf-fortress-${df_PV}_dfhack" exe="./libs_abi_x86_32/Dwarf_Fortress"
+	local install="\${HOME}/.dwarf-fortress-${df_PV}_dfhack" exe="./libs/Dwarf_Fortress"
 	sed -e "s:^install=.*:install=${install}:" \
 		-e "s:^exe=.*:exe=\"${exe}\":" \
 		"$FILESDIR"/dfhack > "$T"/dfhack || die
@@ -75,14 +70,17 @@ src_prepare() {
 
 src_configure() {
 	local mycmakeargs=(
-		-DDFHACK_BUILD_ARCH=32
-		-DEXTERNAL_TINYXML=NO
+		-DDFHACK_BUILD_ARCH=$(usex amd64 64 "")$(usex x86 32 "")
+		-DEXTERNAL_TINYXML=NO # https://bugs.gentoo.org/show_bug.cgi?id=592696
 		-DCMAKE_INSTALL_PREFIX=/opt/dfhack
 		-DDFHACK_DATA_DESTINATION=/opt/dfhack/hack
 		-DDFHACK_LUA_DESTINATION=/opt/dfhack/hack/lua
 		-DDFHACK_PLUGIN_DESTINATION=/opt/dfhack/hack/plugins
 		-DDFHACK_LIBRARY_DESTINATION=/opt/dfhack/hack
 		-DDFHACK_RUBY_DESTINATION=/opt/dfhack/hack/ruby
+		-DBUILD_RUBY=OFF # TODO: downloads libruby.so
+		-DBUILD_DEV_PLUGINS=ON
+		-DBUILD_SKELETON=ON
 		)
 
 	cmake-utils_src_configure
@@ -99,7 +97,7 @@ pkg_postinst() {
 	elog "Due to Dwarf Fortress' special needs regarding working directory,"
 	elog "specifying relative paths to DFHack plugins can give unintended results."
 	elog
-	elog "Your dfhack.init should be placed in \${HOME}/.dwarf-fortress ,"
+	elog "Your dfhack.init should be placed in \${HOME}/.dwarf-fortress-${df_PV}_dfhack/ ,"
 	elog "otherwise the example configuration will be used."
 	elog
 	elog "To start DFHack, please run dfhack"
