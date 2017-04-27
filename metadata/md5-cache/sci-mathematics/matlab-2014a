@@ -9,5 +9,5 @@ PROPERTIES=interactive
 RESTRICT=bindist
 SLOT=R2014a
 _eclass_exported_funcs=pkg_pretend:- pkg_postinst:- src_unpack:- src_configure:- src_install:-
-_eclasses_=cdrom	0ab58b9ff75f89271f112d7c1e0e5bd0	portability	2b88d3ecc35035a3b8ab628b49cafb0e
+_eclasses_=cdrom	bb6ff1e9eb55049bb184fa15b8ed8563	portability	2b88d3ecc35035a3b8ab628b49cafb0e
 _md5_=219226908163dd01df3c383777ef5f9e
