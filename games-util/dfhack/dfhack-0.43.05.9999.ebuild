@@ -33,6 +33,7 @@ LICENSE="ZLIB MIT BSD-2 BSD CC-BY-SA-3.0"
 SLOT="0"
 IUSE=""
 
+# dfhack bundles lua (5.3 as of 0.43.05-alpha1)
 HDEPEND="
 	>=sys-devel/gcc-4.5
 	dev-lang/perl
