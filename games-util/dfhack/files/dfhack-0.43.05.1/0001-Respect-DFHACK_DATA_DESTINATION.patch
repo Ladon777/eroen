@@ -1,0 +1,95 @@
+From 8ca7c7e837a814db34cd932eeabbd429f758ca37 Mon Sep 17 00:00:00 2001
+From: eroen <eroen@occam.eroen.eu>
+Date: Mon, 29 May 2017 21:09:45 +0200
+Subject: [PATCH 1/5] Respect DFHACK_DATA_DESTINATION
+
+---
+ CMakeLists.txt         |  2 +-
+ library/CMakeLists.txt |  3 +++
+ library/Core.cpp       | 14 ++++++++++----
+ 3 files changed, 14 insertions(+), 5 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index e261443b..c3fedbf0 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -158,7 +158,7 @@ ENDIF()
+ # external tools will be installed here:
+ SET(DFHACK_BINARY_DESTINATION .)
+ # dfhack data goes here:
+-SET(DFHACK_DATA_DESTINATION hack)
++SET(DFHACK_DATA_DESTINATION hack CACHE INTERNAL "")
+ # plugin libs go here:
+ SET(DFHACK_PLUGIN_DESTINATION hack/plugins)
+ # dfhack header files go here:
+diff --git a/library/CMakeLists.txt b/library/CMakeLists.txt
+index ce73741a..6ca4811d 100644
+--- a/library/CMakeLists.txt
++++ b/library/CMakeLists.txt
+@@ -75,6 +75,9 @@ RemoteServer.cpp
+ RemoteTools.cpp
+ )
+ 
++set_property( SOURCE "Core.cpp" APPEND PROPERTY COMPILE_DEFINITIONS
++	"DFHACK_DATA_DESTINATION=\"${DFHACK_DATA_DESTINATION}\"" )
++
+ SET(MAIN_SOURCES_WINDOWS
+ Console-windows.cpp
+ Hooks-windows.cpp
+diff --git a/library/Core.cpp b/library/Core.cpp
+index 198e49df..e20d01f2 100644
+--- a/library/Core.cpp
++++ b/library/Core.cpp
+@@ -75,6 +75,7 @@ using namespace DFHack;
+ #include <stdio.h>
+ #include <iomanip>
+ #include <stdlib.h>
++#include <string.h>
+ #include <fstream>
+ #include "tinythread.h"
+ #include "md5wrapper.h"
+@@ -383,7 +384,7 @@ static command_result runRubyScript(color_ostream &out, PluginManager *plug_mgr,
+         rbcmd += "'" + args[i] + "', ";
+     rbcmd += "]\n";
+ 
+-    rbcmd += "catch(:script_finished) { load './hack/scripts/" + name + ".rb' }";
++    rbcmd += "catch(:script_finished) { load '" DFHACK_DATA_DESTINATION "/scripts/" + name + ".rb' }";
+ 
+     return plug_mgr->ruby->eval_ruby(out, rbcmd.c_str());
+ }
+@@ -501,6 +502,7 @@ void Core::getScriptPaths(std::vector<std::string> *dest)
+     }
+     dest->push_back(df_path + "/raw/scripts");
+     dest->push_back(df_path + "/hack/scripts");
++    dest->push_back(DFHACK_DATA_DESTINATION "/scripts");
+     for (auto it = script_paths[1].begin(); it != script_paths[1].end(); ++it)
+         dest->push_back(*it);
+ }
+@@ -1448,7 +1450,11 @@ void Core::fatal (std::string output)
+ std::string Core::getHackPath()
+ {
+ #ifdef LINUX_BUILD
+-    return p->getPath() + "/hack/";
++    if(strncmp(DFHACK_DATA_DESTINATION, "hack", 5) == 0)
++        // This is the default value
++        return p->getPath() + "/hack/";
++    else
++        return DFHACK_DATA_DESTINATION "/";
+ #else
+     return p->getPath() + "\\hack\\";
+ #endif
+@@ -1467,9 +1473,9 @@ bool Core::Init()
+ 
+     // find out what we are...
+     #ifdef LINUX_BUILD
+-        const char * path = "hack/symbols.xml";
++        const char * path = DFHACK_DATA_DESTINATION "/symbols.xml";
+     #else
+-        const char * path = "hack\\symbols.xml";
++        const char * path = DFHACK_DATA_DESTINATION "\\symbols.xml";
+     #endif
+     vif = new DFHack::VersionInfoFactory();
+     cerr << "Identifying DF version.\n";
+-- 
+2.13.0
+
