@@ -18,13 +18,15 @@ elif [[ $PV == *_alpha* || $PV == *_beta* ]]; then
 	EGIT_MIN_CLONE="single"
 	EGIT_COMMIT="${PV/_alpha/-alpha}"
 	EGIT_COMMIT="${EGIT_COMMIT/_beta/-beta}"
-else
+elif [[ $PV == *_pre* ]]; then
 	EGIT_MIN_CLONE_TYPE=mirror
 	EGIT_COMMIT="X"
 	xml_EGIT_COMMIT="X"
+else
+	EGIT_COMMIT="${PV%.*}-r${PV##*.}"
 fi
 
-# KEYWORDS="-* ~amd64" # ~x86
+KEYWORDS="-* ~amd64" # ~x86
 
 CMAKE_MIN_VERSION=2.8.0
 CMAKE_REMOVE_MODULES_LIST="FindCurses FindDoxygen CMakeVS10FindMake"
@@ -48,7 +50,7 @@ DEPEND="${LIBRARY_DEPEND}
 RDEPEND="${LIBRARY_DEPEND}
 	~games-roguelike/dwarf-fortress-$df_PV"
 
-#PATCHES=( "$FILESDIR"/dfhack-$PV )
+PATCHES=( "$FILESDIR"/dfhack-$PV )
 
 QA_PREBUILT="opt/dfhack/hack/libruby.so"
 
@@ -87,7 +89,7 @@ src_configure() {
 	cmake-utils_src_configure
 }
 
-DOCS=""
+DOCS=( )
 src_install() {
 	cmake-utils_src_install
 
