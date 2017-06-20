@@ -25,7 +25,7 @@ games-engines/openxcom 1.0.0_p20170127 1.0.0_p20170526 9999: An open-source reim
 games-puzzle/mushroom_11 1.07_beta4: Award-winning anti-platformer where destruction is the only way to move
 games-puzzle/typerider 1395097265: Platform game with two dots travelling through time and typography
 games-roguelike/FTL 1.5.4 1.5.13: Faster Than Light: A spaceship simulation real-time roguelike-like game
-games-roguelike/dwarf-fortress 0.40.24 0.42.06 0.43.03 0.43.05: A single-player fantasy game
+games-roguelike/dwarf-fortress 0.40.24 0.42.06 0.43.03 0.43.05-r1: A single-player fantasy game
 games-roguelike/roguelegacy 20131228: A genealogical rogue-LITE where anyone can be a hero.
 games-rpg/dontstarve 0 1377999049 1377999049_p9999: An uncompromising wilderness survival game full of science and magic.
 games-rpg/farsky 2.01.00: Gather resources and protect yourself in the Ocean depths
@@ -42,7 +42,7 @@ games-simulation/simutrans-pak128 2.5.2_rc120 9999: Simutrans pakset featuring a
 games-simulation/simutrans-pak64 0.120.0.1 9999: Official Simutrans pakset
 games-simulation/sunlesssea 2.2.2.3129 2016.03.29: Lose your mind. Eat your crew.
 games-strategy/unityofcommand 104d: Operational-level wargame covering the 1942/43 Stalingrad campaign
-games-util/dfhack 0.34.11.2 0.34.11.3_p20130302 0.40.06_pre20140808 0.40.07_pre20140811 0.40.08.2 0.40.09_pre20140827 0.40.10.1 0.40.11.1 0.40.12.1 0.40.13.1 0.40.19.1 0.40.23.1 0.40.24.0 0.40.24.1 0.40.24.2 0.42.04_alpha2 0.43.03.1 0.43.05_alpha_pre20160726 0.43.05_beta1 0.43.05.1 0.43.05.9999: Memory hacking library for Dwarf Fortress and a set of tools that use it
+games-util/dfhack 0.34.11.2 0.34.11.3_p20130302 0.40.06_pre20140808 0.40.07_pre20140811 0.40.08.2 0.40.09_pre20140827 0.40.10.1 0.40.11.1 0.40.12.1 0.40.13.1 0.40.19.1 0.40.23.1 0.40.24.0 0.40.24.1 0.40.24.2 0.42.04_alpha2 0.43.03.1 0.43.05_alpha_pre20160726 0.43.05_beta1 0.43.05.1-r1 0.43.05.9999: Memory hacking library for Dwarf Fortress and a set of tools that use it
 games-util/dontstarve-updater 18: extracted updater from Don't Starve
 games-util/dwarftherapist 0.6.13_p20120616 0.6.13_p20120616-r1 0.6.13_p20120616-r2: Management tool designed to run side-by-side with games-simulation/dwarffortress
 games-util/irpgstats 0.2: IdleRPG db parser and pretty-printer
