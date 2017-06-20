@@ -33,7 +33,7 @@ CMAKE_REMOVE_MODULES_LIST="FindCurses FindDoxygen CMakeVS10FindMake"
 
 LICENSE="ZLIB MIT BSD-2 BSD CC-BY-SA-3.0"
 SLOT="0"
-IUSE=""
+IUSE="ruby"
 
 # dfhack bundles lua (5.3 as of 0.43.05-alpha1)
 HDEPEND="
@@ -48,11 +48,10 @@ LIBRARY_DEPEND="
 DEPEND="${LIBRARY_DEPEND}
 	${HDEPEND}"
 RDEPEND="${LIBRARY_DEPEND}
+	ruby? ( dev-lang/ruby:2.2 )
 	~games-roguelike/dwarf-fortress-$df_PV"
 
 PATCHES=( "$FILESDIR"/dfhack-$PV )
-
-QA_PREBUILT="opt/dfhack/hack/libruby.so"
 
 src_unpack() {
 	git-r3_src_unpack
@@ -64,6 +63,9 @@ src_unpack() {
 
 src_prepare() {
 	default
+	sed -e "s:libruby\.so:libruby22.so:" \
+		-i plugins/ruby/ruby.cpp || die
+
 	local install="\${HOME}/.dwarf-fortress-${df_PV}_dfhack" exe="./libs/Dwarf_Fortress"
 	sed -e "s:^install=.*:install=${install}:" \
 		-e "s:^exe=.*:exe=\"${exe}\":" \
@@ -81,9 +83,10 @@ src_configure() {
 		-DDFHACK_PLUGIN_DESTINATION=/opt/dfhack/hack/plugins
 		-DDFHACK_LIBRARY_DESTINATION=/opt/dfhack/hack
 		-DDFHACK_RUBY_DESTINATION=/opt/dfhack/hack/ruby
-		-DBUILD_RUBY=OFF # TODO: downloads libruby.so
+		-DBUILD_RUBY=$(usex ruby)
+		-DDOWNLOAD_RUBY=OFF
 		-DBUILD_DEV_PLUGINS=ON
-		-DBUILD_SKELETON=ON
+		-DBUILD_SKELETON=OFF
 		)
 
 	cmake-utils_src_configure
