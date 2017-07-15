@@ -125,5 +125,4 @@ www-apps/nikola:ipython - Add IPython notebook compilation and LESS support
 www-apps/nikola:jinja - Add support for dev-python/jinja as alternative templating engine to Mako
 www-apps/nikola:markdown - Add support for Markdown as alternative markup language to reStructuredText
 x11-libs/vte:glade - Provide integration with dev-util/glade.
-x11-libs/vte:introspection - Use dev-libs/gobject-introspection for introspection
 x11-libs/vte:termite-patch - Apply patch for x11-terms/termite
