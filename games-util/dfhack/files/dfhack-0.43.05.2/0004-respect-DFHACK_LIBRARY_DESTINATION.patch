@@ -1,0 +1,65 @@
+From 0775887bc1c2cb0d6f39ff61c5f9cff35bc96d31 Mon Sep 17 00:00:00 2001
+From: eroen <dfhack@occam.eroen.eu>
+Date: Mon, 29 May 2017 21:09:45 +0200
+Subject: [PATCH 4/5] respect DFHACK_LIBRARY_DESTINATION
+
+---
+ CMakeLists.txt              | 4 ++--
+ plugins/ruby/CMakeLists.txt | 2 ++
+ plugins/ruby/ruby.cpp       | 6 +++---
+ 3 files changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 8be3c971..9fd8c422 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -148,11 +148,11 @@ set(DFHACK_VERSION "${DF_VERSION}-${DFHACK_RELEASE}")
+ # the dfhack libraries will be installed here:
+ IF(UNIX)
+     # put the lib into DF/hack
+-    SET(DFHACK_LIBRARY_DESTINATION hack)
++    SET(DFHACK_LIBRARY_DESTINATION hack CACHE INTERNAL "")
+     SET(DFHACK_EGGY_DESTINATION libs)
+ ELSE()
+     # windows is crap, therefore we can't do nice things with it. leave the libs on a nasty pile...
+-    SET(DFHACK_LIBRARY_DESTINATION .)
++    SET(DFHACK_LIBRARY_DESTINATION . CACHE INTERNAL "")
+     SET(DFHACK_EGGY_DESTINATION .)
+ ENDIF()
+ # external tools will be installed here:
+diff --git a/plugins/ruby/CMakeLists.txt b/plugins/ruby/CMakeLists.txt
+index f1ef12ac..8272b5dd 100644
+--- a/plugins/ruby/CMakeLists.txt
++++ b/plugins/ruby/CMakeLists.txt
+@@ -76,6 +76,8 @@ INCLUDE_DIRECTORIES("${dfhack_SOURCE_DIR}/depends/tthread")
+ 
+ DFHACK_PLUGIN(ruby ruby.cpp LINK_LIBRARIES dfhack-tinythread)
+ ADD_DEPENDENCIES(ruby ruby-autogen-rb)
++set_property( SOURCE "ruby.cpp" APPEND PROPERTY COMPILE_DEFINITIONS
++        "DFHACK_LIBRARY_DESTINATION=\"${DFHACK_LIBRARY_DESTINATION}\"" )
+ 
+ IF(EXISTS ${RUBYLIB})
+     INSTALL(FILES ${RUBYLIB} DESTINATION ${DFHACK_LIBRARY_DESTINATION} RENAME ${RUBYLIB_INSTALL_NAME})
+diff --git a/plugins/ruby/ruby.cpp b/plugins/ruby/ruby.cpp
+index 15f61ac3..2624d7c9 100644
+--- a/plugins/ruby/ruby.cpp
++++ b/plugins/ruby/ruby.cpp
+@@ -322,12 +322,12 @@ static int df_loadruby(void)
+ {
+     const char *libpaths[] = {
+ #if defined(WIN32)
+-        "./libruby.dll",
++        DFHACK_LIBRARY_DESTINATION "./libruby.dll",
+ #elif defined(__APPLE__)
+-        "hack/libruby.dylib",
++        DFHACK_LIBRARY_DESTINATION "/libruby.dylib",
+         "/System/Library/Frameworks/Ruby.framework/Ruby",
+ #else
+-        "hack/libruby.so",
++        DFHACK_LIBRARY_DESTINATION "hack/libruby.so",
+         "libruby.so",
+ #endif
+         NULL
+-- 
+2.13.0
+
