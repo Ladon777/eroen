@@ -1,0 +1,88 @@
+From 9a9b0a6661b7bf0d1f05922881292447f67e4bc4 Mon Sep 17 00:00:00 2001
+From: eroen <dfhack@occam.eroen.eu>
+Date: Mon, 29 May 2017 21:09:45 +0200
+Subject: [PATCH 5/5] introduce DFHACK_RUBY_DESTINATION
+
+---
+ CMakeLists.txt                       | 2 ++
+ plugins/ruby/CMakeLists.txt          | 8 ++++++--
+ plugins/ruby/ruby.cpp                | 2 +-
+ plugins/ruby/{ruby.rb => ruby.rb.in} | 6 +++---
+ 4 files changed, 12 insertions(+), 6 deletions(-)
+ rename plugins/ruby/{ruby.rb => ruby.rb.in} (97%)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 9fd8c422..63595f1c 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -165,6 +165,8 @@ SET(DFHACK_PLUGIN_DESTINATION hack/plugins CACHE INTERNAL "")
+ SET(DFHACK_INCLUDES_DESTINATION hack/include)
+ # dfhack lua files go here:
+ SET(DFHACK_LUA_DESTINATION hack/lua CACHE INTERNAL "")
++# dfhack ruby files go here:
++SET(DFHACK_RUBY_DESTINATION hack/ruby CACHE INTERNAL "")
+ # the windows .lib file goes here:
+ SET(DFHACK_DEVLIB_DESTINATION hack)
+ 
+diff --git a/plugins/ruby/CMakeLists.txt b/plugins/ruby/CMakeLists.txt
+index 8272b5dd..ac8820f2 100644
+--- a/plugins/ruby/CMakeLists.txt
++++ b/plugins/ruby/CMakeLists.txt
+@@ -77,7 +77,8 @@ INCLUDE_DIRECTORIES("${dfhack_SOURCE_DIR}/depends/tthread")
+ DFHACK_PLUGIN(ruby ruby.cpp LINK_LIBRARIES dfhack-tinythread)
+ ADD_DEPENDENCIES(ruby ruby-autogen-rb)
+ set_property( SOURCE "ruby.cpp" APPEND PROPERTY COMPILE_DEFINITIONS
+-        "DFHACK_LIBRARY_DESTINATION=\"${DFHACK_LIBRARY_DESTINATION}\"" )
++        "DFHACK_LIBRARY_DESTINATION=\"${DFHACK_LIBRARY_DESTINATION}\""
++        "DFHACK_RUBY_DESTINATION=\"${DFHACK_RUBY_DESTINATION}\"")
+ 
+ IF(EXISTS ${RUBYLIB})
+     INSTALL(FILES ${RUBYLIB} DESTINATION ${DFHACK_LIBRARY_DESTINATION} RENAME ${RUBYLIB_INSTALL_NAME})
+@@ -88,8 +89,11 @@ ELSE()
+     ENDIF()
+ ENDIF()
+ 
++configure_file( ruby.rb.in ruby.rb @ONLY )
+ INSTALL(DIRECTORY .
+-        DESTINATION hack/ruby
++        DESTINATION ${DFHACK_RUBY_DESTINATION}
+         FILES_MATCHING PATTERN "*.rb")
++INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/ruby.rb
++	DESTINATION ${DFHACK_RUBY_DESTINATION})
+ 
+ INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/${RUBYAUTOGEN} DESTINATION hack/ruby)
+diff --git a/plugins/ruby/ruby.cpp b/plugins/ruby/ruby.cpp
+index 2624d7c9..afe12071 100644
+--- a/plugins/ruby/ruby.cpp
++++ b/plugins/ruby/ruby.cpp
+@@ -459,7 +459,7 @@ static void df_rubythread(void *p)
+ 
+     // load the default ruby-level definitions in the background
+     state=0;
+-    rb_eval_string_protect("require './hack/ruby/ruby'", &state);
++    rb_eval_string_protect("require '" DFHACK_RUBY_DESTINATION "/ruby'", &state);
+     if (state)
+         dump_rb_error();
+ 
+diff --git a/plugins/ruby/ruby.rb b/plugins/ruby/ruby.rb.in
+similarity index 97%
+rename from plugins/ruby/ruby.rb
+rename to plugins/ruby/ruby.rb.in
+index c696c23e..62be24c5 100644
+--- a/plugins/ruby/ruby.rb
++++ b/plugins/ruby/ruby.rb.in
+@@ -251,8 +251,8 @@ def df
+ end
+ 
+ # load autogenned file
+-require './hack/ruby/ruby-autogen-defs'
+-require(RUBY_PLATFORM =~ /mswin|mingw|cygwin/i ? './hack/ruby/ruby-autogen-win' : './hack/ruby/ruby-autogen-gcc')
++require '@DFHACK_RUBY_DESTINATION@/ruby-autogen-defs'
++require(RUBY_PLATFORM =~ /mswin|mingw|cygwin/i ? '@DFHACK_RUBY_DESTINATION@/ruby-autogen-win' : '@DFHACK_RUBY_DESTINATION@/ruby-autogen-gcc')
+ 
+ # load all modules
+-Dir['./hack/ruby/*.rb'].each { |m| require m.chomp('.rb') if m !~ /ruby-autogen/ }
++Dir['@DFHACK_RUBY_DESTINATION@/*.rb'].each { |m| require m.chomp('.rb') if m !~ /ruby-autogen/ }
+-- 
+2.13.0
+

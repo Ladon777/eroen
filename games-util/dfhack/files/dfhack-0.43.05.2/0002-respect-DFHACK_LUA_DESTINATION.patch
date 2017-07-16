@@ -1,0 +1,89 @@
+From 2a162094bf064b540229376f92e6cf578cb1b39a Mon Sep 17 00:00:00 2001
+From: eroen <dfhack@occam.eroen.eu>
+Date: Mon, 29 May 2017 21:09:45 +0200
+Subject: [PATCH 2/5] respect DFHACK_LUA_DESTINATION
+
+---
+ CMakeLists.txt                                  | 3 ++-
+ depends/lua/CMakeLists.txt                      | 5 ++++-
+ depends/lua/include/{luaconf.h => luaconf.h.in} | 2 +-
+ library/CMakeLists.txt                          | 2 +-
+ 4 files changed, 8 insertions(+), 4 deletions(-)
+ rename depends/lua/include/{luaconf.h => luaconf.h.in} (99%)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index e22cea0b..06251b45 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -164,7 +164,7 @@ SET(DFHACK_PLUGIN_DESTINATION hack/plugins)
+ # dfhack header files go here:
+ SET(DFHACK_INCLUDES_DESTINATION hack/include)
+ # dfhack lua files go here:
+-SET(DFHACK_LUA_DESTINATION hack/lua)
++SET(DFHACK_LUA_DESTINATION hack/lua CACHE INTERNAL "")
+ # the windows .lib file goes here:
+ SET(DFHACK_DEVLIB_DESTINATION hack)
+ 
+@@ -299,6 +299,7 @@ endif()
+ 
+ find_package(ZLIB REQUIRED)
+ include_directories(depends/protobuf)
++include_directories("${CMAKE_CURRENT_BINARY_DIR}/depends/lua/include")
+ include_directories(depends/lua/include)
+ include_directories(depends/md5)
+ include_directories(depends/jsoncpp)
+diff --git a/depends/lua/CMakeLists.txt b/depends/lua/CMakeLists.txt
+index 8b9ce8e2..ad7a209e 100644
+--- a/depends/lua/CMakeLists.txt
++++ b/depends/lua/CMakeLists.txt
+@@ -22,6 +22,10 @@ IF(UNIX)
+     ENDIF()
+ ENDIF()
+ 
++configure_file("include/luaconf.h.in" "include/luaconf.h" @ONLY)
++SET_SOURCE_FILES_PROPERTIES("${CMAKE_CURRENT_BINARY_DIR}/include" PROPERTIES HEADER_FILE_ONLY TRUE)
++include_directories("${CMAKE_CURRENT_BINARY_DIR}/include")
++
+ SET (HDR_LIBLUA
+ include/lapi.h
+ include/lauxlib.h
+@@ -42,7 +46,6 @@ include/lstring.h
+ include/ltable.h
+ include/ltm.h
+ include/lua.h
+-include/luaconf.h
+ include/lualib.h
+ include/lundump.h
+ include/lvm.h
+diff --git a/depends/lua/include/luaconf.h b/depends/lua/include/luaconf.h.in
+similarity index 99%
+rename from depends/lua/include/luaconf.h
+rename to depends/lua/include/luaconf.h.in
+index 051d2a94..9d50d5ea 100644
+--- a/depends/lua/include/luaconf.h
++++ b/depends/lua/include/luaconf.h.in
+@@ -192,7 +192,7 @@
+ 
+ #else			/* }{ */
+ 
+-#define LUA_LDIR	"./hack/lua/"
++#define LUA_LDIR	"@DFHACK_LUA_DESTINATION@" "/"
+ #define LUA_CDIR	"./hack/"
+ #define LUA_PATH_DEFAULT  \
+ 		LUA_LDIR"?.lua;"  LUA_LDIR"?/init.lua;" "./?.lua"
+diff --git a/library/CMakeLists.txt b/library/CMakeLists.txt
+index e71eb888..6ca16c4b 100644
+--- a/library/CMakeLists.txt
++++ b/library/CMakeLists.txt
+@@ -76,7 +76,7 @@ RemoteTools.cpp
+ )
+ 
+ set_property( SOURCE "Core.cpp" APPEND PROPERTY COMPILE_DEFINITIONS
+-	"DFHACK_DATA_DESTINATION=\"${DFHACK_DATA_DESTINATION}\"" )
++	"DFHACK_DATA_DESTINATION=\"${DFHACK_DATA_DESTINATION}\"")
+ 
+ SET(MAIN_SOURCES_WINDOWS
+ Console-windows.cpp
+-- 
+2.13.0
+
