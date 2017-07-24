@@ -12,8 +12,11 @@ dev-libs/libgraphics 34.11 40.06 40.07 40.08 40.09 40.10 40.11 40.12 40.13 40.19
 dev-python/awkwardduet 1.1_pre4: Lib3to2 maintenance fork
 dev-python/m3u8 0.1.6 9999: m3u8 parser
 dev-python/pyffi 2.2.2: Python File Format Interface
+dev-python/pytest-flake8 0.8.1: py.test plugin for flake8
+dev-python/pytest-isort 0.1.0: py.test plugin for isort
 dev-python/rpy 2.8.3: Python interface to the R Programming Language
 dev-python/uncompyle 0.0.2: converts Python byte-code back into equivalent Python source
+dev-python/vobject 0.9.5: Python package for parsing and generating vCard and vCalendar files
 dev-util/emilpro 3-r3: a graphical disassembler for a large number of instruction sets
 dev-util/patchelf 0.8_p20150724: Small utility to modify the dynamic linker and RPATH of ELF executables
 games-action/unepic 15005: Combination of platforming and role playing game with many hilarious references
@@ -61,5 +64,6 @@ net-print/foo2zjs 99999999: Support for printing to ZjStream-based printers
 sci-mathematics/matlab 2014a: High-level language and interactive environment
 sys-libs/libfaketime 0.9-r1 0.9.1 0.9.5 0.9.6-r1: Report faked system time to programs
 www-apps/nikola 6.4.0: A static website and blog generator
+www-apps/radicale 2.1.2: A simple CalDAV calendar server
 x11-libs/vte 0.34.2 0.36.3 0.36.4 0.40.2 0.42.4 0.44.2 0.46.1 0.46.2: Library providing a virtual terminal emulator widget
 x11-terms/termite 6 7 8 9 10 11 12 9999: A keyboard-centric VTE-based terminal
