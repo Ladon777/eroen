@@ -4,6 +4,7 @@ app-emulation/wine 1.5.19 1.5.20 1.5.21 1.5.22 1.5.28 1.7.8 1.7.13 1.7.14 1.7.15
 app-emulation/wine-compholio 1.7.26 1.7.27: Special build of wine with patches to make more applications work out of the box
 app-emulation/wine-gentoo 2013.06.24: Menu items and icons for wine
 app-emulation/wine-staging 1.7.33-r1: Wine package with wine-staging patchset applied
+app-misc/gcalcli 4.0.0_alpha3: Google Calendar Command Line Interface
 app-vim/covim 20130619 20160108 99999999: Collaborative Editing for Vim
 dev-cpp/gmock 1.6.0 1.7.0-r1: Google's C++ mocking framework
 dev-cpp/gtest 1.6.0-r2 1.7.0: Google C++ Testing Framework
