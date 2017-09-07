@@ -8,6 +8,5 @@ LICENSE=MATLAB
 PROPERTIES=interactive
 RESTRICT=bindist
 SLOT=R2014a
-_eclass_exported_funcs=pkg_pretend:- pkg_postinst:- src_unpack:- src_configure:- src_install:-
 _eclasses_=cdrom	593beee21fc1247ccf32244f399982a7	portability	2b88d3ecc35035a3b8ab628b49cafb0e
 _md5_=219226908163dd01df3c383777ef5f9e

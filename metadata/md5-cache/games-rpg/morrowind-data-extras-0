@@ -7,5 +7,4 @@ LICENSE=all-rights-reserved Morrowind-EULA
 RESTRICT=bindist mirror
 SLOT=0
 SRC_URI=http://download.zenimax.com/elderscrolls/morrowind/other/entertainers.zip http://download.zenimax.com/elderscrolls/morrowind/other/bittercoastsounds.zip http://download.zenimax.com/elderscrolls/morrowind/other/area_effect_arrows.zip http://download.zenimax.com/elderscrolls/morrowind/other/ebartifact.zip http://download.zenimax.com/elderscrolls/morrowind/other/masterindex.zip http://download.zenimax.com/elderscrolls/morrowind/other/lefemmarmor1.1.zip http://download.zenimax.com/elderscrolls/morrowind/other/adamantiumarmor.zip http://download.zenimax.com/elderscrolls/morrowind/other/firemoth1.1.zip
-_eclass_exported_funcs=pkg_postinst:- src_install:-
 _md5_=6a09dbda5361992ebf65e19f92e10e8d
