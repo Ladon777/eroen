@@ -8,11 +8,11 @@ VALA_MIN_API_VERSION="0.32"
 inherit gnome2 vala
 
 DESCRIPTION="Library providing a virtual terminal emulator widget"
-HOMEPAGE="https://wiki.gnome.org/action/show/Apps/Terminal/VTE"
+HOMEPAGE="https://wiki.gnome.org/action/show/Apps/Terminal/VTE termite-patch? ( https://github.com/thestinger/vte-ng )"
 
 LICENSE="LGPL-2+"
 SLOT="2.91"
-IUSE="+crypt debug glade +introspection vala vanilla"
+IUSE="+crypt debug glade +introspection +termite-patch vala vanilla"
 KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~amd64-linux ~arm-linux ~x86-linux ~x64-solaris ~x86-solaris"
 REQUIRED_USE="vala? ( introspection )"
 
@@ -50,6 +50,10 @@ src_prepare() {
 		# First half of http://pkgs.fedoraproject.org/cgit/rpms/vte291.git/tree/vte291-command-notify-scroll-speed.patch
 		# Adds OSC 777 support for desktop notifications in gnome-terminal or elsewhere
 		eapply "${WORKDIR}/${PN}-${SLOT}-command-notify.patch"
+	fi
+
+	if use termite-patch; then
+		eapply "$FILESDIR"/${P}-ng/*.patch
 	fi
 
 	use vala && vala_src_prepare
