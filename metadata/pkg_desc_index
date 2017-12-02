@@ -66,5 +66,5 @@ sci-mathematics/matlab 2014a: High-level language and interactive environment
 sys-libs/libfaketime 0.9-r1 0.9.1 0.9.5 0.9.6-r1: Report faked system time to programs
 www-apps/nikola 6.4.0: A static website and blog generator
 www-apps/radicale 2.1.2: A simple CalDAV calendar server
-x11-libs/vte 0.34.2 0.36.3 0.36.4 0.40.2 0.42.4 0.44.2 0.46.1 0.46.2: Library providing a virtual terminal emulator widget
+x11-libs/vte 0.34.2 0.36.3 0.36.4 0.40.2 0.42.4 0.44.2 0.46.1 0.46.2 0.48.3: Library providing a virtual terminal emulator widget
 x11-terms/termite 6 7 8 9 10 11 12 9999: A keyboard-centric VTE-based terminal
