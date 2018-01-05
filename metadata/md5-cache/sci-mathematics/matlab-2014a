@@ -8,5 +8,5 @@ LICENSE=MATLAB
 PROPERTIES=interactive
 RESTRICT=bindist
 SLOT=R2014a
-_eclasses_=cdrom	593beee21fc1247ccf32244f399982a7	portability	2b88d3ecc35035a3b8ab628b49cafb0e
+_eclasses_=cdrom	c64e4c5e9cbf2a58be31431e015a6210	portability	2b88d3ecc35035a3b8ab628b49cafb0e
 _md5_=219226908163dd01df3c383777ef5f9e
