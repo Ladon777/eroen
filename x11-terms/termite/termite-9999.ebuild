@@ -15,9 +15,7 @@ fi
 
 DESCRIPTION="A keyboard-centric VTE-based terminal"
 HOMEPAGE="https://github.com/thestinger/termite"
-EGIT_REPO_URI="git://github.com/thestinger/termite.git
-	http://github.com/thestinger/termite.git
-	https://github.com/thestinger/termite.git"
+EGIT_REPO_URI="https://github.com/thestinger/termite.git"
 
 LICENSE="LGPL-2+ MIT"
 SLOT="0"
