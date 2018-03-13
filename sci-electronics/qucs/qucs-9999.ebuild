@@ -4,7 +4,7 @@
 EAPI=6
 PYTHON_COMPAT=( python2_7 )
 
-inherit flag-o-matic toolchain-funcs virtualx autotools python-any-r1 git-r3
+inherit virtualx autotools python-any-r1 git-r3
 
 GTEST_PV=1.8.0
 
