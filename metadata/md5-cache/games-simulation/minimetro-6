@@ -1,4 +1,4 @@
-DEFINED_PHASES=install postinst prepare setup
+DEFINED_PHASES=install nofetch postinst prepare setup
 DESCRIPTION=Minimalistic subway layout game
 EAPI=5
 HOMEPAGE=http://dinopoloclub.com/minimetro/

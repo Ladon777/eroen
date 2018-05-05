@@ -1,4 +1,4 @@
-DEFINED_PHASES=compile configure install postinst preinst prepare setup unpack
+DEFINED_PHASES=compile configure install nofetch postinst preinst prepare setup unpack
 DEPEND=
 DESCRIPTION=Operational-level wargame covering the 1942/43 Stalingrad campaign
 EAPI=5

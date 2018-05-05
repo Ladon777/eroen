@@ -1,4 +1,4 @@
-DEFINED_PHASES=compile configure install postinst preinst prepare setup unpack
+DEFINED_PHASES=compile configure install nofetch postinst preinst prepare setup unpack
 DESCRIPTION=Platform game with two dots travelling through time and typography
 EAPI=5
 HOMEPAGE=http://www.bulkypix.com/game/typerider

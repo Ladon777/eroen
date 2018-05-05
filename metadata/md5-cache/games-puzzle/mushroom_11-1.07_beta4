@@ -1,4 +1,4 @@
-DEFINED_PHASES=install prepare setup
+DEFINED_PHASES=install nofetch prepare setup
 DEPEND=app-arch/unzip
 DESCRIPTION=Award-winning anti-platformer where destruction is the only way to move
 EAPI=5

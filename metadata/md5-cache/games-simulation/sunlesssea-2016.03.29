@@ -1,4 +1,4 @@
-DEFINED_PHASES=install prepare setup unpack
+DEFINED_PHASES=install nofetch prepare setup unpack
 DEPEND=app-arch/unzip
 DESCRIPTION=Lose your mind. Eat your crew.
 EAPI=5
